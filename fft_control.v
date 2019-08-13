@@ -24,8 +24,8 @@ module fft_control(
 reg [1 : 0] bank_rd_rot;
 reg [1 : 0] bank_wr_rot;
 
-reg signed	[11 : 0] addr_rd_mask;
-reg			[10 : 0] addr_rd	 [0 : 3];
+(* keep *) reg signed	[11 : 0] addr_rd_mask;
+(* keep *) reg				[10 : 0] addr_rd	 [0 : 3];
 reg			[8 : 0]  addr_rd_out [0 : 3];
 reg [8 : 0] addr_coef;
 
@@ -46,17 +46,18 @@ reg [4 : 0] eof_block_tw_delay;
 reg but_type;
 reg rdy;
 
-wire EOF_BLOCK =		(cnt_block_time	 ==  block_mod); // end of block butterfly (1 stage - 511, 2 - 128, 3 - 32 etc.)
+wire EOF_BLOCK = 		(cnt_block_time == block_mod); // end of block butterfly (1 stage - 511, 2 - 128, 3 - 32 etc.)
 wire EOF_BLOCK_TW =	(cnt_block_time_tw == (block_mod >> 2)); // for write - bank must rotation 4 times faster
 
-wire EOF_STAGE =	(cnt_stage_time == 10'd516); // 511 addr in one RAM (4 RAM - 2048 dot FFT by Radix - 4) + 5 tacts wait last data write in RAM (delay from  but, mult ...)
-wire LAST_STAGE =	(cnt_stage == 3'd5);
+wire EOF_STAGE = 			(cnt_stage_time == 10'd511); // 511 addr in one RAM (4 RAM - 2048 dot FFT by Radix - 4) + 5 tacts wait last data write in RAM (delay from  but, mult ...)
+wire EOF_STAGE_DELAY =	(cnt_stage_time == 10'd516);
+wire LAST_STAGE =			(cnt_stage == 3'd5);
 
 // *********** stage counters: *********** //
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) cnt_stage_time <= 10'd0;
-	else if(rdy | EOF_STAGE) cnt_stage_time <= 10'd0;
+	else if(rdy | EOF_STAGE_DELAY) cnt_stage_time <= 10'd0;
 	else cnt_stage_time <= cnt_stage_time + 1'b1; 
 end
 
@@ -76,7 +77,7 @@ end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) cnt_block_time <= 9'd0;
-	else if(EOF_BLOCK | iSTART | EOF_STAGE) cnt_block_time <= 9'd0;
+	else if(EOF_BLOCK | iSTART | EOF_STAGE_DELAY) cnt_block_time <= 9'd0;
 	else cnt_block_time <= cnt_block_time + 1'b1;
 end
 
@@ -85,32 +86,32 @@ end
 // read:
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) eof_block_delay <= 2'd0;
-	else if(iSTART | EOF_STAGE) eof_block_delay <= 2'd0;
+	else if(iSTART | EOF_STAGE_DELAY) eof_block_delay <= 2'd0;
 	else eof_block_delay <= {eof_block_delay[0], EOF_BLOCK};
 end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) bank_rd_rot <= 2'd0;
-	else if(iSTART | EOF_STAGE | rdy) bank_rd_rot <= 2'd0;
+	else if(iSTART | EOF_STAGE_DELAY | rdy) bank_rd_rot <= 2'd0;
 	else if(eof_block_delay[1]) bank_rd_rot <= bank_rd_rot + 1'b1;
 end
 
 // write:
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) cnt_block_time_tw <= 7'd0;
-	else if(EOF_BLOCK_TW | iSTART | EOF_STAGE) cnt_block_time_tw <= 7'd0;
+	else if(EOF_BLOCK_TW | iSTART | EOF_STAGE_DELAY) cnt_block_time_tw <= 7'd0;
 	else cnt_block_time_tw <= cnt_block_time_tw + 1'b1;
 end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) eof_block_tw_delay <= 5'd0;
-	else if(iSTART | EOF_STAGE) eof_block_tw_delay <= 5'd0;
+	else if(iSTART | EOF_STAGE_DELAY) eof_block_tw_delay <= 5'd0;
 	else eof_block_tw_delay <= {eof_block_tw_delay[3 : 0], EOF_BLOCK_TW};
 end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) bank_wr_rot <= 2'd0;
-	else if(iSTART | EOF_STAGE | rdy) bank_wr_rot <= 2'd0;
+	else if(iSTART | EOF_STAGE_DELAY | rdy) bank_wr_rot <= 2'd0;
 	else if(eof_block_tw_delay[4]) bank_wr_rot <= bank_wr_rot + 1'b1;
 end
 
@@ -145,7 +146,7 @@ always@(posedge iCLK or negedge iRESET) begin
 			addr_rd[3] <= {2'b00, addr_rd[3][10 : 9], addr_rd[2][8 : 3], addr_rd[2][1]}; // after - rotation is on ("...addr_rd[0][8 : 3],...") until
 			addr_rd[0] <= {2'b00, addr_rd[0][10 : 9], addr_rd[3][8 : 3], addr_rd[3][1]}; // last stage, on last stage must be alternation 0,1,0,1 on "adde_rd"
 		end																				 // (all example for "addr_rd[1]")
-	else if(EOF_BLOCK)
+	else if(EOF_BLOCK & cnt_stage_time < 10'd512)
 		begin // rotation only
 			addr_rd[1] <= addr_rd[0];
 			addr_rd[2] <= addr_rd[1];
@@ -174,7 +175,7 @@ end
 // write:
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) addr_wr <= 9'd0;
-	else if(cnt_stage_time <= 10'd5) addr_wr <= 9'd0;
+	else if(cnt_stage_time < 10'd6) addr_wr <= 9'd0;
 	else addr_wr <= addr_wr + 1'b1;
 end
 
@@ -187,7 +188,7 @@ end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) addr_coef <= 9'd0;
-	else if(iSTART | EOF_STAGE | (cnt_stage_time <= 10'd2) | (cnt_stage_time > 10'd513)) addr_coef <= 9'd0;
+	else if(iSTART | EOF_STAGE | (cnt_stage_time < 10'd3) | (cnt_stage_time > 10'd513)) addr_coef <= 9'd0;
 	else addr_coef <= addr_coef + coef_mod;
 end
 
