@@ -59,9 +59,7 @@ set_global_assignment -name VERILOG_FILE fft_mult_block.v
 set_global_assignment -name VERILOG_FILE fft_input_mix.v
 set_global_assignment -name VERILOG_FILE fft_but_comp.v
 set_global_assignment -name VERILOG_FILE fft_defines.v
-set_global_assignment -name VERILOG_FILE fft_dac.v
 set_global_assignment -name VERILOG_FILE fft_control.v
-set_global_assignment -name VERILOG_FILE fft_adc.v
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
 set_global_assignment -name EDA_TIME_SCALE "1 ns" -section_id eda_simulation
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation

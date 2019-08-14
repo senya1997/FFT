@@ -229,8 +229,7 @@ assign oRDY = rdy;
 (* keep *) reg debug;
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) debug <= 1'b0;
-	else if(iSTART) debug <= 1'b1;
-	else debug <= 1'b0;
+	else if(eof_block_tw_delay[4]) debug <= ~debug;
 end
 assign oDEB = debug;
 

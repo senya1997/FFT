@@ -3,10 +3,10 @@
 
 module fft_control_tb;
  
-bit clk;
-bit reset;
+reg clk;
+reg reset;
 
-bit start;
+reg start;
 
 wire RDY;
 
@@ -29,19 +29,19 @@ initial begin
 	
 	start = 1'b0;	
 		#(100*`TACT);
-	
+		#1;
 	start = 1'b1;
-	#(`TACT);
+		#(`TACT);
 	start = 1'b0;
-	#(`TACT);
+		#(`TACT);
 	wait(RDY);
 	
 		#(1000*`TACT);
-		
+		#1;	
 	start = 1'b1;
-	#(`TACT);
+		#(`TACT);
 	start = 1'b0;
-	#(`TACT);
+		#(`TACT);
 	wait(RDY);
 	
 		#(100*`TACT);
