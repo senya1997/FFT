@@ -1,4 +1,4 @@
-`timescale 10ns/1ns
+`timescale 1ns/1ns
 `include "../fft_defines.v"
 
 `define BIT_SIZE 17 // data - signed

@@ -1,4 +1,4 @@
-`timescale 10ns/1ns
+`timescale 1ns/1ns
 `include "../fft_defines.v"
 
 module fft_control_tb;

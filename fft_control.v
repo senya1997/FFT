@@ -18,7 +18,9 @@ module fft_control(
 	
 	output oBUT_TYPE, // "0" - 4 dot, "1" - 2 dot butterfly
 	
-	output oRDY
+	output oRDY,
+	
+	output oDEB
 );
 
 reg [1 : 0] bank_rd_rot;
@@ -223,5 +225,13 @@ assign oADDR_COEF = addr_coef;
 assign oBUT_TYPE = but_type;
 
 assign oRDY = rdy;
+
+(* keep *) reg debug;
+always@(posedge iCLK or negedge iRESET) begin
+	if(!iRESET) debug <= 1'b0;
+	else if(iSTART) debug <= 1'b1;
+	else debug <= 1'b0;
+end
+assign oDEB = debug;
 
 endmodule 
