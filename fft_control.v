@@ -55,6 +55,9 @@ wire EOF_STAGE = 			(cnt_stage_time == 10'd511); // 511 addr in one RAM (4 RAM -
 wire EOF_STAGE_DELAY =	(cnt_stage_time == 10'd516);
 wire LAST_STAGE =			(cnt_stage == 3'd5);
 
+wire CNT_ST_513L = (cnt_stage_time > 10'd513);
+wire CNT_ST_512S = (cnt_stage_time < 10'd512);
+
 // *********** stage counters: *********** //
 
 always@(posedge iCLK or negedge iRESET) begin
@@ -74,12 +77,12 @@ end
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) block_mod <= 9'b111_111_111;
 	else if(iSTART) block_mod <= 9'b111_111_111; // mb don't requred because init is automatically through rotation (also "addr_rd")
-	else if(EOF_STAGE) block_mod <= block_mod >> 2;
+	else if(EOF_STAGE_DELAY) block_mod <= block_mod >> 2;
 end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) cnt_block_time <= 9'd0;
-	else if(EOF_BLOCK | iSTART | EOF_STAGE_DELAY) cnt_block_time <= 9'd0;
+	else if(EOF_BLOCK | iSTART | EOF_STAGE_DELAY) cnt_block_time <= 9'd0; // mb required to zero after "EOF_STAGE"
 	else cnt_block_time <= cnt_block_time + 1'b1;
 end
 
@@ -88,13 +91,13 @@ end
 // read:
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) eof_block_delay <= 2'd0;
-	else if(iSTART | EOF_STAGE_DELAY) eof_block_delay <= 2'd0;
+	else if(iSTART) eof_block_delay <= 2'd0;
 	else eof_block_delay <= {eof_block_delay[0], EOF_BLOCK};
 end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) bank_rd_rot <= 2'd0;
-	else if(iSTART | EOF_STAGE_DELAY | rdy) bank_rd_rot <= 2'd0;
+	else if(iSTART | CNT_ST_513L | rdy) bank_rd_rot <= 2'd0;
 	else if(eof_block_delay[1]) bank_rd_rot <= bank_rd_rot + 1'b1;
 end
 
@@ -148,7 +151,7 @@ always@(posedge iCLK or negedge iRESET) begin
 			addr_rd[3] <= {2'b00, addr_rd[3][10 : 9], addr_rd[2][8 : 3], addr_rd[2][1]}; // after - rotation is on ("...addr_rd[0][8 : 3],...") until
 			addr_rd[0] <= {2'b00, addr_rd[0][10 : 9], addr_rd[3][8 : 3], addr_rd[3][1]}; // last stage, on last stage must be alternation 0,1,0,1 on "adde_rd"
 		end																				 // (all example for "addr_rd[1]")
-	else if(EOF_BLOCK & cnt_stage_time < 10'd512)
+	else if(EOF_BLOCK & CNT_ST_512S)
 		begin // rotation only
 			addr_rd[1] <= addr_rd[0];
 			addr_rd[2] <= addr_rd[1];
@@ -165,7 +168,7 @@ always@(posedge iCLK or negedge iRESET) begin
 			addr_rd_out[2] <= 9'd0;
 			addr_rd_out[3] <= 9'd0;
 		end
-	else if(cnt_stage_time < 10'd512)
+	else if(CNT_ST_512S)
 		begin
 			addr_rd_out[0] <= (cnt_stage_time[8 : 0] & addr_rd_mask[8 : 0]) | addr_rd[0][8 : 0];
 			addr_rd_out[1] <= (cnt_stage_time[8 : 0] & addr_rd_mask[8 : 0]) | addr_rd[1][8 : 0];
@@ -185,12 +188,12 @@ end
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) coef_mod <= 9'd0;
 	else if(iSTART) coef_mod <= 9'd1;
-	else if(EOF_STAGE) coef_mod <= coef_mod << 2;
+	else if(EOF_STAGE_DELAY) coef_mod <= coef_mod << 2;
 end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) addr_coef <= 9'd0;
-	else if(iSTART | EOF_STAGE | (cnt_stage_time < 10'd3) | (cnt_stage_time > 10'd513)) addr_coef <= 9'd0;
+	else if(iSTART | (cnt_stage_time < 10'd3) | CNT_ST_513L) addr_coef <= 9'd0;
 	else addr_coef <= addr_coef + coef_mod;
 end
 

@@ -29,7 +29,7 @@ initial begin
 	
 	start = 1'b0;	
 		#(100*`TACT);
-		#1;
+		#1; // if "sdf" is turn off
 	start = 1'b1;
 		#(`TACT);
 	start = 1'b0;
