@@ -68,8 +68,8 @@ end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) cnt_stage <= 3'd0;
-	else if((LAST_STAGE & EOF_STAGE) | iSTART) cnt_stage <= 3'd0;
-	else if(EOF_STAGE) cnt_stage <= cnt_stage + 1'b1;
+	else if((LAST_STAGE & EOF_STAGE_DELAY) | iSTART) cnt_stage <= 3'd0;
+	else if(EOF_STAGE_DELAY) cnt_stage <= cnt_stage + 1'b1;
 end
 
 // ********** block butterfly: ********** //
@@ -91,7 +91,7 @@ end
 // read:
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) eof_block_delay <= 2'd0;
-	else if(iSTART) eof_block_delay <= 2'd0;
+	else if(iSTART | CNT_ST_513L) eof_block_delay <= 2'd0;
 	else eof_block_delay <= {eof_block_delay[0], EOF_BLOCK};
 end
 
@@ -208,7 +208,7 @@ end
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) rdy <= 1'b1;
 	else if(iSTART) rdy <= 1'b0;
-	else if(LAST_STAGE & EOF_STAGE) rdy <= 1'b1;
+	else if(LAST_STAGE & EOF_STAGE_DELAY) rdy <= 1'b1;
 end
 
 // ************ output ports: ************ //
