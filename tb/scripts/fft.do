@@ -1,7 +1,12 @@
 transcript on
 
 quit -sim
-project::removefile D:/SS/fpga/fft/simulation/modelsim/fft.vo
+
+set path_vo D:/SS/fpga/fft/simulation/modelsim/fft.vo
+
+project::addfile $path_vo
+project::removefile $path_vo
+
 project::compileall
 vsim -novopt work.fft_control_tb
 

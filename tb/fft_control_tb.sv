@@ -11,7 +11,7 @@ reg start;
 wire RDY;
 
 initial begin
-	$timeformat(-3, 3, " ms", 6);
+	$timeformat(-6, 3, " us", 6);
 	clk = 1;
 	forever	#(`HALF_TACT) clk = ~clk;
 end
@@ -70,6 +70,12 @@ fft_control CONTROL(
 	.oADDR_WR(),
 	
 	.oADDR_COEF(),
+	
+	.oWE_A(),
+	.oWE_B(),
+	
+	.oSOURCE_DATA(),
+	.oSOURCE_CONT(),
 	
 	.oBUT_TYPE(),
 	
