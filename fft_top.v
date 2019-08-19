@@ -40,13 +40,49 @@ fft_control CONTROL(
 	.oRDY()
 );
 
-// =============== memory ===============
+// =================   memory   ===================
 
-// =============== RAM:
+// ==================== RAM: ======================
 
+	fft_ram_block RAM_A(
+		.iCLK(iCLK),
+	//	.iRESET(),
+		
+		.iDATA_RE_0(),
+		.iDATA_IM_0(),
+		.iDATA_RE_1(),
+		.iDATA_IM_1(),
+		.iDATA_RE_2(),
+		.iDATA_IM_2(),
+		.iDATA_RE_3(),
+		.iDATA_IM_3(),
+		
+		.iADDR_RD_0(),
+		.iADDR_RD_1(),
+		.iADDR_RD_2(),
+		.iADDR_RD_3(),
+		
+		.iADDR_WR_0(),
+		.iADDR_WR_1(),
+		.iADDR_WR_2(),
+		.iADDR_WR_3(),
 
+		.iWE_0(),
+		.iWE_1(),
+		.iWE_2(),
+		.iWE_3(),
+		
+		.oDATA_RE_0(),
+		.oDATA_IM_0(),
+		.oDATA_RE_1(),
+		.oDATA_IM_1(),
+		.oDATA_RE_2(),
+		.oDATA_IM_2(),
+		.oDATA_RE_3(),
+		.oDATA_IM_3()
+	);
 
-// =============== ROM:
+// ==================== ROM: ======================
 
 	fft_rom #(.MIF("./matlab/rom_1.mif")) ROM_1(
 		.address(ADDR_COEF),
