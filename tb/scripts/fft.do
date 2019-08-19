@@ -1,14 +1,18 @@
 transcript on
+set work_pc 1
 
 quit -sim
 
-set path_vo D:/SS/fpga/fft/simulation/modelsim/fft.vo
+if {$work_pc} { set path_work D:/work 
+} else { set path_work D:/SS/fpga }
 
-project::addfile $path_vo
+set path_vo $path_work/fft/simulation/modelsim/fft.vo
+
+project::addfile 	$path_vo
 project::removefile $path_vo
 
 project::compileall
 vsim -novopt work.fft_control_tb
 
-do D:/SS/fpga/fft/tb/wave/control.do
+do $path_work/fft/tb/wave/control.do
 configure wave -timelineunits us

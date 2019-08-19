@@ -1,12 +1,18 @@
 transcript on
+set work_pc 1
 
 quit -sim
 
-set path_vo D:/SS/fpga/fft/simulation/modelsim/fft.vo
+if {$work_pc} { set path_work D:/work 
+} else { set path_work D:/SS/fpga }
+
+set path_vo $path_work/fft/simulation/modelsim/fft.vo
 
 if {![file exist $path_vo]} { project::addfile $path_vo }
 project::compileall
-vsim -novopt work.fft_control_tb -L altera_mf_ver -L altera_prim_ver -L cycloneiv_ver -L cycloneive_ver -sdftyp /fft_control_tb/CONTROL=D:/SS/fpga/modelsim/fft/fft_v.sdo
+vsim -novopt work.fft_control_tb\
+ -L altera_mf_ver -L altera_prim_ver -L cycloneiv_ver -L cycloneive_ver\
+ -sdftyp /fft_control_tb/CONTROL=$path_work/modelsim/fft/fft_v.sdo
 
-do D:/SS/fpga/fft/tb/wave/control_sdf.do
+do $path_work/fft/tb/wave/control_sdf.do
 configure wave -timelineunits us
