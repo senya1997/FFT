@@ -1,7 +1,8 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate /fft_control_tb/CONTROL/iCLK
-add wave -noupdate /fft_control_tb/CONTROL/iSTART
+add wave -noupdate /fft_control_tb/start
+add wave -noupdate /fft_control_tb/start_d
 add wave -noupdate -expand -group fft_ctrl -group logic -radix binary /fft_control_tb/CONTROL/addr_rd_mask
 add wave -noupdate -expand -group fft_ctrl -group logic -radix unsigned /fft_control_tb/CONTROL/cnt_stage_time
 add wave -noupdate -expand -group fft_ctrl -group logic -color Plum -height 34 -radix unsigned /fft_control_tb/CONTROL/cnt_stage
@@ -40,7 +41,7 @@ add wave -noupdate -expand -group vhdl_exmpl -color Gray75 /fft_control_tb/CONTR
 add wave -noupdate -expand -group vhdl_exmpl -color Gray75 /fft_control_tb/CONTROL_VHDL/SOURCE_OF_DATA_ro
 add wave -noupdate -expand -group vhdl_exmpl -color Gray75 /fft_control_tb/CONTROL_VHDL/SOURCE_OF_CONTROL_ro
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 3} {14407 ns} 0}
+WaveRestoreCursors {{Cursor 3} {2027 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 201
 configure wave -valuecolwidth 101
@@ -56,4 +57,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ns} {44614 ns}
+WaveRestoreZoom {9510 ns} {10026 ns}
