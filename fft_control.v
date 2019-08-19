@@ -273,7 +273,7 @@ assign oWE_A = we_a;
 assign oWE_B = we_b;
 
 assign oSOURCE_DATA = source_data;
-assign oSOURCE_CONT = rdy; // oSOURCE_CONT match with rdy (in general - not)
+assign oSOURCE_CONT = rdy; // "oSOURCE_CONT" match with "rdy" (in general - not)
 
 assign oBUT_TYPE = but_type;
 
