@@ -24,9 +24,7 @@ module fft_control(
 	
 	output oBUT_TYPE, // "0" - 4 dot, "1" - 2 dot butterfly
 	
-	output oRDY,
-	
-	output oDEB
+	output oRDY
 );
 
 reg [1 : 0] bank_rd_rot;
@@ -278,12 +276,5 @@ assign oSOURCE_CONT = rdy; // "oSOURCE_CONT" match with "rdy" (in general - not)
 assign oBUT_TYPE = but_type;
 
 assign oRDY = rdy;
-
-(* keep *) reg debug;
-always@(posedge iCLK or negedge iRESET) begin
-	if(!iRESET) debug <= 1'b0;
-	else if(eof_block_tw_delay[4]) debug <= ~debug;
-end
-assign oDEB = debug;
 
 endmodule 
