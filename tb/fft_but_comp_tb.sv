@@ -134,7 +134,7 @@ task GET_COMP_NUM(
 endtask;
 
 task DISP_INPUT_SIGN;
-	$display("\n\tinput signals:");
+	$display("\n\tinput signals, time: %t", $time);
 	$display("\t\tRE: x0 = %6d", x_re[0], "\tx1 = %6d", x_re[1], "\tx2 = %6d", x_re[2], "\tx3 = %6d", x_re[3]);
 	$display("\t\tIM: x0 = %6d", x_im[0], "\tx1 = %6d", x_im[1], "\tx2 = %6d", x_im[2], "\tx3 = %6d", x_im[3]);
 endtask;

@@ -28,26 +28,26 @@ add wave -noupdate -height 34 -group {4 DOT} -color {Slate Blue} -radix binary /
 add wave -noupdate -height 34 -group {4 DOT} -radix binary /fft_but_comp_tb/Y3_RE_4DOT
 add wave -noupdate -height 34 -group {4 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY3_IM
 add wave -noupdate -height 34 -group {4 DOT} -radix binary /fft_but_comp_tb/Y3_IM_4DOT
-add wave -noupdate -height 34 -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY0_RE
-add wave -noupdate -height 34 -group {2 DOT} -radix binary /fft_but_comp_tb/Y0_RE_2DOT
-add wave -noupdate -height 34 -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY0_IM
-add wave -noupdate -height 34 -group {2 DOT} -radix binary /fft_but_comp_tb/Y0_IM_2DOT
-add wave -noupdate -height 34 -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY1_RE
-add wave -noupdate -height 34 -group {2 DOT} -radix binary /fft_but_comp_tb/Y1_RE_2DOT
-add wave -noupdate -height 34 -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY1_IM
-add wave -noupdate -height 34 -group {2 DOT} -radix binary /fft_but_comp_tb/Y1_IM_2DOT
-add wave -noupdate -height 34 -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY2_RE
-add wave -noupdate -height 34 -group {2 DOT} -radix binary /fft_but_comp_tb/Y2_RE_2DOT
-add wave -noupdate -height 34 -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY2_IM
-add wave -noupdate -height 34 -group {2 DOT} -radix binary /fft_but_comp_tb/Y2_IM_2DOT
-add wave -noupdate -height 34 -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY3_RE
-add wave -noupdate -height 34 -group {2 DOT} -radix binary /fft_but_comp_tb/Y3_RE_2DOT
-add wave -noupdate -height 34 -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY3_IM
-add wave -noupdate -height 34 -group {2 DOT} -radix binary /fft_but_comp_tb/Y3_IM_2DOT
+add wave -noupdate -height 34 -expand -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY0_RE
+add wave -noupdate -height 34 -expand -group {2 DOT} -radix binary /fft_but_comp_tb/Y0_RE_2DOT
+add wave -noupdate -height 34 -expand -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY0_IM
+add wave -noupdate -height 34 -expand -group {2 DOT} -radix binary /fft_but_comp_tb/Y0_IM_2DOT
+add wave -noupdate -height 34 -expand -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY1_RE
+add wave -noupdate -height 34 -expand -group {2 DOT} -radix binary /fft_but_comp_tb/Y1_RE_2DOT
+add wave -noupdate -height 34 -expand -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY1_IM
+add wave -noupdate -height 34 -expand -group {2 DOT} -radix binary /fft_but_comp_tb/Y1_IM_2DOT
+add wave -noupdate -height 34 -expand -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY2_RE
+add wave -noupdate -height 34 -expand -group {2 DOT} -radix binary /fft_but_comp_tb/Y2_RE_2DOT
+add wave -noupdate -height 34 -expand -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY2_IM
+add wave -noupdate -height 34 -expand -group {2 DOT} -radix binary /fft_but_comp_tb/Y2_IM_2DOT
+add wave -noupdate -height 34 -expand -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY3_RE
+add wave -noupdate -height 34 -expand -group {2 DOT} -radix binary /fft_but_comp_tb/Y3_RE_2DOT
+add wave -noupdate -height 34 -expand -group {2 DOT} -color {Slate Blue} -radix binary /fft_but_comp_tb/BUT/oY3_IM
+add wave -noupdate -height 34 -expand -group {2 DOT} -radix binary /fft_but_comp_tb/Y3_IM_2DOT
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {407 ns} 0}
+WaveRestoreCursors {{Cursor 1} {400 ns} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 202
+configure wave -namecolwidth 136
 configure wave -valuecolwidth 163
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -61,4 +61,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ns} {616 ns}
+WaveRestoreZoom {346 ns} {450 ns}
