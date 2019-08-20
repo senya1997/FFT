@@ -1,4 +1,4 @@
-module fft_input_mix #(parameter BIT = 17)(
+module fft_output_mix #(parameter BIT = 17)(
 	input iCLK,
 	input iRESET,
 	
@@ -53,14 +53,14 @@ always@(posedge iCLK or negedge iRESET) begin
 				end
 			2'b01:
 				begin
-					re_buf[0] <= iX3_RE;
-					im_buf[0] <= iX3_IM;
-					re_buf[1] <= iX0_RE;
-					im_buf[1] <= iX0_IM;
-					re_buf[2] <= iX1_RE;
-					im_buf[2] <= iX1_IM;
-					re_buf[3] <= iX2_RE;
-					im_buf[3] <= iX2_IM;
+					re_buf[0] <= iX1_RE;
+					im_buf[0] <= iX1_IM;
+					re_buf[1] <= iX2_RE;
+					im_buf[1] <= iX2_IM;
+					re_buf[2] <= iX3_RE;
+					im_buf[2] <= iX3_IM;
+					re_buf[3] <= iX0_RE;
+					im_buf[3] <= iX0_IM;
 				end
 			2'b10:
 				begin
@@ -75,14 +75,14 @@ always@(posedge iCLK or negedge iRESET) begin
 				end
 			2'b11:
 				begin
-					re_buf[0] <= iX1_RE;
-					im_buf[0] <= iX1_IM;
-					re_buf[1] <= iX2_RE;
-					im_buf[1] <= iX2_IM;
-					re_buf[2] <= iX3_RE;
-					im_buf[2] <= iX3_IM;
-					re_buf[3] <= iX0_RE;
-					im_buf[3] <= iX0_IM;
+					re_buf[0] <= iX3_RE;
+					im_buf[0] <= iX3_IM;
+					re_buf[1] <= iX0_RE;
+					im_buf[1] <= iX0_IM;
+					re_buf[2] <= iX1_RE;
+					im_buf[2] <= iX1_IM;
+					re_buf[3] <= iX2_RE;
+					im_buf[3] <= iX2_IM;
 				end
 		endcase
 end
