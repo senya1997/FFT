@@ -23,8 +23,8 @@ wire [8 : 0] ADDR_COEF [0 : 1];
 wire [8 : 0] ADDR_RD_DUT [0 : 3];
 wire [8 : 0] ADDR_RD_VHDL [0 : 3];
 
-// wire oWE_A,
-// wire oWE_B,
+// wire WE_A,
+// wire WE_B,
 
 // wire SOURCE_DATA,
 // wire SOURCE_CONT,

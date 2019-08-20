@@ -46,7 +46,6 @@ fft_control CONTROL(
 
 	fft_ram_block RAM_A(
 		.iCLK(iCLK),
-	//	.iRESET(),
 		
 		.iDATA_RE_0(),
 		.iDATA_IM_0(),
