@@ -35,11 +35,6 @@ config.properties
 **/**/*.dep
 **/**/*.lst
 
-*.mif
-**/*.mif
-**/**/*.mif
-**/**/**/*.mif
-
 default.txt
 **/default.txt
 **/**/default.txt
