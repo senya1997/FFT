@@ -1,5 +1,7 @@
 `include "fft_defines.v"
 
+`define WORK
+
 module fft_top(
 	input	iCLK,
 	input	iRESET,
@@ -30,6 +32,7 @@ module fft_top(
 	
 	output oRDY
 );
+
 wire SOURCE_CONT;
 
 wire [1 : 0] BANK_RD_ROT;
@@ -321,23 +324,43 @@ wire [16 : 0] IM_BUT_MULT [0 : 3];
 
 // ==================== ROM: ======================
 
-	fft_rom #(.MIF("./matlab/rom_1.mif")) ROM_1(
+`ifdef WORK
+	fft_rom #(.MIF("D:/work/fft/matlab/rom_1.mif")) ROM_1(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_RE[1], W_IM[1]})
 	);
 
-	fft_rom #(.MIF("./matlab/rom_2.mif")) ROM_2(
+	fft_rom #(.MIF("D:/work/fft/matlab/rom_2.mif")) ROM_2(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_RE[2], W_IM[2]})
 	);
 
-	fft_rom #(.MIF("./matlab/rom_3.mif")) ROM_3(
+	fft_rom #(.MIF("D:/work/fft/matlab/rom_3.mif")) ROM_3(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_RE[3], W_IM[3]})
 	);
+`else
+	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_1.mif")) ROM_1(
+		.address(ADDR_COEF),
+		.clock(iCLK),
+		.q({W_RE[1], W_IM[1]})
+	);
+
+	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_2.mif")) ROM_2(
+		.address(ADDR_COEF),
+		.clock(iCLK),
+		.q({W_RE[2], W_IM[2]})
+	);
+
+	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_3.mif")) ROM_3(
+		.address(ADDR_COEF),
+		.clock(iCLK),
+		.q({W_RE[3], W_IM[3]})
+	);
+`endif
 
 assign oDATA_RE_0 = RE_RAM_A_INMIX[0];
 assign oDATA_RE_1 = RE_RAM_A_INMIX[1];
