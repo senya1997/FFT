@@ -1,6 +1,6 @@
 `include "fft_defines.v"
 
-`define WORK
+//`define WORK
 
 module fft_top(
 	input	iCLK,

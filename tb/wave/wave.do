@@ -3,7 +3,7 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate -radix hexadecimal /fft_tb/FFT/iCLK
 add wave -noupdate -radix hexadecimal /fft_tb/FFT/iSTART
 add wave -noupdate -radix hexadecimal /fft_tb/FFT/oRDY
-add wave -noupdate -format Analog-Step -height 74 -max 65441.0 -radix hexadecimal /fft_tb/data_adc
+add wave -noupdate -format Analog-Step -height 74 -max 32767.0 -min -32767.0 -radix decimal /fft_tb/data_adc
 add wave -noupdate -radix hexadecimal /fft_tb/FFT/ROM_1/address
 add wave -noupdate -radix hexadecimal /fft_tb/FFT/ROM_1/q
 add wave -noupdate -radix hexadecimal /fft_tb/FFT/ROM_2/address
@@ -31,8 +31,10 @@ add wave -noupdate /fft_tb/FFT/CONTROL/oSOURCE_CONT
 add wave -noupdate /fft_tb/FFT/CONTROL/oSOURCE_DATA
 add wave -noupdate /fft_tb/FFT/CONTROL/oWE_A
 add wave -noupdate /fft_tb/FFT/CONTROL/oWE_B
+add wave -noupdate /fft_tb/temp
+add wave -noupdate /fft_tb/time_s
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {57000000 ps} 0}
+WaveRestoreCursors {{Cursor 1} {38060000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 182
 configure wave -valuecolwidth 129
@@ -48,4 +50,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {110670 ns}
+WaveRestoreZoom {0 ps} {210 us}

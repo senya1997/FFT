@@ -1,5 +1,5 @@
 transcript on
-set work_pc 1
+set work_pc 0
 
 quit -sim
 

@@ -1,14 +1,17 @@
 `timescale 1ns/1ns
-`include "../fft_defines.v"
+`include "fft_defines.v"
   
 module fft_tb;
 
 bit clk;
 bit reset;
 
+real temp;
+real time_s;
+
 bit start;
 
-bit [15 : 0] data_adc;
+bit signed [15 : 0] data_adc;
 bit [8 : 0] addr_rd [0 : 3];
 bit [8 : 0] addr_wr [0 : 3];
 bit [3 : 0] we;
@@ -31,7 +34,6 @@ end
 
 initial begin
 	shortint i, j;
-	real time_s;
 	
 	int f_ram_a_re, f_ram_a_im;
 	int f_ram_b_re, f_ram_b_im;
@@ -49,14 +51,15 @@ initial begin
 			begin
 				// data_adc = $unsigned($random)%(65535);
 				
-				data_adc = signal(200_000, time_s);
+				temp = 32767*signal(1_000_000, time_s);
+				data_adc = temp;
 				addr_wr[i] = j;
 				
 				we[i] = 1'b1;
 					#(`TACT);
 				we[i] = 1'b0;
 				
-				time_s = time_s + `TACT*10**(-9);
+				time_s = time_s + 0.000000002;
 			end
 		
 	#(10*`TACT);
@@ -84,7 +87,7 @@ initial begin
 	$fclose(f_ram_b_im);
 	
 	$display("\n\t\t\tCOMPLETE\n");
-	mti_fli::mti_Cmd("stop -sync");
+	// mti_fli::mti_Cmd("stop -sync");
 end
 
 /*

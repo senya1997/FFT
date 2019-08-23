@@ -1,9 +1,11 @@
 set_current_revision fft;
-set work_pc 1
+set work_pc 0
 set compile 0
 set upd_script 1
 
-puts "\tstart"
+puts "**********   start   ***********"
+puts " "
+
 if {$work_pc} { set path_work D:/work 
 } else { set path_work D:/SS/fpga }
 	
@@ -24,5 +26,5 @@ if {$upd_script} {
 	file copy -force $path_script/fft_control_sdf.do $path_modelsim
 	file copy -force $path_script/fft.do $path_modelsim
 }
-
-puts "\tcomplete"
+puts " "
+puts "**********  complete  **********"
