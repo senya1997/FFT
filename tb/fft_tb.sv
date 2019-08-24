@@ -79,6 +79,28 @@ initial begin
 	f_ram_b_re = $fopen("ram_b_re.txt", "w");
 	f_ram_b_im = $fopen("ram_b_im.txt", "w");
 	
+	for(j = 0; j < 512; j = j + 1)
+		begin
+			$fwrite(f_ram_a_re, "%1d", FFT.RAM_A.ram_bank[0].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_a_re, "%1d", FFT.RAM_A.ram_bank[1].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_a_re, "%1d", FFT.RAM_A.ram_bank[2].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_a_re, "%1d", FFT.RAM_A.ram_bank[3].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+		
+			$fwrite(f_ram_a_im, "%1d", FFT.RAM_A.ram_bank[0].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_a_im, "%1d", FFT.RAM_A.ram_bank[1].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_a_im, "%1d", FFT.RAM_A.ram_bank[2].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_a_im, "%1d", FFT.RAM_A.ram_bank[3].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			
+			$fwrite(f_ram_b_re, "%1d", FFT.RAM_B.ram_bank[0].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_b_re, "%1d", FFT.RAM_B.ram_bank[1].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_b_re, "%1d", FFT.RAM_B.ram_bank[2].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_b_re, "%1d", FFT.RAM_B.ram_bank[3].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			
+			$fwrite(f_ram_b_im, "%1d", FFT.RAM_B.ram_bank[0].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_b_im, "%1d", FFT.RAM_B.ram_bank[1].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_b_im, "%1d", FFT.RAM_B.ram_bank[2].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+			$fwrite(f_ram_b_im, "%1d", FFT.RAM_B.ram_bank[3].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j], "\n");
+		end
 	
 	
 	$fclose(f_ram_a_re);
