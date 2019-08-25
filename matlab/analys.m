@@ -33,6 +33,23 @@ b_im = b_im';
 afc_a = sqrt(ram_a_re.^2 + ram_a_im.^2);
 afc_b = sqrt(ram_b_re.^2 + ram_b_im.^2);
 
+half_afc_a_1 = afc_a(1:1024);
+half_afc_a_2 = afc_a(1025:2048);
 
+sub(1:1024) = zeros;
+for i = 1:1023
+  sub(i) = half_afc_a_1(i) - half_afc_a_2(i);
+end
+
+fprintf('building graph...');
+    figure;    
+    plot(afc_a);
+    title('AFC from RAM "A":');
+    grid on;
+
+    figure;
+    plot(afc_b);
+    title('AFC from RAM "B":');
+    grid on;
 
 fprintf('\ncomplete\n');
