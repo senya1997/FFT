@@ -218,13 +218,13 @@ wire STAGE_EVEN = (cnt_stage[0] == 1'b0);
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) we_a <= 1'b0;
 	else if(CNT_ST_0EQ) we_a <= 1'b0;
-	else if(STAGE_ODD & CNT_ST_4L) we_a <= 1'b1;
+	else if(STAGE_EVEN & CNT_ST_4L) we_a <= 1'b1;
 end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) we_b <= 1'b0;
 	else if(CNT_ST_0EQ) we_b <= 1'b0;
-	else if(STAGE_EVEN & CNT_ST_4L) we_b <= 1'b1;
+	else if(STAGE_ODD & CNT_ST_4L) we_b <= 1'b1;
 end
 
 /*

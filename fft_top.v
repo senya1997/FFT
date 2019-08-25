@@ -40,10 +40,10 @@ wire [1 : 0] BANK_WR_ROT;
 
 wire [16 : 0] RE_RAM_A [0 : 3];
 wire [16 : 0] RE_OUTMIX [0 : 3];
-	assign RE_RAM_A[0] = SOURCE_CONT ? {1'b0, iDATA} : RE_OUTMIX[0];
-	assign RE_RAM_A[1] = SOURCE_CONT ? {1'b0, iDATA} : RE_OUTMIX[1];
-	assign RE_RAM_A[2] = SOURCE_CONT ? {1'b0, iDATA} : RE_OUTMIX[2];
-	assign RE_RAM_A[3] = SOURCE_CONT ? {1'b0, iDATA} : RE_OUTMIX[3];
+	assign RE_RAM_A[0] = SOURCE_CONT ? {iDATA[15], iDATA} : RE_OUTMIX[0];
+	assign RE_RAM_A[1] = SOURCE_CONT ? {iDATA[15], iDATA} : RE_OUTMIX[1];
+	assign RE_RAM_A[2] = SOURCE_CONT ? {iDATA[15], iDATA} : RE_OUTMIX[2];
+	assign RE_RAM_A[3] = SOURCE_CONT ? {iDATA[15], iDATA} : RE_OUTMIX[3];
 
 wire [8 : 0] ADDR_RD_CTRL [0 : 3];
 wire [8 : 0] ADDR_RD [0 : 3];
@@ -334,37 +334,37 @@ wire [16 : 0] IM_RAM_A [0 : 3];
 	fft_rom #(.MIF("D:/work/fft/matlab/rom_1.mif")) ROM_1(
 		.address(ADDR_COEF),
 		.clock(iCLK),
-		.q({W_RE[1], W_IM[1]})
+		.q({W_IM[1], W_RE[1]})
 	);
 
 	fft_rom #(.MIF("D:/work/fft/matlab/rom_2.mif")) ROM_2(
 		.address(ADDR_COEF),
 		.clock(iCLK),
-		.q({W_RE[2], W_IM[2]})
+		.q({W_IM[2], W_RE[2]})
 	);
 
 	fft_rom #(.MIF("D:/work/fft/matlab/rom_3.mif")) ROM_3(
 		.address(ADDR_COEF),
 		.clock(iCLK),
-		.q({W_RE[3], W_IM[3]})
+		.q({W_IM[3], W_RE[3]})
 	);
 `else
 	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_1.mif")) ROM_1(
 		.address(ADDR_COEF),
 		.clock(iCLK),
-		.q({W_RE[1], W_IM[1]})
+		.q({W_IM[1], W_RE[1]})
 	);
 
 	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_2.mif")) ROM_2(
 		.address(ADDR_COEF),
 		.clock(iCLK),
-		.q({W_RE[2], W_IM[2]})
+		.q({W_IM[2], W_RE[2]})
 	);
 
 	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_3.mif")) ROM_3(
 		.address(ADDR_COEF),
 		.clock(iCLK),
-		.q({W_RE[3], W_IM[3]})
+		.q({W_IM[3], W_RE[3]})
 	);
 `endif
 
