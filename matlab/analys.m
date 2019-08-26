@@ -1,7 +1,8 @@
 clear;
+close all;
 clc;
 
-fprintf('reading file...\n');
+fprintf('\n Reading file...\n');
 
 ram_a_re = load('D:\SS\fpga\modelsim\fft\ram_a_re.txt');
 ram_a_im = load('D:\SS\fpga\modelsim\fft\ram_a_im.txt');
@@ -84,4 +85,4 @@ Pyy = y.*conj(y)/2048;
     title('x:');
     grid on; 
     
-fprintf('\ncomplete\n');
+fprintf('\n Complete\n');

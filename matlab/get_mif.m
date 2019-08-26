@@ -3,9 +3,9 @@ close all;
 
 % you need massive "res" in unsigned/signed dec
 % input parameters:
-    file_name = 'rot_coef.mif';
+    file_name = 'rom_re_3.mif';
     width = 12;
-    depth = 2048;
+    depth = 512;
 
 fprintf('\n	Begin\n');
 

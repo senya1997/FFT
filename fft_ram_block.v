@@ -78,7 +78,7 @@ generate
 	for(k = 0; k < 4; k = k + 1)
 		begin: ram_bank
 		
-			fft_ram RAM_RE(
+			fft_ram_fast RAM_RE(
 				.clock(iCLK),
 				.data(DATA_RE_IN[k]),
 				.rdaddress(ADDR_RD[k]),
@@ -87,7 +87,7 @@ generate
 				.q(DATA_RE_OUT[k])
 			);	
 		
-			fft_ram RAM_IM(
+			fft_ram_fast RAM_IM(
 				.clock(iCLK),
 				.data(DATA_IM_IN[k]),
 				.rdaddress(ADDR_RD[k]),

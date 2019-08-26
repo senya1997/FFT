@@ -331,37 +331,37 @@ wire [16 : 0] IM_BUT_MULT [0 : 3];
 // ==================== ROM: ======================
 
 `ifdef WORK
-	fft_rom #(.MIF("D:/work/fft/matlab/rom_1.mif")) ROM_1(
+	fft_rom_fast #(.MIF("D:/work/fft/matlab/rom_1.mif")) ROM_1(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[1], W_RE[1]})
 	);
 
-	fft_rom #(.MIF("D:/work/fft/matlab/rom_2.mif")) ROM_2(
+	fft_rom_fast #(.MIF("D:/work/fft/matlab/rom_2.mif")) ROM_2(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[2], W_RE[2]})
 	);
 
-	fft_rom #(.MIF("D:/work/fft/matlab/rom_3.mif")) ROM_3(
+	fft_rom_fast #(.MIF("D:/work/fft/matlab/rom_3.mif")) ROM_3(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[3], W_RE[3]})
 	);
 `else
-	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_1.mif")) ROM_1(
+	fft_rom_fast #(.MIF("D:/SS/fpga/fft/matlab/rom_1.mif")) ROM_1(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[1], W_RE[1]})
 	);
 
-	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_2.mif")) ROM_2(
+	fft_rom_fast #(.MIF("D:/SS/fpga/fft/matlab/rom_2.mif")) ROM_2(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[2], W_RE[2]})
 	);
 
-	fft_rom #(.MIF("D:/SS/fpga/fft/matlab/rom_3.mif")) ROM_3(
+	fft_rom_fast #(.MIF("D:/SS/fpga/fft/matlab/rom_3.mif")) ROM_3(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[3], W_RE[3]})
