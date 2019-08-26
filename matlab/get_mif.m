@@ -3,7 +3,7 @@ close all;
 
 % you need massive "res" in unsigned/signed dec
 % input parameters:
-    file_name = 'rom_im_3.mif';
+    file_name = 'rom_re_3.mif';
     width = 12;
     depth = 512;
 

@@ -4,7 +4,7 @@ add wave -noupdate -radix hexadecimal /fft_tb/FFT/iCLK
 add wave -noupdate -radix hexadecimal /fft_tb/FFT/iSTART
 add wave -noupdate -radix hexadecimal /fft_tb/FFT/oRDY
 add wave -noupdate -format Analog-Step -height 74 -max 32767.0 -min -32767.0 -radix decimal /fft_tb/data_adc
-add wave -noupdate -radix unsigned /fft_tb/FFT/ROM_1/address
+add wave -noupdate -radix unsigned /fft_tb/FFT/CONTROL/oADDR_COEF
 add wave -noupdate {/fft_tb/FFT/W_RE[1]}
 add wave -noupdate {/fft_tb/FFT/W_IM[1]}
 add wave -noupdate {/fft_tb/FFT/W_RE[2]}
@@ -46,16 +46,13 @@ add wave -noupdate /fft_tb/FFT/MULT_BLOCK/oY2_RE
 add wave -noupdate /fft_tb/FFT/MULT_BLOCK/oY2_IM
 add wave -noupdate /fft_tb/FFT/MULT_BLOCK/oY3_RE
 add wave -noupdate /fft_tb/FFT/MULT_BLOCK/oY3_IM
-add wave -noupdate /fft_tb/FFT/ROM_1/altsyncram_component/m_non_arria10/altsyncram_inst/mem_data
-add wave -noupdate /fft_tb/FFT/ROM_2/altsyncram_component/m_non_arria10/altsyncram_inst/mem_data
-add wave -noupdate /fft_tb/FFT/ROM_3/altsyncram_component/m_non_arria10/altsyncram_inst/mem_data
-add wave -noupdate /fft_tb/FFT/RE_RAM_A_INMIX
-add wave -noupdate /fft_tb/FFT/IM_RAM_A_INMIX
-add wave -noupdate /fft_tb/FFT/RE_RAM_B_INMIX
-add wave -noupdate /fft_tb/FFT/IM_RAM_B_INMIX
+add wave -noupdate -expand /fft_tb/FFT/RE_RAM_A_INMIX
+add wave -noupdate -expand /fft_tb/FFT/IM_RAM_A_INMIX
+add wave -noupdate -expand /fft_tb/FFT/RE_RAM_B_INMIX
+add wave -noupdate -expand /fft_tb/FFT/IM_RAM_B_INMIX
 add wave -noupdate -radix unsigned -childformat {{{/fft_tb/FFT/ADDR_RD_CTRL[0]} -radix unsigned} {{/fft_tb/FFT/ADDR_RD_CTRL[1]} -radix unsigned} {{/fft_tb/FFT/ADDR_RD_CTRL[2]} -radix unsigned} {{/fft_tb/FFT/ADDR_RD_CTRL[3]} -radix unsigned}} -expand -subitemconfig {{/fft_tb/FFT/ADDR_RD_CTRL[0]} {-height 15 -radix unsigned} {/fft_tb/FFT/ADDR_RD_CTRL[1]} {-height 15 -radix unsigned} {/fft_tb/FFT/ADDR_RD_CTRL[2]} {-height 15 -radix unsigned} {/fft_tb/FFT/ADDR_RD_CTRL[3]} {-height 15 -radix unsigned}} /fft_tb/FFT/ADDR_RD_CTRL
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {79622150 ps} 0}
+WaveRestoreCursors {{Cursor 1} {41455910 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 182
 configure wave -valuecolwidth 129
@@ -71,4 +68,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits us
 update
-WaveRestoreZoom {0 ps} {126 us}
+WaveRestoreZoom {41399703 ps} {41744815 ps}
