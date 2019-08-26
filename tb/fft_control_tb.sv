@@ -52,7 +52,7 @@ initial begin
 	start_d = 1'b0;
 	
 	#(100*`TACT);
-	$display("\n\n\t\t\tSTART TEST CONTROL FFT\n\n");
+	$display("\n\n\t\t\tSTART TEST CONTROL FFT\n");
 	
 	repeat(`NUM_OF_RPT)
 		begin

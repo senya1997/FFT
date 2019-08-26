@@ -57,3 +57,5 @@ end
     mult_a_re(1:512, 4) = but_a_re(1:512, 4).*w_re_4(1:512);
     mult_a_im(1:512, 4) = but_a_im(1:512, 4).*w_im_4(1:512);
 
+% output mixer:
+    ram_a_re()

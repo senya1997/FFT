@@ -39,7 +39,7 @@ initial begin
 	int f_ram_b_re, f_ram_b_im;
 	bit signed [16 : 0] buf_signed;
 	
-	$display("\n\n\t\t\tSTART TEST FFT\n\n");
+	$display("\n\n\t\t\tSTART TEST FFT\n");
 	
 	start = 1'b0;
 	#(10*`TACT);
