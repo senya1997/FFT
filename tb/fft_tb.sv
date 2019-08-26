@@ -45,7 +45,7 @@ initial begin
 	#(10*`TACT);
 	
 	$display("\twrite adc data point in ram, time: %t", $time);
-	time_s = 1;
+	time_s = 0;
 	
 	for(i = 0; i <= 3; i = i + 1)
 		for(j = 0; j < 512; j = j + 1)
@@ -55,7 +55,7 @@ initial begin
 				
 				// data_adc = temp;
 				// data_adc = $unsigned($random)%(65535);
-				data_adc = 16'd2;
+				data_adc = 16'd100;
 				
 				addr_wr[i] = j;
 				

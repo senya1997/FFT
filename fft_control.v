@@ -1,3 +1,5 @@
+// `define WITHOUT_RAM_B
+
 module fft_control(
 	input iCLK,
 	input iRESET,
@@ -224,7 +226,12 @@ end
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) we_b <= 1'b0;
 	else if(CNT_ST_0EQ) we_b <= 1'b0;
-	else if(STAGE_ODD & CNT_ST_4L) we_a <= 1'b1;
+	
+	`ifdef WITHOUT_RAM_B
+		else if(STAGE_ODD & CNT_ST_4L) we_a <= 1'b1;
+	`else
+		else if(STAGE_ODD & CNT_ST_4L) we_b <= 1'b1;
+	`endif
 end
 
 /*
@@ -270,8 +277,12 @@ assign oADDR_COEF = addr_coef;
 assign oWE_A = we_a;
 assign oWE_B = we_b;
 
-// assign oSOURCE_DATA = source_data;
-assign oSOURCE_DATA = 0;
+`ifdef WITHOUT_RAM_B
+	assign oSOURCE_DATA = 0;
+`else
+	assign oSOURCE_DATA = source_data;
+`endif
+
 assign oSOURCE_CONT = rdy; // "oSOURCE_CONT" match with "rdy" (in general - not)
 
 assign oBUT_TYPE = but_type;

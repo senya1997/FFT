@@ -21,7 +21,7 @@ for i = 1:2048
         + bitget(i - 1, 7)*2^4 + bitget(i - 1, 8)*2^3 + bitget(i - 1, 9)*2^2 +...
         + bitget(i - 1, 10)*2^1 + bitget(i - 1, 11)*2^0;
    
-   fprintf('ind = %4d\ti = %4d\n', ind, i - 1);
+   %fprintf('ind = %4d\ti = %4d\n', ind, i - 1);
    
    a_re(i) = ram_a_re(ind + 1);
    a_im(i) = ram_a_im(ind + 1);
@@ -65,10 +65,14 @@ fprintf('building graph...');
     
 
 x(1:2048) = zeros;
+time = 0;
+
 for i = 1:2048
-    %x(i) = 10*sin(2*3.14*2*1e3*i);
-    %x(i) = 10*(sin(i) + sin(2*i) + sin(3*i)); 
+    %x(i) = 10*sin(2*3.14*2000*time);
+    %x(i) = 10*(sin(i) + sin(2*time) + sin(3*time)); 
     x(i) = 100;
+    
+    time = time + 1;
 end
    
 y = fft(x, 2048);
