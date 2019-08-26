@@ -55,7 +55,7 @@ initial begin
 				
 				// data_adc = temp;
 				// data_adc = $unsigned($random)%(65535);
-				data_adc = 16'd100;
+				data_adc = 16'd2;
 				
 				addr_wr[i] = j;
 				

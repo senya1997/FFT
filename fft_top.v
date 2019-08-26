@@ -249,10 +249,10 @@ wire [16 : 0] IM_BUT_MULT [0 : 3];
 // ==================== RAM: ======================
 
 // wire [16 : 0] IM_RAM_A [0 : 3];
-	// assign IM_RAM_A[0] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[0];
-	// assign IM_RAM_A[1] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[1];
-	// assign IM_RAM_A[2] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[2];
-	// assign IM_RAM_A[3] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[3];	
+	// assign IM_RAM_A[0] = SOURCE_CONT ? {iDATA[15], iDATA} : IM_OUTMIX[0];
+	// assign IM_RAM_A[1] = SOURCE_CONT ? {iDATA[15], iDATA} : IM_OUTMIX[1];
+	// assign IM_RAM_A[2] = SOURCE_CONT ? {iDATA[15], iDATA} : IM_OUTMIX[2];
+	// assign IM_RAM_A[3] = SOURCE_CONT ? {iDATA[15], iDATA} : IM_OUTMIX[3];	
 
 	fft_ram_block RAM_A(
 		.iCLK(iCLK),
