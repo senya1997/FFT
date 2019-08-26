@@ -1,4 +1,4 @@
-// `define WITHOUT_RAM_B
+`define WITHOUT_RAM_B
 
 module fft_control(
 	input iCLK,

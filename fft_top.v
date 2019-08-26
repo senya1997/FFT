@@ -1,8 +1,8 @@
 `include "fft_defines.v"
 
 //`define WORK
-//`define MY_ROT_COEF
-//`define FILL_IM_RAM_A
+`define MY_ROT_COEF
+// `define FILL_IM_RAM_A
 
 module fft_top(
 	input	iCLK,

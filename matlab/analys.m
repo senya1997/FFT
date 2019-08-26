@@ -1,5 +1,5 @@
 clear;
-close all;
+%close all;
 clc;
 
 fprintf('\n\tStart\n\n');
@@ -22,7 +22,7 @@ for i = 1:2048
         + bitget(i - 1, 7)*2^4 + bitget(i - 1, 8)*2^3 + bitget(i - 1, 9)*2^2 +...
         + bitget(i - 1, 10)*2^1 + bitget(i - 1, 11)*2^0;
    
-   %fprintf('ind = %4d\ti = %4d\n', ind, i - 1);
+   fprintf('ind = %4d\ti = %4d\n', ind, i - 1);
    
    a_re(i) = ram_a_re(ind + 1);
    a_im(i) = ram_a_im(ind + 1);
@@ -37,6 +37,8 @@ b_re = b_re';
 b_im = b_im';
 
 afc_a = sqrt(a_re.^2 + a_im.^2);
+ram_afc_a = sqrt(ram_a_re.^2 + ram_a_im.^2);
+
 afc_b = sqrt(b_re.^2 + b_im.^2);
 
 half_afc_a_1 = afc_a(1:1024);
@@ -53,6 +55,11 @@ fprintf('building graph...\n');
     title('AFC from RAM "A":');
     grid on;
 
+    figure;    
+    plot(ram_afc_a);
+    title('AFC from RAM "A" without change position harm:');
+    grid on;
+    
     figure;
     plot(afc_b);
     title('AFC from RAM "B":');
