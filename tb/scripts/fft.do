@@ -1,5 +1,5 @@
 transcript on
-set work_pc 1
+set work_pc 0
 
 quit -sim
 
@@ -20,7 +20,7 @@ project::compileall
 	file copy -force $path_work/fft/tb/scripts/signal.c $path_work/modelsim/fft
 	if {![file exist signal.dll]} { file delete -force signal.dll }
 	
-	if {$work_pc} { exec c:\mingw\bin\gcc -shared -o signal.dll signal.c
+	if {$work_pc} { exec c:/mingw/bin/gcc -shared -o signal.dll signal.c
 	} else { exec "D:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/gcc" -shared -o signal.dll signal.c }
 		
 #simulate	

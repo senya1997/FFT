@@ -6,6 +6,8 @@ module fft_tb;
 bit clk;
 bit reset;
 
+shortint i, j;
+
 real temp;
 real time_s;
 
@@ -33,12 +35,6 @@ initial begin
 end
 
 initial begin
-	shortint i, j;
-	
-	int f_ram_a_re, f_ram_a_im;
-	int f_ram_b_re, f_ram_b_im;
-	bit signed [16 : 0] buf_signed;
-	
 	$display("\n\n\t\t\tSTART TEST FFT\n");
 	
 	start = 1'b0;
@@ -50,12 +46,12 @@ initial begin
 	for(i = 0; i <= 3; i = i + 1)
 		for(j = 0; j < 512; j = j + 1)
 			begin
-				temp = 32767*(signal(1_000_000, time_s) + signal(400_000, time_s))/2;
+				// temp = 32767*(signal(1_000_000, time_s) + signal(400_000, time_s))/2;
 				// temp = 32767*signal(2_000, time_s);
 				
-				data_adc = temp;
+				// data_adc = temp;
 				// data_adc = $unsigned($random)%(65535);
-				// data_adc = 16'd100;
+				data_adc = 16'd100;
 				
 				addr_wr[i] = j;
 				
@@ -76,61 +72,86 @@ initial begin
 	wait(RDY);
 	
 	#(10*`TACT);
-	$display("\twrite data from RAM in files for matlab, time: %t", $time);
+	SAVE_RAM_DATA("ram_a_re.txt", "ram_a_im.txt", "ram_b_re.txt", "ram_b_im.txt");
 	
-	f_ram_a_re = $fopen("ram_a_re.txt", "w");
-	f_ram_a_im = $fopen("ram_a_im.txt", "w");
-	f_ram_b_re = $fopen("ram_b_re.txt", "w");
-	f_ram_b_im = $fopen("ram_b_im.txt", "w");
+	$display("\n\t\t\tCOMPLETE\n");
+	// mti_fli::mti_Cmd("stop -sync");
+end
+
+always@(FFT.CONTROL.cnt_stage) begin
+	case(FFT.CONTROL.cnt_stage)
+		1: SAVE_RAM_DATA("ram_a_re_1st.txt", "ram_a_im_1st.txt", "ram_b_re_1st.txt", "ram_b_im_1st.txt");
+		2: SAVE_RAM_DATA("ram_a_re_2st.txt", "ram_a_im_2st.txt", "ram_b_re_2st.txt", "ram_b_im_2st.txt");
+		// 5: SAVE_RAM_DATA("ram_a_re_2st.txt", "ram_a_im_2st.txt", "ram_b_re_2st.txt", "ram_b_im_2st.txt");
+	endcase	
+end
+
+task SAVE_RAM_DATA(string name_a_re, name_a_im, name_b_re, name_b_im);
+	bit signed [16 : 0] buf_signed;
+	
+	int f_ram_a_re, f_ram_a_im;
+	int f_ram_b_re, f_ram_b_im;
+	
+	$display("\tsave data from RAM in files, time: %t", $time);
+	
+	f_ram_a_re = $fopen(name_a_re, "w");
+	f_ram_a_im = $fopen(name_a_im, "w");
+	f_ram_b_re = $fopen(name_b_re, "w");
+	f_ram_b_im = $fopen(name_b_im, "w");
 	
 	for(j = 0; j < 512; j = j + 1)
 		begin
 			buf_signed = FFT.RAM_A.ram_bank[0].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
 				$fwrite(f_ram_a_re, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_A.ram_bank[1].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_a_re, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_A.ram_bank[2].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_a_re, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_A.ram_bank[3].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_a_re, "%1d", buf_signed, "\n");
-		
 			buf_signed = FFT.RAM_A.ram_bank[0].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
 				$fwrite(f_ram_a_im, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_A.ram_bank[1].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_a_im, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_A.ram_bank[2].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_a_im, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_A.ram_bank[3].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_a_im, "%1d", buf_signed, "\n");
-			
 			buf_signed = FFT.RAM_B.ram_bank[0].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
 				$fwrite(f_ram_b_re, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_B.ram_bank[1].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_b_re, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_B.ram_bank[2].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_b_re, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_B.ram_bank[3].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_b_re, "%1d", buf_signed, "\n");
-			
 			buf_signed = FFT.RAM_B.ram_bank[0].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_b_im, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_B.ram_bank[1].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_b_im, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_B.ram_bank[2].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-				$fwrite(f_ram_b_im, "%1d", buf_signed, "\n");
-			buf_signed = FFT.RAM_B.ram_bank[3].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
 				$fwrite(f_ram_b_im, "%1d", buf_signed, "\n");
 		end
 	
-	
+	for(j = 0; j < 512; j = j + 1)
+		begin
+			buf_signed = FFT.RAM_A.ram_bank[1].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_a_re, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_A.ram_bank[1].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_a_im, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_B.ram_bank[1].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_b_re, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_B.ram_bank[1].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_b_im, "%1d", buf_signed, "\n");
+		end
+
+	for(j = 0; j < 512; j = j + 1)
+		begin
+			buf_signed = FFT.RAM_A.ram_bank[2].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_a_re, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_A.ram_bank[2].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_a_im, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_B.ram_bank[2].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_b_re, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_B.ram_bank[2].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_b_im, "%1d", buf_signed, "\n");
+		end
+
+	for(j = 0; j < 512; j = j + 1)
+		begin
+			buf_signed = FFT.RAM_A.ram_bank[3].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_a_re, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_A.ram_bank[3].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_a_im, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_B.ram_bank[3].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_b_re, "%1d", buf_signed, "\n");
+			buf_signed = FFT.RAM_B.ram_bank[3].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				$fwrite(f_ram_b_im, "%1d", buf_signed, "\n");
+		end
+		
 	$fclose(f_ram_a_re);
 	$fclose(f_ram_a_im);
 	$fclose(f_ram_b_re);
 	$fclose(f_ram_b_im);
-	
-	$display("\n\t\t\tCOMPLETE\n");
-	// mti_fli::mti_Cmd("stop -sync");
-end
+endtask
 
 /*
 real f, t, h_t; //frequency, time, time step 

@@ -1,4 +1,4 @@
-`define WITHOUT_RAM_B
+// `define WITHOUT_RAM_B
 
 module fft_control(
 	input iCLK,
@@ -220,18 +220,13 @@ wire STAGE_EVEN = (cnt_stage[0] == 1'b0);
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) we_a <= 1'b0;
 	else if(CNT_ST_0EQ) we_a <= 1'b0;
-	else if(STAGE_EVEN & CNT_ST_4L) we_a <= 1'b1;
+	else if(STAGE_ODD & CNT_ST_4L) we_a <= 1'b1;
 end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) we_b <= 1'b0;
 	else if(CNT_ST_0EQ) we_b <= 1'b0;
-	
-	`ifdef WITHOUT_RAM_B
-		else if(STAGE_ODD & CNT_ST_4L) we_a <= 1'b1;
-	`else
-		else if(STAGE_ODD & CNT_ST_4L) we_b <= 1'b1;
-	`endif
+	else if(STAGE_EVEN & CNT_ST_4L) we_b <= 1'b1;
 end
 
 /*
@@ -274,12 +269,13 @@ assign oADDR_WR = addr_wr;
 
 assign oADDR_COEF = addr_coef;
 
-assign oWE_A = we_a;
-assign oWE_B = we_b;
-
 `ifdef WITHOUT_RAM_B
-	assign oSOURCE_DATA = 0;
+	assign oWE_A = we_a | we_b;
+	assign oWE_B = 1'b0;
+	assign oSOURCE_DATA = 1'b0;
 `else
+	assign oWE_A = we_a;
+	assign oWE_B = we_b;
 	assign oSOURCE_DATA = source_data;
 `endif
 

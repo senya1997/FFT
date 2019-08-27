@@ -11,17 +11,18 @@ b_im(1:2048) = zeros;
 
 fprintf('reading file...\n');
 
+%{
 ram_a_re = load('D:\work\modelsim\fft\ram_a_re.txt');
 ram_a_im = load('D:\work\modelsim\fft\ram_a_im.txt');
 ram_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
 ram_b_im = load('D:\work\modelsim\fft\ram_b_im.txt');
+%}
 
-%{
 ram_a_re = load('D:\SS\fpga\modelsim\fft\ram_a_re.txt');
 ram_a_im = load('D:\SS\fpga\modelsim\fft\ram_a_im.txt');
 ram_b_re = load('D:\SS\fpga\modelsim\fft\ram_b_re.txt');
 ram_b_im = load('D:\SS\fpga\modelsim\fft\ram_b_im.txt');
-%}
+
 
 for i = 1:2048
    ind =  bitget(i - 1, 1)*2^10 + bitget(i - 1, 2)*2^9 + bitget(i - 1, 3)*2^8 +...

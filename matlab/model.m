@@ -45,8 +45,8 @@ end
     but_a_im(1:512, 4) = round((ram_a_im(1:512, 1) + ram_a_re(1:512, 2) - ram_a_im(1:512, 3) - ram_a_re(1:512, 4))/4);
 
 % multipiler:
-    mult_a_re(1:512, 2) = but_a_re(1:512, 1);
-    mult_a_im(1:512, 2) = but_a_im(1:512, 1);
+    mult_a_re(1:512, 1) = but_a_re(1:512, 1);
+    mult_a_im(1:512, 1) = but_a_im(1:512, 1);
 
     mult_a_re(1:512, 2) = but_a_re(1:512, 2).*w_re_2(1:512);
     mult_a_im(1:512, 2) = but_a_im(1:512, 2).*w_im_2(1:512);
@@ -58,4 +58,4 @@ end
     mult_a_im(1:512, 4) = but_a_im(1:512, 4).*w_im_4(1:512);
 
 % output mixer:
-    ram_a_re()
+    %ram_a_re()
