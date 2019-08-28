@@ -47,11 +47,11 @@ initial begin
 		for(j = 0; j < 512; j = j + 1)
 			begin
 				// temp = 32767*(signal(1_000_000, time_s) + signal(400_000, time_s))/2;
-				temp = 20000*signal(20, time_s);
+				temp = 20000*signal(24.414, time_s);
 				
 				data_adc = temp;
 				// data_adc = $unsigned($random)%(65535);
-				// data_adc = 16'd100;
+				// data_adc = 16'd3;
 				
 				addr_wr[i] = j;
 				

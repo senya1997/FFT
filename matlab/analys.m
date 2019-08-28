@@ -11,17 +11,17 @@ b_im(1:2048) = zeros;
 
 fprintf('reading file...\n');
 
+%{
 file_a_re = load('D:\work\modelsim\fft\ram_a_re.txt');
 file_a_im = load('D:\work\modelsim\fft\ram_a_im.txt');
 file_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
 file_b_im = load('D:\work\modelsim\fft\ram_b_im.txt');
+%}
 
-%{
 file_a_re = load('D:\SS\fpga\modelsim\fft\ram_a_re.txt');
 file_a_im = load('D:\SS\fpga\modelsim\fft\ram_a_im.txt');
 file_b_re = load('D:\SS\fpga\modelsim\fft\ram_b_re.txt');
 file_b_im = load('D:\SS\fpga\modelsim\fft\ram_b_im.txt');
-%}
 
 ram_a_re(1:512)     = file_a_re(1:512, 1); ram_a_im(1:512)     = file_a_im(1:512, 1);
 ram_a_re(513:1024)  = file_a_re(1:512, 2); ram_a_im(513:1024)  = file_a_im(1:512, 2);
@@ -35,9 +35,9 @@ ram_b_re(1537:2048) = file_b_re(1:512, 4); ram_b_im(1537:2048) = file_b_im(1:512
 
 for i = 1:2048
    ind =  bitget(i - 1, 1)*2^10 + bitget(i - 1, 2)*2^9 + bitget(i - 1, 3)*2^8 +...
-        + bitget(i - 1, 4)*2^7 + bitget(i - 1, 5)*2^6 + bitget(i - 1, 6)*2^5 +...
-        + bitget(i - 1, 7)*2^4 + bitget(i - 1, 8)*2^3 + bitget(i - 1, 9)*2^2 +...
-        + bitget(i - 1, 10)*2^1 + bitget(i - 1, 11)*2^0;
+          bitget(i - 1, 4)*2^7 + bitget(i - 1, 5)*2^6 + bitget(i - 1, 6)*2^5 +...
+          bitget(i - 1, 7)*2^4 + bitget(i - 1, 8)*2^3 + bitget(i - 1, 9)*2^2 +...
+          bitget(i - 1, 10)*2^1 + bitget(i - 1, 11)*2^0;
    
    fprintf('\tind = %4d\ti = %4d\n', ind, i - 1);
    
@@ -99,11 +99,11 @@ x(1:2048) = zeros;
 time = 0;
 
 for i = 1:2048
-    %x(i) = 10*sin(2*3.14*2000*time);
+    x(i) = 20000*sin(2*3.14*24.414*time);
     %x(i) = 10*(sin(i) + sin(2*time) + sin(3*time)); 
-    x(i) = 100;
+    %x(i) = 100;
     
-    time = time + 1;
+    time = time + 0.00002;
 end
    
 y = fft(x, 2048);
