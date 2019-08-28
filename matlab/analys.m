@@ -11,7 +11,6 @@ b_im(1:2048) = zeros;
 
 fprintf('reading file...\n');
 
-
 file_a_re = load('D:\work\modelsim\fft\ram_a_re.txt');
 file_a_im = load('D:\work\modelsim\fft\ram_a_im.txt');
 file_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
@@ -40,14 +39,13 @@ for i = 1:2048
         + bitget(i - 1, 7)*2^4 + bitget(i - 1, 8)*2^3 + bitget(i - 1, 9)*2^2 +...
         + bitget(i - 1, 10)*2^1 + bitget(i - 1, 11)*2^0;
    
-   fprintf('ind = %4d\ti = %4d\n', ind, i - 1);
+   fprintf('\tind = %4d\ti = %4d\n', ind, i - 1);
    
    a_re(i) = ram_a_re(ind + 1);
    a_im(i) = ram_a_im(ind + 1);
    b_re(i) = ram_b_re(ind + 1);
    b_im(i) = ram_b_im(ind + 1);
 end
-
 
 a_re = a_re';
 a_im = a_im';
@@ -64,17 +62,24 @@ half_afc_a_2 = afc_a(1025:2048);
 
 sub(1:1024) = zeros;
 for i = 1:1024
-  sub(i) = half_afc_a_1(i) - half_afc_a_2(i);
+	sub(i) = half_afc_a_1(i) - half_afc_a_2(i);
 end
+sub = sub';
+
+f(1:2048) = zeros;
+for i = 1:2048
+    f(i) = i*20000/1024;
+end
+f = f';
 
 fprintf('building graph...\n');
     figure;    
-    plot(afc_a);
+    plot(f, afc_a);
     title('AFC from RAM "A":');
     grid on;
 
     figure;    
-    plot(ram_afc_a);
+    plot(f, ram_afc_a);
     title('AFC from RAM "A" without change position harm:');
     grid on;
     
@@ -85,7 +90,7 @@ fprintf('building graph...\n');
 
     
     figure;
-    plot(afc_a + afc_b);
+    plot(f, afc_a + afc_b);
     title('AFC:');
     grid on; 
     
