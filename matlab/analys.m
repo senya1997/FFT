@@ -11,18 +11,28 @@ b_im(1:2048) = zeros;
 
 fprintf('reading file...\n');
 
+
+file_a_re = load('D:\work\modelsim\fft\ram_a_re.txt');
+file_a_im = load('D:\work\modelsim\fft\ram_a_im.txt');
+file_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
+file_b_im = load('D:\work\modelsim\fft\ram_b_im.txt');
+
 %{
-ram_a_re = load('D:\work\modelsim\fft\ram_a_re.txt');
-ram_a_im = load('D:\work\modelsim\fft\ram_a_im.txt');
-ram_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
-ram_b_im = load('D:\work\modelsim\fft\ram_b_im.txt');
+file_a_re = load('D:\SS\fpga\modelsim\fft\ram_a_re.txt');
+file_a_im = load('D:\SS\fpga\modelsim\fft\ram_a_im.txt');
+file_b_re = load('D:\SS\fpga\modelsim\fft\ram_b_re.txt');
+file_b_im = load('D:\SS\fpga\modelsim\fft\ram_b_im.txt');
 %}
 
-ram_a_re = load('D:\SS\fpga\modelsim\fft\ram_a_re.txt');
-ram_a_im = load('D:\SS\fpga\modelsim\fft\ram_a_im.txt');
-ram_b_re = load('D:\SS\fpga\modelsim\fft\ram_b_re.txt');
-ram_b_im = load('D:\SS\fpga\modelsim\fft\ram_b_im.txt');
+ram_a_re(1:512)     = file_a_re(1:512, 1); ram_a_im(1:512)     = file_a_im(1:512, 1);
+ram_a_re(513:1024)  = file_a_re(1:512, 2); ram_a_im(513:1024)  = file_a_im(1:512, 2);
+ram_a_re(1025:1536) = file_a_re(1:512, 3); ram_a_im(1025:1536) = file_a_im(1:512, 3);
+ram_a_re(1537:2048) = file_a_re(1:512, 4); ram_a_im(1537:2048) = file_a_im(1:512, 4);
 
+ram_b_re(1:512)     = file_b_re(1:512, 1); ram_b_im(1:512)     = file_b_im(1:512, 1);
+ram_b_re(513:1024)  = file_b_re(1:512, 2); ram_b_im(513:1024)  = file_b_im(1:512, 2);
+ram_b_re(1025:1536) = file_b_re(1:512, 3); ram_b_im(1025:1536) = file_b_im(1:512, 3);
+ram_b_re(1537:2048) = file_b_re(1:512, 4); ram_b_im(1537:2048) = file_b_im(1:512, 4);
 
 for i = 1:2048
    ind =  bitget(i - 1, 1)*2^10 + bitget(i - 1, 2)*2^9 + bitget(i - 1, 3)*2^8 +...
@@ -92,7 +102,7 @@ for i = 1:2048
 end
    
 y = fft(x, 2048);
-Pyy = y.*conj(y)/2048;
+Pyy = sqrt(real(y).^2 + imag(y).^2);
 %f = 
 
     figure;

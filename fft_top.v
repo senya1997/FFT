@@ -1,6 +1,6 @@
 `include "fft_defines.v"
 
-//`define WORK
+`define WORK
 // `define MY_ROT_COEF
 // `define FILL_IM_RAM_A // filling up imagine part of RAM data from input
 
