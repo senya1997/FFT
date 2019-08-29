@@ -11,17 +11,18 @@ b_im(1:2048) = zeros;
 
 fprintf('reading file...\n');
 
-%{
+
 file_a_re = load('D:\work\modelsim\fft\ram_a_re.txt');
 file_a_im = load('D:\work\modelsim\fft\ram_a_im.txt');
 file_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
 file_b_im = load('D:\work\modelsim\fft\ram_b_im.txt');
-%}
 
+%{
 file_a_re = load('D:\SS\fpga\modelsim\fft\ram_a_re.txt');
 file_a_im = load('D:\SS\fpga\modelsim\fft\ram_a_im.txt');
 file_b_re = load('D:\SS\fpga\modelsim\fft\ram_b_re.txt');
 file_b_im = load('D:\SS\fpga\modelsim\fft\ram_b_im.txt');
+%}
 
 ram_a_re(1:512)     = file_a_re(1:512, 1); ram_a_im(1:512)     = file_a_im(1:512, 1);
 ram_a_re(513:1024)  = file_a_re(1:512, 2); ram_a_im(513:1024)  = file_a_im(1:512, 2);
@@ -68,7 +69,7 @@ sub = sub';
 
 f(1:2048) = zeros;
 for i = 1:2048
-    f(i) = i*20000/1024;
+    f(i) = i*50000/1024;
 end
 f = f';
 
@@ -99,19 +100,19 @@ x(1:2048) = zeros;
 time = 0;
 
 for i = 1:2048
-    x(i) = 20000*sin(2*3.14*24.414*time);
+    x(i) = 20000*sin(2*3.14*100*48.828125*time);
     %x(i) = 10*(sin(i) + sin(2*time) + sin(3*time)); 
     %x(i) = 100;
     
-    time = time + 0.00002;
+    time = time + 0.00001;
 end
    
 y = fft(x, 2048);
 Pyy = sqrt(real(y).^2 + imag(y).^2);
-%f = 
+clear y;
 
     figure;
-    plot(Pyy);
+    plot(f, Pyy);
     title('ref AFC:');
     grid on; 
  
