@@ -3,6 +3,7 @@ close all;
 clc;
 
 % ===============================   coef:   ===============================
+%{
 w_re_2(1:512) = load('D:\work\fft\matlab\w_re_2.txt');
 w_im_2(1:512) = load('D:\work\fft\matlab\w_im_2.txt');
 
@@ -11,8 +12,8 @@ w_im_3(1:512) = load('D:\work\fft\matlab\w_im_3.txt');
 
 w_re_4(1:512) = load('D:\work\fft\matlab\w_re_4.txt');
 w_im_4(1:512) = load('D:\work\fft\matlab\w_im_4.txt');
+%}
 
-%{
 w_re_2(1:512) = load('D:\SS\fpga\fft\matlab\w_re_2.txt');
 w_im_2(1:512) = load('D:\SS\fpga\fft\matlab\w_im_2.txt');
 
@@ -21,7 +22,7 @@ w_im_3(1:512) = load('D:\SS\fpga\fft\matlab\w_im_3.txt');
 
 w_re_4(1:512) = load('D:\SS\fpga\fft\matlab\w_re_4.txt');
 w_im_4(1:512) = load('D:\SS\fpga\fft\matlab\w_im_4.txt');
-%}
+
 
 w_re_2 = w_re_2'; w_im_2 = w_im_2';
 w_re_3 = w_re_3'; w_im_3 = w_im_3';

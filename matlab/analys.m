@@ -11,18 +11,18 @@ b_im(1:2048) = zeros;
 
 fprintf('reading file...\n');
 
-
+%{
 file_a_re = load('D:\work\modelsim\fft\ram_a_re.txt');
 file_a_im = load('D:\work\modelsim\fft\ram_a_im.txt');
 file_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
 file_b_im = load('D:\work\modelsim\fft\ram_b_im.txt');
+%}
 
-%{
 file_a_re = load('D:\SS\fpga\modelsim\fft\ram_a_re.txt');
 file_a_im = load('D:\SS\fpga\modelsim\fft\ram_a_im.txt');
 file_b_re = load('D:\SS\fpga\modelsim\fft\ram_b_re.txt');
 file_b_im = load('D:\SS\fpga\modelsim\fft\ram_b_im.txt');
-%}
+
 
 ram_a_re(1:512)     = file_a_re(1:512, 1); ram_a_im(1:512)     = file_a_im(1:512, 1);
 ram_a_re(513:1024)  = file_a_re(1:512, 2); ram_a_im(513:1024)  = file_a_im(1:512, 2);

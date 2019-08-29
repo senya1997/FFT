@@ -1,5 +1,5 @@
 `timescale 1ns/1ns
-`include "fft_defines.v"
+`include "../fft_defines.v"
   
 module fft_tb;
 
@@ -48,7 +48,7 @@ initial begin
 			begin
 				// temp = 32767*(signal(1_000_000, time_s) + signal(400_000, time_s))/2;
 				// temp = 20000*signal(100*48.828125, time_s);
-				
+				 
 				// data_adc = temp;
 				// data_adc = $unsigned($random)%(65535);
 				data_adc = 16'd100;
@@ -83,7 +83,7 @@ always@(FFT.CONTROL.cnt_stage) begin
 		1: #(2*`TACT) SAVE_RAM_DATA("1st_ram_a_re.txt", "1st_ram_a_im.txt", "1st_ram_b_re.txt", "1st_ram_b_im.txt", 1);
 		2: #(2*`TACT) SAVE_RAM_DATA("2st_ram_a_re.txt", "2st_ram_a_im.txt", "2st_ram_b_re.txt", "2st_ram_b_im.txt", 0);
 		3: #(2*`TACT) SAVE_RAM_DATA("3st_ram_a_re.txt", "3st_ram_a_im.txt", "3st_ram_b_re.txt", "3st_ram_b_im.txt", 1);
-		3: #(2*`TACT) SAVE_RAM_DATA("4st_ram_a_re.txt", "4st_ram_a_im.txt", "4st_ram_b_re.txt", "4st_ram_b_im.txt", 0);
+		4: #(2*`TACT) SAVE_RAM_DATA("4st_ram_a_re.txt", "4st_ram_a_im.txt", "4st_ram_b_re.txt", "4st_ram_b_im.txt", 0);
 	endcase	
 end
 
