@@ -89,13 +89,12 @@ fprintf('building graph...\n');
     title('AFC from RAM "B":');
     grid on;
 
-    
     figure;
     plot(f, afc_a + afc_b);
     title('AFC:');
     grid on; 
     
-
+%{
 x(1:2048) = zeros;
 time = 0;
 
@@ -122,3 +121,4 @@ clear y;
     grid on; 
     
 fprintf('\n\tComplete\n');
+%}
