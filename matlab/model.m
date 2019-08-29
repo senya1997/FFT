@@ -182,8 +182,21 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     w_re_3_2st(1:512) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
         w_re_4_buf = w_re_4(1:4:512);
     w_re_4_2st(1:512) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
-        clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;
+        
+        w_im_2_buf = w_im_2(1:4:512);
+    w_im_2_2st(1:512) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+        w_im_3_buf = w_im_3(1:4:512);
+    w_im_3_2st(1:512) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+        w_im_4_buf = w_im_4(1:4:512);
+    w_im_4_2st(1:512) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+        
+        clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
+        clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
     
+	w_re_2_2st = w_re_2_2st'; w_im_2_2st = w_im_2_2st';
+    w_re_3_2st = w_re_3_2st'; w_im_3_2st = w_im_3_2st';
+    w_re_4_2st = w_re_4_2st'; w_im_4_2st = w_im_4_2st';
+        
     mult_a_re(1:512, 2) = round((but_a_re(1:512, 2).*w_re_2_2st(1:512) - but_a_im(1:512, 2).*w_im_2_2st(1:512))/1024);
     mult_a_im(1:512, 2) = round((but_a_re(1:512, 2).*w_im_2_2st(1:512) + but_a_im(1:512, 2).*w_re_2_2st(1:512))/1024);
 

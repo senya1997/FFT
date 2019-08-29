@@ -239,8 +239,8 @@ end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) source_data <= 1'b0;
-	else if(STAGE_ODD & CNT_ST_512S) source_data <= 1'b1;
-	else source_data <= 1'b0;
+	else if(iSTART) source_data <= 1'b0;
+	else if(EOF_STAGE_DELAY) source_data <= ~source_data;
 end
 
 always@(posedge iCLK or negedge iRESET) begin

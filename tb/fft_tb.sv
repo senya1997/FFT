@@ -82,7 +82,7 @@ always@(FFT.CONTROL.cnt_stage) begin
 	case(FFT.CONTROL.cnt_stage)
 		1: #(2*`TACT) SAVE_RAM_DATA("1st_ram_a_re.txt", "1st_ram_a_im.txt", "1st_ram_b_re.txt", "1st_ram_b_im.txt", 1);
 		2: #(2*`TACT) SAVE_RAM_DATA("2st_ram_a_re.txt", "2st_ram_a_im.txt", "2st_ram_b_re.txt", "2st_ram_b_im.txt", 0);
-		// 5: #(2*`TACT) SAVE_RAM_DATA("ram_a_re_2st.txt", "ram_a_im_2st.txt", "ram_b_re_2st.txt", "ram_b_im_2st.txt");
+		// 5: #(`TACT) SAVE_RAM_DATA("ram_a_re_2st.txt", "ram_a_im_2st.txt", "ram_b_re_2st.txt", "ram_b_im_2st.txt");
 	endcase	
 end
 
