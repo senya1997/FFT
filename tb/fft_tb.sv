@@ -84,6 +84,8 @@ always@(FFT.CONTROL.cnt_stage) begin
 		2: #(2*`TACT) SAVE_RAM_DATA("2st_ram_a_re.txt", "2st_ram_a_im.txt", "2st_ram_b_re.txt", "2st_ram_b_im.txt", 0);
 		3: #(2*`TACT) SAVE_RAM_DATA("3st_ram_a_re.txt", "3st_ram_a_im.txt", "3st_ram_b_re.txt", "3st_ram_b_im.txt", 1);
 		4: #(2*`TACT) SAVE_RAM_DATA("4st_ram_a_re.txt", "4st_ram_a_im.txt", "4st_ram_b_re.txt", "4st_ram_b_im.txt", 0);
+		5: #(2*`TACT) SAVE_RAM_DATA("5st_ram_a_re.txt", "5st_ram_a_im.txt", "5st_ram_b_re.txt", "5st_ram_b_im.txt", 1);
+		0: #(2*`TACT) SAVE_RAM_DATA("6st_ram_a_re.txt", "6st_ram_a_im.txt", "6st_ram_b_re.txt", "6st_ram_b_im.txt", 0);
 	endcase	
 end
 
