@@ -1,7 +1,7 @@
 `timescale 1ns/1ns
 `include "../fft_defines.v"
 
-`define COMP_PER 50 // period of compare output signals "VHDL" and "DUT" in tact
+`define COMP_PER 10 // period of compare output signals "VHDL" and "DUT" in tact
 `define NUM_OF_RPT 3 // number of repeat test
 
 module fft_control_tb;
