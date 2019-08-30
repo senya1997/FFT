@@ -24,5 +24,5 @@ project::compileall
 	#vlog fft_tb.sv
 	vsim -L altera_mf_ver -c fft_tb -sv_lib signal -novopt
 	
-do $path_work/tb/wave/wave.do
+do $path_work/fft/tb/wave/wave.do
 configure wave -timelineunits us

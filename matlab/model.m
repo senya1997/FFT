@@ -24,6 +24,7 @@ w_re_4(1:512) = load('D:\SS\fpga\fft\matlab\w_re_4.txt');
 w_im_4(1:512) = load('D:\SS\fpga\fft\matlab\w_im_4.txt');
 
 
+
 w_re_2 = w_re_2'; w_im_2 = w_im_2';
 w_re_3 = w_re_3'; w_im_3 = w_im_3';
 w_re_4 = w_re_4'; w_im_4 = w_im_4';
@@ -112,8 +113,8 @@ w_re_4_5st = w_re_4_5st'; w_im_4_5st = w_im_4_5st';
 
     clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
     clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
-    
-    
+
+
 
 % ===============================   start:   ==============================
 ram_a_re(1:512, 1:4) = zeros;
@@ -405,17 +406,18 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     
     %clear w_re_2_5st; clear w_re_3_5st; clear w_re_4_5st;
 
-%{
+
 % output mixer:
-for i = 1:256
-    t = (i-1)*2;
+for i = 1:4:509
     % real:
-    ram_a_re(1+t : 2+t, 1:4) = [mult_re(1+t : 2+t, 1), mult_re(1+t : 2+t, 2), mult_re(1+t : 2+t, 3), mult_re(1+t : 2+t, 4)];
-    ram_a_re(2+t : 1+t, 1:4) = [mult_re(3+t : 4+t, 2), mult_re(3+t : 4+t, 3), mult_re(3+t : 4+t, 4), mult_re(3+t : 4+t, 1)];
-    ram_a_re(1+t : 2+t, 1:4) = [mult_re(5+t : 6+t, 3), mult_re(5+t : 6+t, 4), mult_re(5+t : 6+t, 1), mult_re(5+t : 6+t, 2)];
-    ram_a_re(2+t : 1+t, 1:4) = [mult_re(7+t : 8+t, 4), mult_re(7+t : 8+t, 1), mult_re(7+t : 8+t, 2), mult_re(7+t : 8+t, 3)];
+    ram_a_re(i,   1:4) = [mult_re(i, 1),   mult_re(i, 2),   mult_re(i, 3),   mult_re(i, 4)];
+    ram_a_re(i+1, 1:4) = [mult_re(i+1, 2), mult_re(i+1, 3), mult_re(i+1, 4), mult_re(i+1, 1)];
+    ram_a_re(i+2, 1:4) = [mult_re(i+2, 3), mult_re(i+2, 4), mult_re(i+2, 1), mult_re(i+2, 2)];
+    ram_a_re(i+3, 1:4) = [mult_re(i+3, 4), mult_re(i+3, 1), mult_re(i+3, 2), mult_re(i+3, 3)];
     
     % imag:
-    
+    ram_a_im(i,   1:4) = [mult_im(i, 1),   mult_im(i, 2),   mult_im(i, 3),   mult_im(i, 4)];
+    ram_a_im(i+1, 1:4) = [mult_im(i+1, 2), mult_im(i+1, 3), mult_im(i+1, 4), mult_im(i+1, 1)];
+    ram_a_im(i+2, 1:4) = [mult_im(i+2, 3), mult_im(i+2, 4), mult_im(i+2, 1), mult_im(i+2, 2)];
+    ram_a_im(i+3, 1:4) = [mult_im(i+3, 4), mult_im(i+3, 1), mult_im(i+3, 2), mult_im(i+3, 3)];
 end
-%}
