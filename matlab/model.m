@@ -128,7 +128,7 @@ time = 0;
 for i = 1:4
     for j = 1:512
         %ram_a_re(j, i) = round(32767*(sin(2*3.14*2000*time) + sin(2*3.14*3500*time))/2 - 1);
-        %ram_a_re(j, i) = round(20000*sin(2*3.14*100*48.828125*time));
+        %ram_a_re(j, i) = round(20000*sin(2*3.14*1000*48.828125*time));
         ram_a_re(j, i) = 100;
         
         time = time + 0.00001;
@@ -483,5 +483,13 @@ for i = 1:4:509
     ram_a_im(i+3, 1:4) = [mult_im(i+3, 4), mult_im(i+3, 1), mult_im(i+3, 2), mult_im(i+3, 3)];
 end
 
-save('D:\SS\fpga\fft\matlab\ram_a_re.txt', 'ram_a_re', '-mat');
-save('D:\SS\fpga\fft\matlab\ram_a_im.txt', 'ram_a_re', '-mat');
+file_a_re = fopen('D:\SS\fpga\fft\matlab\ram_a_re.txt', 'w');
+file_a_im = fopen('D:\SS\fpga\fft\matlab\ram_a_im.txt', 'w');
+
+for i = 1:512
+    fprintf(file_a_re, '%d\t%d\t%d\t%d\n', ram_a_re(i, 1:4)); 
+    fprintf(file_a_im, '%d\t%d\t%d\t%d\n', ram_a_im(i, 1:4)); 
+end
+
+fclose(file_a_re);
+fclose(file_a_im);
