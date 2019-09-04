@@ -1,5 +1,3 @@
-// `define WITHOUT_RAM_B
-
 module fft_control(
 	input iCLK,
 	input iRESET,
@@ -266,19 +264,12 @@ assign oADDR_RD_2 = addr_rd_out[2];
 assign oADDR_RD_3 = addr_rd_out[3];
 
 assign oADDR_WR = addr_wr;
-
 assign oADDR_COEF = addr_coef;
 
-`ifdef WITHOUT_RAM_B
-	assign oWE_A = we_a | we_b;
-	assign oWE_B = 1'b0;
-	assign oSOURCE_DATA = 1'b0;
-`else
-	assign oWE_A = we_a;
-	assign oWE_B = we_b;
-	assign oSOURCE_DATA = source_data;
-`endif
+assign oWE_A = we_a;
+assign oWE_B = we_b;
 
+assign oSOURCE_DATA = source_data;
 assign oSOURCE_CONT = rdy; // "oSOURCE_CONT" match with "rdy" (in general - not)
 
 assign oBUT_TYPE = but_type;

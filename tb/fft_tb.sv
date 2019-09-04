@@ -47,11 +47,11 @@ initial begin
 		for(j = 0; j < 512; j = j + 1)
 			begin
 				// temp = 32767*(signal(1_000_000, time_s) + signal(400_000, time_s))/2;
-				// temp = 20000*signal(100*48.828125, time_s);
+				temp = 20000*signal(48.828125, time_s);
+				// temp = $unsigned($random)%(65535);
+				// temp = 100;
 				 
-				// data_adc = temp;
-				// data_adc = $unsigned($random)%(65535);
-				data_adc = 16'd100;
+				data_adc = temp;
 				
 				addr_wr[i] = j;
 				
@@ -59,7 +59,7 @@ initial begin
 					#(`TACT);
 				we[i] = 1'b0;
 				
-				time_s = time_s + 0.00001;
+				time_s = time_s + 0.0001;
 			end
 		
 	#(10*`TACT);

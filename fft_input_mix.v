@@ -73,7 +73,7 @@ always@(posedge iCLK or negedge iRESET) begin
 					re_buf[3] <= iX1_RE;
 					im_buf[3] <= iX1_IM;
 				end
-			2'b11:
+			default:
 				begin
 					re_buf[0] <= iX1_RE;
 					im_buf[0] <= iX1_IM;
