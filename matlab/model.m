@@ -2,28 +2,32 @@ clear;
 close all;
 clc;
 
-% ===============================   coef:   ===============================
+mode = 'home';
+%mode = 'work';
 
-w_re_2(1:512) = load('D:\work\fft\matlab\w_re_2.txt');
-w_im_2(1:512) = load('D:\work\fft\matlab\w_im_2.txt');
+%% ===============================   coef:   ===============================
 
-w_re_3(1:512) = load('D:\work\fft\matlab\w_re_3.txt');
-w_im_3(1:512) = load('D:\work\fft\matlab\w_im_3.txt');
+if(strcmp(mode, 'work'))
+    w_re_2(1:512) = load('D:\work\fft\matlab\w_re_2.txt');
+    w_im_2(1:512) = load('D:\work\fft\matlab\w_im_2.txt');
 
-w_re_4(1:512) = load('D:\work\fft\matlab\w_re_4.txt');
-w_im_4(1:512) = load('D:\work\fft\matlab\w_im_4.txt');
+    w_re_3(1:512) = load('D:\work\fft\matlab\w_re_3.txt');
+    w_im_3(1:512) = load('D:\work\fft\matlab\w_im_3.txt');
 
-%{
-w_re_2(1:512) = load('D:\SS\fpga\fft\matlab\w_re_2.txt');
-w_im_2(1:512) = load('D:\SS\fpga\fft\matlab\w_im_2.txt');
+    w_re_4(1:512) = load('D:\work\fft\matlab\w_re_4.txt');
+    w_im_4(1:512) = load('D:\work\fft\matlab\w_im_4.txt');
+elseif(strcmp(mode, 'home'))
+    w_re_2(1:512) = load('D:\SS\fpga\fft\matlab\w_re_2.txt');
+    w_im_2(1:512) = load('D:\SS\fpga\fft\matlab\w_im_2.txt');
 
-w_re_3(1:512) = load('D:\SS\fpga\fft\matlab\w_re_3.txt');
-w_im_3(1:512) = load('D:\SS\fpga\fft\matlab\w_im_3.txt');
+    w_re_3(1:512) = load('D:\SS\fpga\fft\matlab\w_re_3.txt');
+    w_im_3(1:512) = load('D:\SS\fpga\fft\matlab\w_im_3.txt');
 
-w_re_4(1:512) = load('D:\SS\fpga\fft\matlab\w_re_4.txt');
-w_im_4(1:512) = load('D:\SS\fpga\fft\matlab\w_im_4.txt');
-%}
-
+    w_re_4(1:512) = load('D:\SS\fpga\fft\matlab\w_re_4.txt');
+    w_im_4(1:512) = load('D:\SS\fpga\fft\matlab\w_im_4.txt');
+else
+    error('"mode" is wrong');
+end
 
 w_re_2 = w_re_2'; w_im_2 = w_im_2';
 w_re_3 = w_re_3'; w_im_3 = w_im_3';
@@ -116,37 +120,40 @@ w_re_4_5st = w_re_4_5st'; w_im_4_5st = w_im_4_5st';
 
 
 
-% ===============================   start:   ==============================
+%% ===============================   start:   ==============================
 ram_re(1:512, 1:4) = zeros;
 ram_im(1:512, 1:4) = zeros;
 
-time = 0;
-%dt = 1e-4;
-dt = 1;
+N = 2048;
+Fd = 44100;
 
-x(1:2048) = zeros;
+A1 = 10000; % Амплитуда первой синусоиды
+A2 = 0; % Амплитуда второй синусоиды
+Ak = A1; % Постоянная составляющая
 
-for i = 1:4
+F1 = 1300;  % Частота первой синусоиды (Гц)
+F2 = 4200;  % Частота второй синусоиды (Гц)
+
+Phi1 = 0;     % Начальная фаза первой синусоиды (Градусов)
+Phi2 = 37;    % Начальная фаза второй синусоиды (Градусов)
+
+T = 0 : 1/Fd : (N - 1)/Fd; % Массив отсчетов времени
+
+Signal = Ak + A1*sind((F1*360).* T + Phi1) + A2*sind((F2*360).* T + Phi2);
+
+for i = 1:4 
     for j = 1:512
-        ind = j+512*(i-1);
-        
-        %x(ind) = round(20000*sin(2*3.14*48.828125*time));
-        %x(ind) = round(20000*sin(2*3.14*48.828125*time));
-        %x(ind) = round(32767*(sin(2*3.14*2000*time) + sin(2*3.14*3500*time))/2 - 1);
-        %x(ind) = 100;
-        x(ind) = time; 
-        
-        ram_re(j, i) = x(ind);
-        time = time + dt;
+        ind = j + 512*(i-1);
+        ram_re(j, i) = round(Signal(ind));
     end
 end
 
-x = x';
+Signal = Signal';
 figure;
-plot(x);
+plot(T, Signal);
 grid on;
 
-% ===========================    1 stage    ===============================
+%% ===========================    1 stage    ===============================
 % butterfly:
     but_re(1:512, 1) = round((ram_re(1:512, 1) + ram_re(1:512, 2) + ram_re(1:512, 3) + ram_re(1:512, 4))/4);
     but_re(1:512, 2) = round((ram_re(1:512, 1) + ram_im(1:512, 2) - ram_re(1:512, 3) - ram_im(1:512, 4))/4);
@@ -183,8 +190,8 @@ grid on;
     ram_im(129:256, 1:4) = [mult_im(129:256, 2), mult_im(129:256, 3), mult_im(129:256, 4), mult_im(129:256, 1)];
     ram_im(257:384, 1:4) = [mult_im(257:384, 3), mult_im(257:384, 4), mult_im(257:384, 1), mult_im(257:384, 2)];
     ram_im(385:512, 1:4) = [mult_im(385:512, 4), mult_im(385:512, 1), mult_im(385:512, 2), mult_im(385:512, 3)];   
-%{
-% ===========================    2 stage    ===============================
+
+%% ===========================    2 stage    ===============================
 % input mixer + rotate addr:
     % real:
     ram_a_re_buf(1:128, 1:4) =   [ram_re(1:128,   1), ram_re(129:256, 2), ram_re(257:384, 3), ram_re(385:512, 4)];
@@ -244,7 +251,7 @@ for i = 1:4
     ram_im(97+t : 128+t, 1:4) = [mult_im(97+t : 128+t, 4), mult_im(97+t : 128+t, 1), mult_im(97+t : 128+t, 2), mult_im(97+t : 128+t, 3)];
 end
 
-% ===========================    3 stage    ===============================
+%% ===========================    3 stage    ===============================
 % input mixer + rotate addr:
 for i = 1:4
     t = (i-1)*128;
@@ -307,7 +314,7 @@ for i = 1:16
     ram_im(25+t : 32+t, 1:4) = [mult_im(25+t : 32+t, 4), mult_im(25+t : 32+t, 1), mult_im(25+t : 32+t, 2), mult_im(25+t : 32+t, 3)];
 end
 
-% ===========================    4 stage    ===============================
+%% ===========================    4 stage    ===============================
 % input mixer + rotate addr:
 for i = 1:16
     t = (i-1)*32;
@@ -370,7 +377,7 @@ for i = 1:64
     ram_im(7+t : 8+t, 1:4) = [mult_im(7+t : 8+t, 4), mult_im(7+t : 8+t, 1), mult_im(7+t : 8+t, 2), mult_im(7+t : 8+t, 3)];
 end
 
-% ===========================    5 stage    ===============================
+%% ===========================    5 stage    ===============================
 % input mixer + rotate addr:
 for i = 1:64
     t = (i-1)*8;
@@ -432,7 +439,7 @@ for i = 1:4:509
     ram_im(i+3, 1:4) = [mult_im(i+3, 4), mult_im(i+3, 1), mult_im(i+3, 2), mult_im(i+3, 3)];
 end
 
-% ===========================    6 stage    ===============================
+%% ===========================    6 stage    ===============================
 ram_a_re_buf(1:512, 1:4) = zeros;
 ram_a_im_buf(1:512, 1:4) = zeros;
 
@@ -493,15 +500,15 @@ for i = 1:4:509
     ram_im(i+2, 1:4) = [mult_im(i+2, 3), mult_im(i+2, 4), mult_im(i+2, 1), mult_im(i+2, 2)];
     ram_im(i+3, 1:4) = [mult_im(i+3, 4), mult_im(i+3, 1), mult_im(i+3, 2), mult_im(i+3, 3)];
 end
-%}
 
-file_a_re = fopen('D:\work\fft\matlab\ram_a_re.txt', 'w');
-file_a_im = fopen('D:\work\fft\matlab\ram_a_im.txt', 'w');
-
-%{
-file_a_re = fopen('D:\SS\fpga\fft\matlab\ram_a_re.txt', 'w');
-file_a_im = fopen('D:\SS\fpga\fft\matlab\ram_a_im.txt', 'w');
-%}
+%% output files
+if(strcmp(mode, 'work'))
+    file_a_re = fopen('D:\work\fft\matlab\ram_a_re.txt', 'w');
+    file_a_im = fopen('D:\work\fft\matlab\ram_a_im.txt', 'w');
+elseif(strcmp(mode, 'home'))
+    file_a_re = fopen('D:\SS\fpga\fft\matlab\ram_a_re.txt', 'w');
+    file_a_im = fopen('D:\SS\fpga\fft\matlab\ram_a_im.txt', 'w');
+end
 
 for i = 1:512
     fprintf(file_a_re, '%d\t%d\t%d\t%d\n', ram_re(i, 1:4)); 
