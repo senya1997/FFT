@@ -114,17 +114,6 @@ figure;
 plot(T, Signal);
 grid on;
 
-    ram_re(1:4, 1:4) =      [ram_re(1:4,   1), ram_re(1:4,   2), ram_re(1:4,   3), ram_re(1:4,   4)];
-    ram_re(5:8, 1:4) =      [ram_re(5:8,   2), ram_re(5:8,   3), ram_re(5:8,   4), ram_re(5:8,   1)];
-    ram_re(9:12, 1:4) =     [ram_re(9:12,  3), ram_re(9:12,  4), ram_re(9:12,  1), ram_re(9:12,  2)];
-    ram_re(13:16, 1:4) =	[ram_re(13:16, 4), ram_re(13:16, 1), ram_re(13:16, 2), ram_re(13:16, 3)];
-    
-    
-    ram_a_re_buf(1:4, 1:4) =	[ram_re(1:4, 1), ram_re(5:8, 4), ram_re(9:12, 3), ram_re(13:16, 2)];
-    ram_a_re_buf(5:8, 1:4) =	[ram_re(1:4, 2), ram_re(5:8, 1), ram_re(9:12, 4), ram_re(13:16, 3)];
-    ram_a_re_buf(9:12, 1:4) =	[ram_re(1:4, 3), ram_re(5:8, 2), ram_re(9:12, 1), ram_re(13:16, 4)];
-    ram_a_re_buf(13:16, 1:4) =	[ram_re(1:4, 4), ram_re(5:8, 3), ram_re(9:12, 2), ram_re(13:16, 1)];
-
 %% ===========================    1 stage    ===============================
 % butterfly:
     but_re(1:16, 1) = (ram_re(1:16, 1) + ram_re(1:16, 2) + ram_re(1:16, 3) + ram_re(1:16, 4))/4;
@@ -209,7 +198,7 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     
 % output mixer:
 for i = 1:4
-    t = (i-1)*128;
+    t = (i-1)*4;
     % real:
     ram_re(1+t  : 32+t, 1:4) =  [mult_re(1+t  : 32+t,  1), mult_re(1+t  : 32+t,  2), mult_re(1+t  : 32+t,  3), mult_re(1+t  : 32+t,  4)];
     ram_re(33+t : 64+t, 1:4) =  [mult_re(33+t : 64+t,  2), mult_re(33+t : 64+t,  3), mult_re(33+t : 64+t,  4), mult_re(33+t : 64+t,  1)];
@@ -295,7 +284,7 @@ elseif(strcmp(mode, 'home'))
     file_a_im = fopen('D:\SS\fpga\fft\matlab\ram_a_im.txt', 'w');
 end
 
-for i = 1:512
+for i = 1:16
     fprintf(file_a_re, '%d\t%d\t%d\t%d\n', ram_re(i, 1:4)); 
     fprintf(file_a_im, '%d\t%d\t%d\t%d\n', ram_im(i, 1:4)); 
 end
