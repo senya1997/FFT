@@ -45,6 +45,7 @@ else
     error('"mode" is wrong');
 end
 
+%{
 ram_a_re(1:16)	= file_a_re(1:16, 1); ram_a_im(1:16)	= file_a_im(1:16, 1);
 ram_a_re(17:32)	= file_a_re(1:16, 2); ram_a_im(17:32)	= file_a_im(1:16, 2);
 ram_a_re(33:48) = file_a_re(1:16, 3); ram_a_im(33:48)	= file_a_im(1:16, 3);
@@ -56,16 +57,15 @@ if(strcmp(func, 'fpga'))
     ram_b_re(1025:1536) = file_b_re(1:512, 3); ram_b_im(1025:1536) = file_b_im(1:512, 3);
     ram_b_re(1537:2048) = file_b_re(1:512, 4); ram_b_im(1537:2048) = file_b_im(1:512, 4);
 end
+%}
 
-%{
-for i = 1:512
-    ram_a_re(1, (i+(i-1)*4) : (i*4)) = file_a_re(i, 1:4);
-    ram_a_im(1, (i+(i-1)*4) : (i*4)) = file_a_im(i, 1:4);
+for i = 1:16
+    ram_a_re(1, (1 + (i-1)*4) : (i*4)) = file_a_re(i, 1:4);
+    ram_a_im(1, (1 + (i-1)*4) : (i*4)) = file_a_im(i, 1:4);
 end
 
 ram_a_re = ram_a_re';
 ram_a_im = ram_a_im';
-%}
 
 %% bit reverse change to normal
 for i = 1:64
