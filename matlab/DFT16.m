@@ -47,6 +47,7 @@ signal = bias + amp_1*sind((freq_1*360).* time + phase_1) + amp_2*sind((freq_2*3
 signal = round(signal');
 
 dft(1:16, 1) = w * signal; % complex multiple
+afc = sqrt(real(dft./(2048*16)).^2 + imag(dft./(2048*16)).^2);
 
 %% graphics:
 figure;
@@ -58,7 +59,7 @@ grid on;
 freq = 0 : Fd/N : Fd - 1;
 
 figure;
-plot(freq, sqrt(real(dft./(2048*16)).^2 + imag(dft./(2048*16)).^2));
+plot(freq, afc);
 title('AFC:');
 xlabel('Freq, Hz');
 grid on;

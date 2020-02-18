@@ -7,9 +7,9 @@ Fd = 44100;
 %mode = 'home';
 mode = 'work';
 
-test = 'sin';
+%test = 'sin';
 %test = 'const';
-%test = 'num';
+test = 'num';
 
 %% coef:
 if(strcmp(mode, 'work'))
@@ -30,6 +30,29 @@ w_im = w_im';
 
 clear temp_re; clear temp_im;
 
+w_re_2st(1:4) = w_re(1:4:16);
+w_im_2st(1:4) = w_im(1:4:16);
+
+    w_re2_2st(1:4) = [w_re_2st(1), w_re_2st(2), w_re_2st(1), w_re_2st(2)];
+    w_im2_2st(1:4) = [w_im_2st(1), w_im_2st(2), w_im_2st(1), w_im_2st(2)];
+
+    w_re2_2st = w_re2_2st';
+    w_im2_2st = w_im2_2st';
+
+    w_re3_2st(1:4) = [w_re_2st(1), w_re_2st(3), w_re_2st(1), w_re_2st(3)];
+    w_im3_2st(1:4) = [w_im_2st(1), w_im_2st(3), w_im_2st(1), w_im_2st(3)];
+
+    w_re3_2st = w_re3_2st';
+    w_im3_2st = w_im3_2st';
+
+    w_re4_2st(1:4) = [w_re_2st(1), w_re_2st(4), w_re_2st(1), w_re_2st(4)];
+    w_im4_2st(1:4) = [w_im_2st(1), w_im_2st(4), w_im_2st(1), w_im_2st(4)];
+
+    w_re4_2st = w_re4_2st';
+    w_im4_2st = w_im4_2st';
+
+clear w_re_2st; clear w_im_2st;
+    
 %% signal:
 amp_1 = 10000; % 16 bit ADC
 amp_2 = 0;
@@ -70,7 +93,7 @@ for i = 1:4
             ram_re(j, i) = 100;
         elseif(strcmp(test, 'num'))
             ram_re(j, i) = k - 1;
-            ram_im(j, i) = k - 1;
+            %ram_im(j, i) = k - 1;
         end
     end
 end
@@ -87,18 +110,18 @@ end
     but_im(1:4, 3) = (ram_im(1:4, 1) - ram_im(1:4, 2) + ram_im(1:4, 3) - ram_im(1:4, 4))/4;
     but_im(1:4, 4) = (ram_im(1:4, 1) + ram_re(1:4, 2) - ram_im(1:4, 3) - ram_re(1:4, 4))/4;
 
-% multipiler:
+% multiplier:
     mult_re(1:4, 1) = but_re(1:4, 1); % 0
     mult_im(1:4, 1) = but_im(1:4, 1);
 
-    mult_re(1:4, 2) = (but_re(1:4, 2).*w_re(1:4) - but_im(1:4, 2).*w_im(1:4))/2048; % coef reading step = 1
-    mult_im(1:4, 2) = (but_re(1:4, 2).*w_im(1:4) + but_im(1:4, 2).*w_re(1:4))/2048;
+    mult_re(1:4, 2) = (but_re(1:4, 2).*w_re(1:4) - but_im(1:4, 2).*w_im(1:4))/2047; % coef reading step = 1
+    mult_im(1:4, 2) = (but_re(1:4, 2).*w_im(1:4) + but_im(1:4, 2).*w_re(1:4))/2047;
 
-    mult_re(1:4, 3) = (but_re(1:4, 3).*w_re(1:2:7) - but_im(1:4, 3).*w_im(1:2:7))/2048; % 2
-    mult_im(1:4, 3) = (but_re(1:4, 3).*w_im(1:2:7) + but_im(1:4, 3).*w_re(1:2:7))/2048;
+    mult_re(1:4, 3) = (but_re(1:4, 3).*w_re(1:2:7) - but_im(1:4, 3).*w_im(1:2:7))/2047; % 2
+    mult_im(1:4, 3) = (but_re(1:4, 3).*w_im(1:2:7) + but_im(1:4, 3).*w_re(1:2:7))/2047;
 
-    mult_re(1:4, 4) = (but_re(1:4, 4).*w_re(1:3:10) - but_im(1:4, 4).*w_im(1:3:10))/2048; % 3
-    mult_im(1:4, 4) = (but_re(1:4, 4).*w_im(1:3:10) + but_im(1:4, 4).*w_re(1:3:10))/2048;
+    mult_re(1:4, 4) = (but_re(1:4, 4).*w_re(1:3:10) - but_im(1:4, 4).*w_im(1:3:10))/2047; % 3
+    mult_im(1:4, 4) = (but_re(1:4, 4).*w_im(1:3:10) + but_im(1:4, 4).*w_re(1:3:10))/2047;
 
 % output mixer:
     % real:
@@ -152,20 +175,20 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     but_im(1:4, 2) = (mult_im(1:4, 1) - mult_re(1:4, 2) - mult_im(1:4, 3) + mult_re(1:4, 4))/4;
     but_im(1:4, 3) = (mult_im(1:4, 1) - mult_im(1:4, 2) + mult_im(1:4, 3) - mult_im(1:4, 4))/4;
     but_im(1:4, 4) = (mult_im(1:4, 1) + mult_re(1:4, 2) - mult_im(1:4, 3) - mult_re(1:4, 4))/4;
-
+%}
+    
 % multipiler:
     mult_re(1:4, 1) = but_re(1:4, 1); % 0
     mult_im(1:4, 1) = but_im(1:4, 1);
 
-    mult_re(1:4, 2) = (but_re(1:4, 2).*w_re(1:4) - but_im(1:4, 2).*w_im(1:4))/2048; % coef reading step = 1
-    mult_im(1:4, 2) = (but_re(1:4, 2).*w_im(1:4) + but_im(1:4, 2).*w_re(1:4))/2048;
+    mult_re(1:4, 2) = (but_re(1:4, 2).*w_re2_2st(1:4) - but_im(1:4, 2).*w_im2_2st(1:4))/2047; % coef reading step = 1
+    mult_im(1:4, 2) = (but_re(1:4, 2).*w_im2_2st(1:4) + but_im(1:4, 2).*w_re2_2st(1:4))/2047;
 
-    mult_re(1:4, 3) = (but_re(1:4, 3).*w_re(1:2:7) - but_im(1:4, 3).*w_im(1:2:7))/2048; % 2
-    mult_im(1:4, 3) = (but_re(1:4, 3).*w_im(1:2:7) + but_im(1:4, 3).*w_re(1:2:7))/2048;
+    mult_re(1:4, 3) = (but_re(1:4, 3).*w_re3_2st(1:4) - but_im(1:4, 3).*w_im3_2st(1:4))/2047; % 2
+    mult_im(1:4, 3) = (but_re(1:4, 3).*w_im3_2st(1:4) + but_im(1:4, 3).*w_re3_2st(1:4))/2047;
 
-    mult_re(1:4, 4) = (but_re(1:4, 4).*w_re(1:3:10) - but_im(1:4, 4).*w_im(1:3:10))/2048; % 3
-    mult_im(1:4, 4) = (but_re(1:4, 4).*w_im(1:3:10) + but_im(1:4, 4).*w_re(1:3:10))/2048;
-%}
+    mult_re(1:4, 4) = (but_re(1:4, 4).*w_re4_2st(1:4) - but_im(1:4, 4).*w_im4_2st(1:4))/2047; % 3
+    mult_im(1:4, 4) = (but_re(1:4, 4).*w_im4_2st(1:4) + but_im(1:4, 4).*w_re4_2st(1:4))/2047;
 
 %% analys:
 ram_a_re(1:4)	= but_re(1:4, 1); ram_a_im(1:4)	  = but_im(1:4, 1);
@@ -176,22 +199,42 @@ ram_a_re(13:16) = but_re(1:4, 4); ram_a_im(13:16) = but_im(1:4, 4);
 ram_a_re = ram_a_re';
 ram_a_im = ram_a_im';
 
-a_re(1:16) = zeros;
-a_im(1:16) = zeros;
+%a_re = bitrevorder(ram_a_re);
+%a_im = bitrevorder(ram_a_im);
 
-% bit reverse change to normal:
-for i = 1:16
-   ind =  bitget(i - 1, 1)*2^3 + bitget(i - 1, 2)*2^2 +...
-          bitget(i - 1, 3)*2^1 + bitget(i - 1, 4)*2^0;
-   
-   fprintf('\tind = %4d\ti = %4d\n', ind, i - 1);
-   
-   a_re(i) = ram_a_re(ind + 1);
-   a_im(i) = ram_a_im(ind + 1);
-end
+a_re(1) = ram_a_re(1);
+a_re(2) = ram_a_re(5);
+a_re(3) = ram_a_re(9);
+a_re(4) = ram_a_re(13);
+a_re(5) = ram_a_re(2);
+a_re(6) = ram_a_re(6);
+a_re(7) = ram_a_re(10);
+a_re(8) = ram_a_re(14);
+a_re(9) = ram_a_re(3);
+a_re(10) = ram_a_re(7);
+a_re(11) = ram_a_re(11);
+a_re(12) = ram_a_re(15);
+a_re(13) = ram_a_re(4);
+a_re(14) = ram_a_re(8);
+a_re(15) = ram_a_re(12);
+a_re(16) = ram_a_re(16);
 
-a_re = a_re';
-a_im = a_im';
+a_im(1) = ram_a_im(1);
+a_im(2) = ram_a_im(5);
+a_im(3) = ram_a_im(9);
+a_im(4) = ram_a_im(13);
+a_im(5) = ram_a_im(2);
+a_im(6) = ram_a_im(6);
+a_im(7) = ram_a_im(10);
+a_im(8) = ram_a_im(14);
+a_im(9) = ram_a_im(3);
+a_im(10) = ram_a_im(7);
+a_im(11) = ram_a_im(11);
+a_im(12) = ram_a_im(15);
+a_im(13) = ram_a_im(4);
+a_im(14) = ram_a_im(8);
+a_im(15) = ram_a_im(12);
+a_im(16) = ram_a_im(16);
 
 afc_a = sqrt(a_re.^2 + a_im.^2);
 
