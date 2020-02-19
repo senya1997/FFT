@@ -7,9 +7,9 @@ Fd = 44100;
 %mode = 'home';
 mode = 'work';
 
-%test = 'sin';
+test = 'sin';
 %test = 'const';
-test = 'num';
+%test = 'num';
 
 %% coef:
 if(strcmp(mode, 'work'))
@@ -58,7 +58,7 @@ amp_1 = 10000; % 16 bit ADC
 amp_2 = 0;
 
 freq_1 = 9000;  % Hz
-freq_2 = 4200;
+freq_2 = 4500;
 
 phase_1 = 0; % grad
 phase_2 = 37;
@@ -90,13 +90,31 @@ for i = 1:4
         if(strcmp(test, 'sin'))
             ram_re(j, i) = round(signal(k));
         elseif(strcmp(test, 'const'))
-            ram_re(j, i) = 100;
+            ram_re(j, i) = 14537;
         elseif(strcmp(test, 'num'))
             ram_re(j, i) = k - 1;
             %ram_im(j, i) = k - 1;
         end
     end
 end
+
+%{
+% output mixer:
+    % real:
+    ram_re(1, 1:4) = [ram_re(1, 1), ram_re(1, 2), ram_re(1, 3), ram_re(1, 4)];
+    ram_re(2, 1:4) = [ram_re(2, 2), ram_re(2, 3), ram_re(2, 4), ram_re(2, 1)];
+    ram_re(3, 1:4) = [ram_re(3, 3), ram_re(3, 4), ram_re(3, 1), ram_re(3, 2)];
+    ram_re(4, 1:4) = [ram_re(4, 4), ram_re(4, 1), ram_re(4, 2), ram_re(4, 3)]; 
+
+% input mixer + rotate addr:
+    % real:
+    ram_a_re_buf(1, 1:4) =	[ram_re(1, 1), ram_re(2, 4), ram_re(3, 3), ram_re(4, 2)];
+    ram_a_re_buf(2, 1:4) =	[ram_re(1, 2), ram_re(2, 1), ram_re(3, 4), ram_re(4, 3)];
+    ram_a_re_buf(3, 1:4) =	[ram_re(1, 3), ram_re(2, 2), ram_re(3, 1), ram_re(4, 4)];
+    ram_a_re_buf(4, 1:4) =	[ram_re(1, 4), ram_re(2, 3), ram_re(3, 2), ram_re(4, 1)];
+
+ram_re = ram_a_re_buf;
+%}
 
 %% FFT:
 % butterfly:
@@ -151,7 +169,7 @@ end
     
 ram_re = ram_a_re_buf;
 ram_im = ram_a_im_buf;
-clear ram_a_re_buf; clear ram_a_im_buf;    
+clear ram_a_re_buf; clear ram_a_im_buf;
 
 % butterfly:
     but_re(1:4, 1) = (ram_re(1:4, 1) + ram_re(1:4, 2) + ram_re(1:4, 3) + ram_re(1:4, 4))/4;
@@ -190,17 +208,32 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:4, 4) = (but_re(1:4, 4).*w_re4_2st(1:4) - but_im(1:4, 4).*w_im4_2st(1:4))/2047; % 3
     mult_im(1:4, 4) = (but_re(1:4, 4).*w_im4_2st(1:4) + but_im(1:4, 4).*w_re4_2st(1:4))/2047;
 
+% output mixer:
+    % real:
+    ram_re(1, 1:4) = [mult_re(1, 1), mult_re(1, 4), mult_re(1, 3), mult_re(1, 2)];
+    ram_re(2, 1:4) = [mult_re(2, 1), mult_re(2, 4), mult_re(2, 3), mult_re(2, 2)];
+    ram_re(3, 1:4) = [mult_re(3, 1), mult_re(3, 4), mult_re(3, 3), mult_re(3, 2)];
+    ram_re(4, 1:4) = [mult_re(4, 1), mult_re(4, 4), mult_re(4, 3), mult_re(4, 2)];
+    
+    % imag:
+    ram_im(1, 1:4) = [mult_im(1, 1), mult_im(1, 4), mult_im(1, 3), mult_im(1, 2)];
+    ram_im(2, 1:4) = [mult_im(2, 1), mult_im(2, 4), mult_im(2, 3), mult_im(2, 2)];
+    ram_im(3, 1:4) = [mult_im(3, 1), mult_im(3, 4), mult_im(3, 3), mult_im(3, 2)];
+    ram_im(4, 1:4) = [mult_im(4, 1), mult_im(4, 4), mult_im(4, 3), mult_im(4, 2)];
+    
 %% analys:
-ram_a_re(1:4)	= but_re(1:4, 1); ram_a_im(1:4)	  = but_im(1:4, 1);
-ram_a_re(5:8)	= but_re(1:4, 2); ram_a_im(5:8)	  = but_im(1:4, 2);
-ram_a_re(9:12)  = but_re(1:4, 3); ram_a_im(9:12)  = but_im(1:4, 3);
-ram_a_re(13:16) = but_re(1:4, 4); ram_a_im(13:16) = but_im(1:4, 4);
+ram_a_re(1:4)	= ram_re(1:4, 1); ram_a_im(1:4)    = ram_im(1:4, 1);
+ram_a_re(5:8)	= ram_re(1:4, 2); ram_a_im(5:8)    = ram_im(1:4, 2);
+ram_a_re(9:12)  = ram_re(1:4, 3); ram_a_im(9:12)   = ram_im(1:4, 3);
+ram_a_re(13:16) = ram_re(1:4, 4); ram_a_im(13:16)  = ram_im(1:4, 4);
 
 ram_a_re = ram_a_re';
 ram_a_im = ram_a_im';
 
-%a_re = bitrevorder(ram_a_re);
-%a_im = bitrevorder(ram_a_im);
+%{
+a_re = bitrevorder(ram_a_re);
+a_im = bitrevorder(ram_a_im);
+
 
 a_re(1) = ram_a_re(1);
 a_re(2) = ram_a_re(5);
@@ -235,8 +268,9 @@ a_im(13) = ram_a_im(4);
 a_im(14) = ram_a_im(8);
 a_im(15) = ram_a_im(12);
 a_im(16) = ram_a_im(16);
+%}
 
-afc_a = sqrt(a_re.^2 + a_im.^2);
+afc_a = sqrt(ram_a_re.^2 + ram_a_im.^2);
 
 %% graphics:
 figure;

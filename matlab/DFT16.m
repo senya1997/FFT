@@ -35,7 +35,7 @@ amp_1 = 10000; % 16 bit ADC
 amp_2 = 0;
 
 freq_1 = 9000;  % Hz
-freq_2 = 4200;
+freq_2 = 4500;
 
 phase_1 = 0; % grad
 phase_2 = 37;
@@ -47,7 +47,11 @@ signal = bias + amp_1*sind((freq_1*360).* time + phase_1) + amp_2*sind((freq_2*3
 signal = round(signal');
 
 dft(1:16, 1) = w * signal; % complex multiple
-afc = sqrt(real(dft./(2048*16)).^2 + imag(dft./(2048*16)).^2);
+
+dft_re = real(dft./(2047*16));
+dft_im = imag(dft./(2047*16));
+
+afc = sqrt(real(dft./(2047*16)).^2 + imag(dft./(2047*16)).^2);
 
 %% graphics:
 figure;
