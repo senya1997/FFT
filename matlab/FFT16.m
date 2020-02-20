@@ -209,17 +209,8 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_im(1:4, 4) = (but_re(1:4, 4).*w_im4_2st(1:4) + but_im(1:4, 4).*w_re4_2st(1:4))/2047;
 
 % output mixer:
-    % real:
-    ram_re(1, 1:4) = [mult_re(1, 1), mult_re(1, 4), mult_re(1, 3), mult_re(1, 2)];
-    ram_re(2, 1:4) = [mult_re(2, 1), mult_re(2, 4), mult_re(2, 3), mult_re(2, 2)];
-    ram_re(3, 1:4) = [mult_re(3, 1), mult_re(3, 4), mult_re(3, 3), mult_re(3, 2)];
-    ram_re(4, 1:4) = [mult_re(4, 1), mult_re(4, 4), mult_re(4, 3), mult_re(4, 2)];
-    
-    % imag:
-    ram_im(1, 1:4) = [mult_im(1, 1), mult_im(1, 4), mult_im(1, 3), mult_im(1, 2)];
-    ram_im(2, 1:4) = [mult_im(2, 1), mult_im(2, 4), mult_im(2, 3), mult_im(2, 2)];
-    ram_im(3, 1:4) = [mult_im(3, 1), mult_im(3, 4), mult_im(3, 3), mult_im(3, 2)];
-    ram_im(4, 1:4) = [mult_im(4, 1), mult_im(4, 4), mult_im(4, 3), mult_im(4, 2)];
+    ram_re(1:4, 1:4) = [mult_re(1:4, 1), mult_re(1:4, 4), mult_re(1:4, 3), mult_re(1:4, 2)];
+    ram_im(1:4, 1:4) = [mult_im(1:4, 1), mult_im(1:4, 4), mult_im(1:4, 3), mult_im(1:4, 2)];
     
 %% analys:
 ram_a_re(1:4)	= ram_re(1:4, 1); ram_a_im(1:4)    = ram_im(1:4, 1);
