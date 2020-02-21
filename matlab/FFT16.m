@@ -22,8 +22,8 @@ else
     error('"mode" is wrong');
 end
 
-w_re(1:16) = temp_re(1:16);
-w_im(1:16) = temp_im(1:16);
+w_re(1:N) = temp_re(1:N);
+w_im(1:N) = temp_im(1:N);
 
 w_re = w_re';
 w_im = w_im';
@@ -55,9 +55,9 @@ clear w_re_2st; clear w_im_2st;
     
 %% signal:
 amp_1 = 10000; % 16 bit ADC
-amp_2 = 0;
+amp_2 = 5000;
 
-freq_1 = 9000;  % Hz
+freq_1 = 9000; % Hz
 freq_2 = 4500;
 
 phase_1 = 0; % grad
@@ -194,7 +194,8 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     but_im(1:4, 3) = (mult_im(1:4, 1) - mult_im(1:4, 2) + mult_im(1:4, 3) - mult_im(1:4, 4))/4;
     but_im(1:4, 4) = (mult_im(1:4, 1) + mult_re(1:4, 2) - mult_im(1:4, 3) - mult_re(1:4, 4))/4;
 %}
-    
+ 
+%{
 % multipiler:
     mult_re(1:4, 1) = but_re(1:4, 1); % 0
     mult_im(1:4, 1) = but_im(1:4, 1);
@@ -207,6 +208,7 @@ clear ram_a_re_buf; clear ram_a_im_buf;
 
     mult_re(1:4, 4) = (but_re(1:4, 4).*w_re4_2st(1:4) - but_im(1:4, 4).*w_im4_2st(1:4))/2047; % 3
     mult_im(1:4, 4) = (but_re(1:4, 4).*w_im4_2st(1:4) + but_im(1:4, 4).*w_re4_2st(1:4))/2047;
+%}
 
 % output mixer:
     %ram_re(1:4, 1:4) = [mult_re(1:4, 1), mult_re(1:4, 4), mult_re(1:4, 3), mult_re(1:4, 2)];
@@ -274,6 +276,10 @@ freq = 0 : Fd/N : Fd - 1;
 
 figure;
 plot(freq, afc_a);
+for j = 1:N
+    hold on;
+    plot([freq(j), freq(j)], [0, afc_a(j)], 'c--');
+end
 title('AFC:');
 xlabel('Freq, Hz');
 grid on;
