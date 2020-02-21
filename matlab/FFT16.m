@@ -209,14 +209,14 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_im(1:4, 4) = (but_re(1:4, 4).*w_im4_2st(1:4) + but_im(1:4, 4).*w_re4_2st(1:4))/2047;
 
 % output mixer:
-    ram_re(1:4, 1:4) = [mult_re(1:4, 1), mult_re(1:4, 4), mult_re(1:4, 3), mult_re(1:4, 2)];
-    ram_im(1:4, 1:4) = [mult_im(1:4, 1), mult_im(1:4, 4), mult_im(1:4, 3), mult_im(1:4, 2)];
+    %ram_re(1:4, 1:4) = [mult_re(1:4, 1), mult_re(1:4, 4), mult_re(1:4, 3), mult_re(1:4, 2)];
+    %ram_im(1:4, 1:4) = [mult_im(1:4, 1), mult_im(1:4, 4), mult_im(1:4, 3), mult_im(1:4, 2)];
     
 %% analys:
-ram_a_re(1:4)	= ram_re(1:4, 1); ram_a_im(1:4)    = ram_im(1:4, 1);
-ram_a_re(5:8)	= ram_re(1:4, 2); ram_a_im(5:8)    = ram_im(1:4, 2);
-ram_a_re(9:12)  = ram_re(1:4, 3); ram_a_im(9:12)   = ram_im(1:4, 3);
-ram_a_re(13:16) = ram_re(1:4, 4); ram_a_im(13:16)  = ram_im(1:4, 4);
+ram_a_re(1:4)	= but_re(1:4, 1); ram_a_im(1:4)    = but_im(1:4, 1);
+ram_a_re(5:8)	= but_re(1:4, 2); ram_a_im(5:8)    = but_im(1:4, 2);
+ram_a_re(9:12)  = but_re(1:4, 3); ram_a_im(9:12)   = but_im(1:4, 3);
+ram_a_re(13:16) = but_re(1:4, 4); ram_a_im(13:16)  = but_im(1:4, 4);
 
 ram_a_re = ram_a_re';
 ram_a_im = ram_a_im';
