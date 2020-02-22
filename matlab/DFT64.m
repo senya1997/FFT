@@ -4,8 +4,8 @@ clc;
 N = 64;
 Fd = 44100;
 
-%mode = 'home';
-mode = 'work';
+mode = 'home';
+%mode = 'work';
 
 %% coef:
 if(strcmp(mode, 'work'))
@@ -32,7 +32,7 @@ clear temp_re; clear temp_im; clear inc;
 
 %% signal + DFT:
 amp_1 = 10000; % 16 bit ADC
-amp_2 = 0;
+amp_2 = 5000;
 
 freq_1 = 9000;  % Hz
 freq_2 = 4500;
@@ -51,7 +51,7 @@ dft(1:N, 1) = w * signal; % complex multiple
 dft_re = real(dft./(1024*N));
 dft_im = imag(dft./(1024*N));
 
-afc = sqrt((dft_re./(1024*N)).^2 + (dft_im./(1024*N)).^2);
+afc = sqrt(dft_re.^2 + dft_im.^2);
 
 %% graphics:
 figure;
@@ -68,6 +68,6 @@ for j = 1:N
     hold on;
     plot([freq(j), freq(j)], [0, afc(j)], 'c--');
 end
-title('AFC:');
+title('DFT:');
 xlabel('Freq, Hz');
 grid on;

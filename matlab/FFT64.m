@@ -5,8 +5,8 @@ clc;
 N = 64;
 Fd = 44100;
 
-%mode = 'home';
-mode = 'work';
+mode = 'home';
+%mode = 'work';
 
 test = 'sin';
 %test = 'const';
@@ -81,7 +81,7 @@ ram_re(1:16, 1:4) = zeros;
 ram_im(1:16, 1:4) = zeros;
 
 amp_1 = 10000; % e.g. 16 bit ADC
-amp_2 = 000; % 2nd sine
+amp_2 = 5000; % 2nd sine
 
 freq_1 = 9000; % Hz
 freq_2 = 4500;
@@ -357,22 +357,12 @@ clear ram_a_re_buf; clear ram_a_im_buf;
 
 %{
 % output mixer:
-for i = 1:4
-    t = (i-1)*4;
-    % real:
-    ram_re(1+t, 1:4) = [mult_re(1+t, 1), mult_re(1+t, 2), mult_re(1+t, 3), mult_re(1+t, 4)];
-    ram_re(2+t, 1:4) = [mult_re(2+t, 2), mult_re(2+t, 3), mult_re(2+t, 4), mult_re(2+t, 1)];
-    ram_re(3+t, 1:4) = [mult_re(3+t, 3), mult_re(3+t, 4), mult_re(3+t, 1), mult_re(3+t, 2)];
-    ram_re(4+t, 1:4) = [mult_re(4+t, 4), mult_re(4+t, 1), mult_re(4+t, 2), mult_re(4+t, 3)];
-    
-    % imag:
-    ram_im(1+t, 1:4) = [mult_im(1+t, 1), mult_im(1+t, 2), mult_im(1+t, 3), mult_im(1+t, 4)];
-    ram_im(2+t, 1:4) = [mult_im(2+t, 2), mult_im(2+t, 3), mult_im(2+t, 4), mult_im(2+t, 1)];
-    ram_im(3+t, 1:4) = [mult_im(3+t, 3), mult_im(3+t, 4), mult_im(3+t, 1), mult_im(3+t, 2)];
-    ram_im(4+t, 1:4) = [mult_im(4+t, 4), mult_im(4+t, 1), mult_im(4+t, 2), mult_im(4+t, 3)];
-end
+    ram_a_re_buf(1:16, 1) = [but_re(1:4, 1), but_re(1:4, 2), but_re(1:4, 3), but_re(1:4, 4)];
+    ram_a_re_buf(2, 1:4) = [but_re(2, 2), but_re(2, 3), but_re(2, 4), but_re(2, 1)];
+    ram_a_re_buf(3, 1:4) = [but_re(3, 3), but_re(3, 4), but_re(3, 1), but_re(3, 2)];
+    ram_a_re_buf(4, 1:4) = [but_re(4, 4), but_re(4, 1), but_re(4, 2), but_re(4, 3)];
 %}
-    
+
 %% output files
 if(strcmp(mode, 'work'))
     file_a_re = fopen('D:\work\fft\matlab\ram_a_re.txt', 'w');

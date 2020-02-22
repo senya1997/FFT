@@ -1,22 +1,13 @@
 clear;
 clc;
 
-%mode = 'home';
-mode = 'work';
+mode = 'home';
+%mode = 'work';
 
 %moodel = 'fpga';
 moodel = 'math';
 
-fprintf('\n\tStart\n\n');
-
-a_re(1:64) = zeros;
-a_im(1:64) = zeros;
-b_re(1:64) = zeros;
-b_im(1:64) = zeros;
-
 %% load files
-fprintf('reading file...\n');
-
 if(strcmp(mode, 'work'))
     if(strcmp(moodel, 'math'))
         file_a_re = load('D:\work\fft\matlab\ram_a_re.txt');
@@ -45,6 +36,11 @@ else
     error('"mode" is wrong');
 end
 
+for i = 1:4
+    file_a_re(1:16, i) = digitrevorder(file_a_re(1:16, i), 4);
+    file_a_im(1:16, i) = digitrevorder(file_a_im(1:16, i), 4);
+end
+
 ram_a_re(1:16)	= file_a_re(1:16, 1); ram_a_im(1:16)	= file_a_im(1:16, 1);
 ram_a_re(17:32)	= file_a_re(1:16, 2); ram_a_im(17:32)	= file_a_im(1:16, 2);
 ram_a_re(33:48) = file_a_re(1:16, 3); ram_a_im(33:48)	= file_a_im(1:16, 3);
@@ -62,18 +58,19 @@ for i = 1:16
     ram_a_re(1, (1 + (i-1)*4) : (i*4)) = file_a_re(i, 1:4);
     ram_a_im(1, (1 + (i-1)*4) : (i*4)) = file_a_im(i, 1:4);
 end
+%}
 
 ram_a_re = ram_a_re';
 ram_a_im = ram_a_im';
-%}
 
 %% bit reverse change to normal
-a_re = bitrevorder(ram_a_re);
-a_im = bitrevorder(ram_a_im);
+%{
+a_re = digitrevorder(ram_a_re, 4);
+a_im = digitrevorder(ram_a_im, 4);
 
 if(strcmp(moodel, 'fpga'))
-       b_re = bitrevorder(ram_b_re);
-       b_im = bitrevorder(ram_b_im);
+    b_re = digitrevorder(ram_b_re, 4);
+    b_im = digitrevorder(ram_b_im, 4);
 end
 
 a_re = a_re';
@@ -83,11 +80,12 @@ if(strcmp(moodel, 'fpga'))
     b_re = b_re';
     b_im = b_im';
 end
+%}
 
 %% AFC from "A" RAM
-afc_a = sqrt(a_re.^2 + a_im.^2);
 ram_afc_a = sqrt(ram_a_re.^2 + ram_a_im.^2);
 
+%afc_a = sqrt(a_re.^2 + a_im.^2);
 %afc_b = sqrt(b_re.^2 + b_im.^2);
 
 %% subtraction first half from second, mirror left and right part of AFC
@@ -107,26 +105,23 @@ N = 64;
 Fd = 44100;
 F = 0 : Fd/N : Fd - 1;
 
-fprintf('building graph...\n');
-    figure;    
-    plot(F, ram_afc_a);
-    for j = 1:N
-        hold on;
-        plot([F(j), F(j)], [0, ram_afc_a(j)], 'c--');
-    end
-    title('AFC from RAM "A" without change position harm:');
-    grid on;
+figure;    
+plot(F, ram_afc_a);
+for j = 1:N
+    hold on;
+    plot([F(j), F(j)], [0, ram_afc_a(j)], 'c--');
+end
+title('FFT from RAM "A" without change position harm:');
+grid on;
 
-    %{
-    figure;    
-    plot(F, afc_a);
-    title('AFC from RAM "A":');
-    grid on;
-    
-    figure;
-    plot(sub);
-    title('subtraction:');
-    grid on;
-    %}
-    
-fprintf('\n\tComplete\n');
+%{
+figure;    
+plot(F, afc_a);
+title('AFC from RAM "A":');
+grid on;
+
+figure;
+plot(sub);
+title('subtraction:');
+grid on;
+%}

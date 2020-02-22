@@ -4,8 +4,8 @@ clc;
 N = 16;
 Fd = 44100;
 
-%mode = 'home';
-mode = 'work';
+mode = 'home';
+%mode = 'work';
 
 test = 'sin';
 %test = 'const';
@@ -280,6 +280,6 @@ for j = 1:N
     hold on;
     plot([freq(j), freq(j)], [0, afc_a(j)], 'c--');
 end
-title('AFC:');
+title('FFT:');
 xlabel('Freq, Hz');
 grid on;
