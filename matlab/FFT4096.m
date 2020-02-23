@@ -36,23 +36,24 @@ else
     error('"mode" is wrong');
 end
 
-    w_re_2 = w_re_2'; w_im_2 = w_im_2';
-    w_re_3 = w_re_3'; w_im_3 = w_im_3';
-    w_re_4 = w_re_4'; w_im_4 = w_im_4';
+w_re_2 = w_re_2'; w_im_2 = w_im_2';
+w_re_3 = w_re_3'; w_im_3 = w_im_3';
+w_re_4 = w_re_4'; w_im_4 = w_im_4';
 
-    w_re_2_buf = w_re_2(1:4:16);
-w_re_2_2st(1:16) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
-    w_re_3_buf = w_re_3(1:4:16);
-w_re_3_2st(1:16) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-    w_re_4_buf = w_re_4(1:4:16);
-w_re_4_2st(1:16) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
+% 2st
+    w_re_2_buf = w_re_2(1:4:1024);
+w_re_2_2st(1:1024) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
+    w_re_3_buf = w_re_3(1:4:1024);
+w_re_3_2st(1:1024) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
+    w_re_4_buf = w_re_4(1:4:1024);
+w_re_4_2st(1:1024) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
 
-    w_im_2_buf = w_im_2(1:4:16);
-w_im_2_2st(1:16) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_3(1:4:16);
-w_im_3_2st(1:16) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_4(1:4:16);
-w_im_4_2st(1:16) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+    w_im_2_buf = w_im_2(1:4:1024);
+w_im_2_2st(1:1024) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+    w_im_3_buf = w_im_3(1:4:1024);
+w_im_3_2st(1:1024) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+    w_im_4_buf = w_im_4(1:4:1024);
+w_im_4_2st(1:1024) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
 
 w_re_2_2st = w_re_2_2st'; w_im_2_2st = w_im_2_2st';
 w_re_3_2st = w_re_3_2st'; w_im_3_2st = w_im_3_2st';
@@ -61,19 +62,20 @@ w_re_4_2st = w_re_4_2st'; w_im_4_2st = w_im_4_2st';
     clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
     clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
 
-    w_re_2_buf = w_re_2_2st(1:4:16);
-w_re_2_3st(1:16) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
-    w_re_3_buf = w_re_3_2st(1:4:16);
-w_re_3_3st(1:16) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-    w_re_4_buf = w_re_4_2st(1:4:16);
-w_re_4_3st(1:16) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
+% 3st
+    w_re_2_buf = w_re_2_2st(1:4:1024);
+w_re_2_3st(1:1024) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
+    w_re_3_buf = w_re_3_2st(1:4:1024);
+w_re_3_3st(1:1024) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
+    w_re_4_buf = w_re_4_2st(1:4:1024);
+w_re_4_3st(1:1024) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
 
-    w_im_2_buf = w_im_2_2st(1:4:16);
-w_im_2_3st(1:16) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_3_2st(1:4:16);
-w_im_3_3st(1:16) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_4_2st(1:4:16);
-w_im_4_3st(1:16) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+    w_im_2_buf = w_im_2_2st(1:4:1024);
+w_im_2_3st(1:1024) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+    w_im_3_buf = w_im_3_2st(1:4:1024);
+w_im_3_3st(1:1024) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+    w_im_4_buf = w_im_4_2st(1:4:1024);
+w_im_4_3st(1:1024) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
 
 w_re_2_3st = w_re_2_3st'; w_im_2_3st = w_im_2_3st';
 w_re_3_3st = w_re_3_3st'; w_im_3_3st = w_im_3_3st';
@@ -81,7 +83,29 @@ w_re_4_3st = w_re_4_3st'; w_im_4_3st = w_im_4_3st';
 
     clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
     clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
+    
+% 4st
+    w_re_2_buf = w_re_2_3st(1:4:1024);
+w_re_2_4st(1:1024) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
+    w_re_3_buf = w_re_3_3st(1:4:1024);
+w_re_3_4st(1:1024) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
+    w_re_4_buf = w_re_4_3st(1:4:1024);
+w_re_4_4st(1:1024) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
 
+    w_im_2_buf = w_im_2_3st(1:4:1024);
+w_im_2_4st(1:1024) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+    w_im_3_buf = w_im_3_3st(1:4:1024);
+w_im_3_4st(1:1024) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+    w_im_4_buf = w_im_4_3st(1:4:1024);
+w_im_4_4st(1:1024) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+
+w_re_2_4st = w_re_2_4st'; w_im_2_4st = w_im_2_4st';
+w_re_3_4st = w_re_3_4st'; w_im_3_4st = w_im_3_4st';
+w_re_4_4st = w_re_4_4st'; w_im_4_4st = w_im_4_4st';
+
+    clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
+    clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
+    
 %% ===============================   start:   ==============================
 ram_re(1:1024, 1:4) = zeros;
 ram_im(1:1024, 1:4) = zeros;
@@ -134,80 +158,49 @@ grid on;
 %{
 % 1 st:
 % output mixer:
-    % real:
-    ram_re(1:4, 1:4) =      [ram_re(1:4,   1), ram_re(1:4,   2), ram_re(1:4,   3), ram_re(1:4,   4)];
-    ram_re(5:8, 1:4) =      [ram_re(5:8,   2), ram_re(5:8,   3), ram_re(5:8,   4), ram_re(5:8,   1)];
-    ram_re(9:12, 1:4) =     [ram_re(9:12,  3), ram_re(9:12,  4), ram_re(9:12,  1), ram_re(9:12,  2)];
-    ram_re(13:16, 1:4) =	[ram_re(13:16, 4), ram_re(13:16, 1), ram_re(13:16, 2), ram_re(13:16, 3)];
-    
-    % imag:
-    ram_im(1:4, 1:4) =      [ram_im(1:4,   1), ram_im(1:4,   2), ram_im(1:4,   3), ram_im(1:4,   4)];
-    ram_im(5:8, 1:4) =      [ram_im(5:8,   2), ram_im(5:8,   3), ram_im(5:8,   4), ram_im(5:8,   1)];
-    ram_im(9:12, 1:4) =     [ram_im(9:12,  3), ram_im(9:12,  4), ram_im(9:12,  1), ram_im(9:12,  2)];
-    ram_im(13:16, 1:4) =	[ram_im(13:16, 4), ram_im(13:16, 1), ram_im(13:16, 2), ram_im(13:16, 3)];   
-    
-% 2 st:    
-    % input mixer + rotate addr:
-    % real:
-    ram_a_re_buf(1:4, 1:4) =	[ram_re(1:4, 1), ram_re(5:8, 4), ram_re(9:12, 3), ram_re(13:16, 2)];
-    ram_a_re_buf(5:8, 1:4) =	[ram_re(1:4, 2), ram_re(5:8, 1), ram_re(9:12, 4), ram_re(13:16, 3)];
-    ram_a_re_buf(9:12, 1:4) =	[ram_re(1:4, 3), ram_re(5:8, 2), ram_re(9:12, 1), ram_re(13:16, 4)];
-    ram_a_re_buf(13:16, 1:4) =	[ram_re(1:4, 4), ram_re(5:8, 3), ram_re(9:12, 2), ram_re(13:16, 1)];
-    
-    % imag:
-    ram_a_im_buf(1:4, 1:4) =	[ram_im(1:4, 1), ram_im(5:8, 4), ram_im(9:12, 3), ram_im(13:16, 2)];
-    ram_a_im_buf(5:8, 1:4) =	[ram_im(1:4, 2), ram_im(5:8, 1), ram_im(9:12, 4), ram_im(13:16, 3)];
-    ram_a_im_buf(9:12, 1:4) =	[ram_im(1:4, 3), ram_im(5:8, 2), ram_im(9:12, 1), ram_im(13:16, 4)];
-    ram_a_im_buf(13:16, 1:4) =	[ram_im(1:4, 4), ram_im(5:8, 3), ram_im(9:12, 2), ram_im(13:16, 1)];
-    
-    % output mixer:
-    for i = 1:4
-        t = (i-1)*4;
-        % real:
-        ram_re(1+t, 1:4) = [ram_a_re_buf(1+t, 1), ram_a_re_buf(1+t, 2), ram_a_re_buf(1+t, 3), ram_a_re_buf(1+t, 4)];
-        ram_re(2+t, 1:4) = [ram_a_re_buf(2+t, 2), ram_a_re_buf(2+t, 3), ram_a_re_buf(2+t, 4), ram_a_re_buf(2+t, 1)];
-        ram_re(3+t, 1:4) = [ram_a_re_buf(3+t, 3), ram_a_re_buf(3+t, 4), ram_a_re_buf(3+t, 1), ram_a_re_buf(3+t, 2)];
-        ram_re(4+t, 1:4) = [ram_a_re_buf(4+t, 4), ram_a_re_buf(4+t, 1), ram_a_re_buf(4+t, 2), ram_a_re_buf(4+t, 3)];
+    ram_re_buf1(1:256,   1:4) = [ram_re(1:256,   1), ram_re(1:256,   2), ram_re(1:256,   3), ram_re(1:256,   4)];
+    ram_re_buf1(257:512, 1:4) = [ram_re(257:512, 2), ram_re(257:512, 3), ram_re(257:512, 4), ram_re(257:512, 1)];
+    ram_re_buf1(513:768, 1:4) = [ram_re(513:768, 3), ram_re(513:768, 4), ram_re(513:768, 1), ram_re(513:768, 2)];
+    ram_re_buf1(769:1024,1:4) = [ram_re(769:1024,4), ram_re(769:1024,1), ram_re(769:1024,2), ram_re(769:1024,3)];
 
-        % imag:
-        ram_im(1+t, 1:4) = [ram_a_im_buf(1+t, 1), ram_a_im_buf(1+t, 2), ram_a_im_buf(1+t, 3), ram_a_im_buf(1+t, 4)];
-        ram_im(2+t, 1:4) = [ram_a_im_buf(2+t, 2), ram_a_im_buf(2+t, 3), ram_a_im_buf(2+t, 4), ram_a_im_buf(2+t, 1)];
-        ram_im(3+t, 1:4) = [ram_a_im_buf(3+t, 3), ram_a_im_buf(3+t, 4), ram_a_im_buf(3+t, 1), ram_a_im_buf(3+t, 2)];
-        ram_im(4+t, 1:4) = [ram_a_im_buf(4+t, 4), ram_a_im_buf(4+t, 1), ram_a_im_buf(4+t, 2), ram_a_im_buf(4+t, 3)];
-    end
+% ===========================    2 stage    ===============================
+% input mixer + rotate addr:
+    ram_a_re_buf(1:256,   1:4) = [ram_re_buf1(1:256, 1), ram_re_buf1(257:512, 4), ram_re_buf1(513:768, 3), ram_re_buf1(769:1024, 2)];
+    ram_a_re_buf(257:512, 1:4) = [ram_re_buf1(1:256, 2), ram_re_buf1(257:512, 1), ram_re_buf1(513:768, 4), ram_re_buf1(769:1024, 3)];
+    ram_a_re_buf(513:768, 1:4) = [ram_re_buf1(1:256, 3), ram_re_buf1(257:512, 2), ram_re_buf1(513:768, 1), ram_re_buf1(769:1024, 4)];
+    ram_a_re_buf(769:1024,1:4) = [ram_re_buf1(1:256, 4), ram_re_buf1(257:512, 3), ram_re_buf1(513:768, 2), ram_re_buf1(769:1024, 1)];
     
-% 3 st:
-    % input mixer + rotate addr:
-    for i = 1:4
-        t = (i-1)*4;
-        % real:
-        ram_a_re_buf(1+t, 1:4) = [ram_re(1+t, 1), ram_re(2+t, 4), ram_re(3+t, 3), ram_re(4+t, 2)];
-        ram_a_re_buf(2+t, 1:4) = [ram_re(1+t, 2), ram_re(2+t, 1), ram_re(3+t, 4), ram_re(4+t, 3)];
-        ram_a_re_buf(3+t, 1:4) = [ram_re(1+t, 3), ram_re(2+t, 2), ram_re(3+t, 1), ram_re(4+t, 4)];
-        ram_a_re_buf(4+t, 1:4) = [ram_re(1+t, 4), ram_re(2+t, 3), ram_re(3+t, 2), ram_re(4+t, 1)];
-
-        % imag:
-        ram_a_im_buf(1+t, 1:4) = [ram_im(1+t, 1), ram_im(2+t, 4), ram_im(3+t, 3), ram_im(4+t, 2)];
-        ram_a_im_buf(2+t, 1:4) = [ram_im(1+t, 2), ram_im(2+t, 1), ram_im(3+t, 4), ram_im(4+t, 3)];
-        ram_a_im_buf(3+t, 1:4) = [ram_im(1+t, 3), ram_im(2+t, 2), ram_im(3+t, 1), ram_im(4+t, 4)];
-        ram_a_im_buf(4+t, 1:4) = [ram_im(1+t, 4), ram_im(2+t, 3), ram_im(3+t, 2), ram_im(4+t, 1)];
-    end
+% output mixer:
+for i = 1:4
+    t = (i-1)*256;
     
-    % output mixer:
-    for i = 1:4
-        t = (i-1)*4;
-        % real:
-        ram_re(1+t, 1:4) = [ram_a_re_buf(1+t, 1), ram_a_re_buf(1+t, 2), ram_a_re_buf(1+t, 3), ram_a_re_buf(1+t, 4)];
-        ram_re(2+t, 1:4) = [ram_a_re_buf(2+t, 2), ram_a_re_buf(2+t, 3), ram_a_re_buf(2+t, 4), ram_a_re_buf(2+t, 1)];
-        ram_re(3+t, 1:4) = [ram_a_re_buf(3+t, 3), ram_a_re_buf(3+t, 4), ram_a_re_buf(3+t, 1), ram_a_re_buf(3+t, 2)];
-        ram_re(4+t, 1:4) = [ram_a_re_buf(4+t, 4), ram_a_re_buf(4+t, 1), ram_a_re_buf(4+t, 2), ram_a_re_buf(4+t, 3)];
+    ram_re(1+t : 64+t, 1:4) =    [ram_a_re_buf(1+t : 64+t, 1),    ram_a_re_buf(1+t : 64+t, 2),    ram_a_re_buf(1+t : 64+t, 3),    ram_a_re_buf(1+t : 64+t, 4)];
+    ram_re(65+t : 128+t, 1:4) =  [ram_a_re_buf(65+t : 128+t, 2),  ram_a_re_buf(65+t : 128+t, 3),  ram_a_re_buf(65+t : 128+t, 4),  ram_a_re_buf(65+t : 128+t, 1)];
+    ram_re(129+t : 192+t, 1:4) = [ram_a_re_buf(129+t : 192+t, 3), ram_a_re_buf(129+t : 192+t, 4), ram_a_re_buf(129+t : 192+t, 1), ram_a_re_buf(129+t : 192+t, 2)];
+    ram_re(193+t : 256+t, 1:4) = [ram_a_re_buf(193+t : 256+t, 4), ram_a_re_buf(193+t : 256+t, 1), ram_a_re_buf(193+t : 256+t, 2), ram_a_re_buf(193+t : 256+t, 3)];
 
-        % imag:
-        ram_im(1+t, 1:4) = [ram_a_im_buf(1+t, 1), ram_a_im_buf(1+t, 2), ram_a_im_buf(1+t, 3), ram_a_im_buf(1+t, 4)];
-        ram_im(2+t, 1:4) = [ram_a_im_buf(2+t, 2), ram_a_im_buf(2+t, 3), ram_a_im_buf(2+t, 4), ram_a_im_buf(2+t, 1)];
-        ram_im(3+t, 1:4) = [ram_a_im_buf(3+t, 3), ram_a_im_buf(3+t, 4), ram_a_im_buf(3+t, 1), ram_a_im_buf(3+t, 2)];
-        ram_im(4+t, 1:4) = [ram_a_im_buf(4+t, 4), ram_a_im_buf(4+t, 1), ram_a_im_buf(4+t, 2), ram_a_im_buf(4+t, 3)];
-    end
+end
+
+% ===========================    3 stage    ===============================
+
+ram_a_re_buf(1:1024, 1:4) = zeros;
+ram_a_im_buf(1:1024, 1:4) = zeros;
+
+% input mixer + rotate addr:
+for i = 1:4
+    t = (i-1)*256;
+    
+    ram_a_re_buf(1+t : 64+t, 1:4) =    [ram_re(1+t : 64+t, 1), ram_re(65+t : 128+t, 4), ram_re(129+t : 192+t, 3), ram_re(193+t : 256+t, 2)];
+    ram_a_re_buf(65+t : 128+t, 1:4) =  [ram_re(1+t : 64+t, 2), ram_re(65+t : 128+t, 1), ram_re(129+t : 192+t, 4), ram_re(193+t : 256+t, 3)];
+    ram_a_re_buf(129+t : 192+t, 1:4) = [ram_re(1+t : 64+t, 3), ram_re(65+t : 128+t, 2), ram_re(129+t : 192+t, 1), ram_re(193+t : 256+t, 4)];
+    ram_a_re_buf(193+t : 256+t, 1:4) = [ram_re(1+t : 64+t, 4), ram_re(65+t : 128+t, 3), ram_re(129+t : 192+t, 2), ram_re(193+t : 256+t, 1)];
+
+end
+    
+ram_re = ram_a_re_buf;
+ram_im = ram_a_im_buf;
+clear ram_a_re_buf; clear ram_a_im_buf;
+
 %}
 
 %% ===========================    1 stage    ===============================
@@ -277,52 +270,50 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:1024, 1) = but_re(1:1024, 1); % 0
     mult_im(1:1024, 1) = but_im(1:1024, 1);
 
-    mult_re(1:1024, 2) = (but_re(1:1024, 2).*w_re_2(1:1024) - but_im(1:1024, 2).*w_im_2(1:1024))/1024;
-    mult_im(1:1024, 2) = (but_re(1:1024, 2).*w_im_2(1:1024) + but_im(1:1024, 2).*w_re_2(1:1024))/1024;
+    mult_re(1:1024, 2) = (but_re(1:1024, 2).*w_re_2_2st(1:1024) - but_im(1:1024, 2).*w_im_2_2st(1:1024))/1024;
+    mult_im(1:1024, 2) = (but_re(1:1024, 2).*w_im_2_2st(1:1024) + but_im(1:1024, 2).*w_re_2_2st(1:1024))/1024;
 
-    mult_re(1:1024, 3) = (but_re(1:1024, 3).*w_re_3(1:1024) - but_im(1:1024, 3).*w_im_3(1:1024))/1024;
-    mult_im(1:1024, 3) = (but_re(1:1024, 3).*w_im_3(1:1024) + but_im(1:1024, 3).*w_re_3(1:1024))/1024;
+    mult_re(1:1024, 3) = (but_re(1:1024, 3).*w_re_3_2st(1:1024) - but_im(1:1024, 3).*w_im_3_2st(1:1024))/1024;
+    mult_im(1:1024, 3) = (but_re(1:1024, 3).*w_im_3_2st(1:1024) + but_im(1:1024, 3).*w_re_3_2st(1:1024))/1024;
 
-    mult_re(1:1024, 4) = (but_re(1:1024, 4).*w_re_4(1:1024) - but_im(1:1024, 4).*w_im_4(1:1024))/1024;
-    mult_im(1:1024, 4) = (but_re(1:1024, 4).*w_im_4(1:1024) + but_im(1:1024, 4).*w_re_4(1:1024))/1024;
+    mult_re(1:1024, 4) = (but_re(1:1024, 4).*w_re_4_2st(1:1024) - but_im(1:1024, 4).*w_im_4_2st(1:1024))/1024;
+    mult_im(1:1024, 4) = (but_re(1:1024, 4).*w_im_4_2st(1:1024) + but_im(1:1024, 4).*w_re_4_2st(1:1024))/1024;
     
     clear w_re_2_2st; clear w_re_3_2st; clear w_re_4_2st;
     
 % output mixer:
 for i = 1:4
-    t = (i-1)*4;
-    % real:
-    ram_re(1+t, 1:4) = [mult_re(1+t, 1), mult_re(1+t, 2), mult_re(1+t, 3), mult_re(1+t, 4)];
-    ram_re(2+t, 1:4) = [mult_re(2+t, 2), mult_re(2+t, 3), mult_re(2+t, 4), mult_re(2+t, 1)];
-    ram_re(3+t, 1:4) = [mult_re(3+t, 3), mult_re(3+t, 4), mult_re(3+t, 1), mult_re(3+t, 2)];
-    ram_re(4+t, 1:4) = [mult_re(4+t, 4), mult_re(4+t, 1), mult_re(4+t, 2), mult_re(4+t, 3)];
+    t = (i-1)*256;
     
-    % imag:
-    ram_im(1+t, 1:4) = [mult_im(1+t, 1), mult_im(1+t, 2), mult_im(1+t, 3), mult_im(1+t, 4)];
-    ram_im(2+t, 1:4) = [mult_im(2+t, 2), mult_im(2+t, 3), mult_im(2+t, 4), mult_im(2+t, 1)];
-    ram_im(3+t, 1:4) = [mult_im(3+t, 3), mult_im(3+t, 4), mult_im(3+t, 1), mult_im(3+t, 2)];
-    ram_im(4+t, 1:4) = [mult_im(4+t, 4), mult_im(4+t, 1), mult_im(4+t, 2), mult_im(4+t, 3)];
+    ram_re(1+t : 64+t, 1:4) =    [mult_re(1+t : 64+t, 1),    mult_re(1+t : 64+t, 2),    mult_re(1+t : 64+t, 3),    mult_re(1+t : 64+t, 4)];
+    ram_re(65+t : 128+t, 1:4) =  [mult_re(65+t : 128+t, 2),  mult_re(65+t : 128+t, 3),  mult_re(65+t : 128+t, 4),  mult_re(65+t : 128+t, 1)];
+    ram_re(129+t : 192+t, 1:4) = [mult_re(129+t : 192+t, 3), mult_re(129+t : 192+t, 4), mult_re(129+t : 192+t, 1), mult_re(129+t : 192+t, 2)];
+    ram_re(193+t : 256+t, 1:4) = [mult_re(193+t : 256+t, 4), mult_re(193+t : 256+t, 1), mult_re(193+t : 256+t, 2), mult_re(193+t : 256+t, 3)];
+    
+    ram_im(1+t : 64+t, 1:4) =    [mult_im(1+t : 64+t, 1),    mult_im(1+t : 64+t, 2),    mult_im(1+t : 64+t, 3),    mult_im(1+t : 64+t, 4)];
+    ram_im(65+t : 128+t, 1:4) =  [mult_im(65+t : 128+t, 2),  mult_im(65+t : 128+t, 3),  mult_im(65+t : 128+t, 4),  mult_im(65+t : 128+t, 1)];
+    ram_im(129+t : 192+t, 1:4) = [mult_im(129+t : 192+t, 3), mult_im(129+t : 192+t, 4), mult_im(129+t : 192+t, 1), mult_im(129+t : 192+t, 2)];
+    ram_im(193+t : 256+t, 1:4) = [mult_im(193+t : 256+t, 4), mult_im(193+t : 256+t, 1), mult_im(193+t : 256+t, 2), mult_im(193+t : 256+t, 3)];
 end
 
 %% ===========================    3 stage    ===============================
 
-ram_a_re_buf(1:16, 1:4) = zeros;
-ram_a_im_buf(1:16, 1:4) = zeros;
+ram_a_re_buf(1:1024, 1:4) = zeros;
+ram_a_im_buf(1:1024, 1:4) = zeros;
 
 % input mixer + rotate addr:
 for i = 1:4
-    t = (i-1)*4;
-    % real:
-    ram_a_re_buf(1+t, 1:4) = [ram_re(1+t, 1), ram_re(2+t, 4), ram_re(3+t, 3), ram_re(4+t, 2)];
-    ram_a_re_buf(2+t, 1:4) = [ram_re(1+t, 2), ram_re(2+t, 1), ram_re(3+t, 4), ram_re(4+t, 3)];
-    ram_a_re_buf(3+t, 1:4) = [ram_re(1+t, 3), ram_re(2+t, 2), ram_re(3+t, 1), ram_re(4+t, 4)];
-    ram_a_re_buf(4+t, 1:4) = [ram_re(1+t, 4), ram_re(2+t, 3), ram_re(3+t, 2), ram_re(4+t, 1)];
+    t = (i-1)*256;
     
-    % imag:
-    ram_a_im_buf(1+t, 1:4) = [ram_im(1+t, 1), ram_im(2+t, 4), ram_im(3+t, 3), ram_im(4+t, 2)];
-    ram_a_im_buf(2+t, 1:4) = [ram_im(1+t, 2), ram_im(2+t, 1), ram_im(3+t, 4), ram_im(4+t, 3)];
-    ram_a_im_buf(3+t, 1:4) = [ram_im(1+t, 3), ram_im(2+t, 2), ram_im(3+t, 1), ram_im(4+t, 4)];
-    ram_a_im_buf(4+t, 1:4) = [ram_im(1+t, 4), ram_im(2+t, 3), ram_im(3+t, 2), ram_im(4+t, 1)];
+    ram_a_re_buf(1+t : 64+t, 1:4) =    [ram_re(1+t : 64+t, 1), ram_re(65+t : 128+t, 4), ram_re(129+t : 192+t, 3), ram_re(193+t : 256+t, 2)];
+    ram_a_re_buf(65+t : 128+t, 1:4) =  [ram_re(1+t : 64+t, 2), ram_re(65+t : 128+t, 1), ram_re(129+t : 192+t, 4), ram_re(193+t : 256+t, 3)];
+    ram_a_re_buf(129+t : 192+t, 1:4) = [ram_re(1+t : 64+t, 3), ram_re(65+t : 128+t, 2), ram_re(129+t : 192+t, 1), ram_re(193+t : 256+t, 4)];
+    ram_a_re_buf(193+t : 256+t, 1:4) = [ram_re(1+t : 64+t, 4), ram_re(65+t : 128+t, 3), ram_re(129+t : 192+t, 2), ram_re(193+t : 256+t, 1)];
+    
+    ram_a_im_buf(1+t : 64+t, 1:4) =    [ram_im(1+t : 64+t, 1), ram_im(65+t : 128+t, 4), ram_im(129+t : 192+t, 3), ram_im(193+t : 256+t, 2)];
+    ram_a_im_buf(65+t : 128+t, 1:4) =  [ram_im(1+t : 64+t, 2), ram_im(65+t : 128+t, 1), ram_im(129+t : 192+t, 4), ram_im(193+t : 256+t, 3)];
+    ram_a_im_buf(129+t : 192+t, 1:4) = [ram_im(1+t : 64+t, 3), ram_im(65+t : 128+t, 2), ram_im(129+t : 192+t, 1), ram_im(193+t : 256+t, 4)];
+    ram_a_im_buf(193+t : 256+t, 1:4) = [ram_im(1+t : 64+t, 4), ram_im(65+t : 128+t, 3), ram_im(129+t : 192+t, 2), ram_im(193+t : 256+t, 1)];
 end
     
 ram_re = ram_a_re_buf;
@@ -330,51 +321,146 @@ ram_im = ram_a_im_buf;
 clear ram_a_re_buf; clear ram_a_im_buf;
     
 % butterfly:
-    but_re(1:16, 1) = (ram_re(1:16, 1) + ram_re(1:16, 2) + ram_re(1:16, 3) + ram_re(1:16, 4))/4;
-    but_re(1:16, 2) = (ram_re(1:16, 1) + ram_im(1:16, 2) - ram_re(1:16, 3) - ram_im(1:16, 4))/4;
-    but_re(1:16, 3) = (ram_re(1:16, 1) - ram_re(1:16, 2) + ram_re(1:16, 3) - ram_re(1:16, 4))/4;
-    but_re(1:16, 4) = (ram_re(1:16, 1) - ram_im(1:16, 2) - ram_re(1:16, 3) + ram_im(1:16, 4))/4;
+    but_re(1:1024, 1) = (ram_re(1:1024, 1) + ram_re(1:1024, 2) + ram_re(1:1024, 3) + ram_re(1:1024, 4))/4;
+    but_re(1:1024, 2) = (ram_re(1:1024, 1) + ram_im(1:1024, 2) - ram_re(1:1024, 3) - ram_im(1:1024, 4))/4;
+    but_re(1:1024, 3) = (ram_re(1:1024, 1) - ram_re(1:1024, 2) + ram_re(1:1024, 3) - ram_re(1:1024, 4))/4;
+    but_re(1:1024, 4) = (ram_re(1:1024, 1) - ram_im(1:1024, 2) - ram_re(1:1024, 3) + ram_im(1:1024, 4))/4;
 
-    but_im(1:16, 1) = (ram_im(1:16, 1) + ram_im(1:16, 2) + ram_im(1:16, 3) + ram_im(1:16, 4))/4;
-    but_im(1:16, 2) = (ram_im(1:16, 1) - ram_re(1:16, 2) - ram_im(1:16, 3) + ram_re(1:16, 4))/4;
-    but_im(1:16, 3) = (ram_im(1:16, 1) - ram_im(1:16, 2) + ram_im(1:16, 3) - ram_im(1:16, 4))/4;
-    but_im(1:16, 4) = (ram_im(1:16, 1) + ram_re(1:16, 2) - ram_im(1:16, 3) - ram_re(1:16, 4))/4;
-
-%{
+    but_im(1:1024, 1) = (ram_im(1:1024, 1) + ram_im(1:1024, 2) + ram_im(1:1024, 3) + ram_im(1:1024, 4))/4;
+    but_im(1:1024, 2) = (ram_im(1:1024, 1) - ram_re(1:1024, 2) - ram_im(1:1024, 3) + ram_re(1:1024, 4))/4;
+    but_im(1:1024, 3) = (ram_im(1:1024, 1) - ram_im(1:1024, 2) + ram_im(1:1024, 3) - ram_im(1:1024, 4))/4;
+    but_im(1:1024, 4) = (ram_im(1:1024, 1) + ram_re(1:1024, 2) - ram_im(1:1024, 3) - ram_re(1:1024, 4))/4;
+    
 % multipiler:
-    mult_re(1:16, 1) = but_re(1:16, 1); % 0
-    mult_im(1:16, 1) = but_im(1:16, 1);
+    mult_re(1:1024, 1) = but_re(1:1024, 1); % 0
+    mult_im(1:1024, 1) = but_im(1:1024, 1);
 
-    mult_re(1:16, 2) = but_re(1:16, 2); % 0
-    mult_im(1:16, 2) = but_im(1:16, 2);
+    mult_re(1:1024, 2) = (but_re(1:1024, 2).*w_re_2_3st(1:1024) - but_im(1:1024, 2).*w_im_2_3st(1:1024))/1024;
+    mult_im(1:1024, 2) = (but_re(1:1024, 2).*w_im_2_3st(1:1024) + but_im(1:1024, 2).*w_re_2_3st(1:1024))/1024;
 
-    mult_re(1:16, 3) = but_re(1:16, 3); % 0
-    mult_im(1:16, 3) = but_im(1:16, 3);
+    mult_re(1:1024, 3) = (but_re(1:1024, 3).*w_re_3_3st(1:1024) - but_im(1:1024, 3).*w_im_3_3st(1:1024))/1024;
+    mult_im(1:1024, 3) = (but_re(1:1024, 3).*w_im_3_3st(1:1024) + but_im(1:1024, 3).*w_re_3_3st(1:1024))/1024;
 
-    mult_re(1:16, 4) = but_re(1:16, 4); % 0
-    mult_im(1:16, 4) = but_im(1:16, 4);
+    mult_re(1:1024, 4) = (but_re(1:1024, 4).*w_re_4_3st(1:1024) - but_im(1:1024, 4).*w_im_4_3st(1:1024))/1024;
+    mult_im(1:1024, 4) = (but_re(1:1024, 4).*w_im_4_3st(1:1024) + but_im(1:1024, 4).*w_re_4_3st(1:1024))/1024;
     
-    %clear w_re_2_2st; clear w_re_3_2st; clear w_re_4_2st;
-%}
+    clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
 
-%{
 % output mixer:
-for i = 1:4
-    t = (i-1)*4;
-    % real:
-    ram_re(1+t, 1:4) = [mult_re(1+t, 1), mult_re(1+t, 2), mult_re(1+t, 3), mult_re(1+t, 4)];
-    ram_re(2+t, 1:4) = [mult_re(2+t, 2), mult_re(2+t, 3), mult_re(2+t, 4), mult_re(2+t, 1)];
-    ram_re(3+t, 1:4) = [mult_re(3+t, 3), mult_re(3+t, 4), mult_re(3+t, 1), mult_re(3+t, 2)];
-    ram_re(4+t, 1:4) = [mult_re(4+t, 4), mult_re(4+t, 1), mult_re(4+t, 2), mult_re(4+t, 3)];
+for i = 1:16
+    t = (i-1)*256;
     
-    % imag:
-    ram_im(1+t, 1:4) = [mult_im(1+t, 1), mult_im(1+t, 2), mult_im(1+t, 3), mult_im(1+t, 4)];
-    ram_im(2+t, 1:4) = [mult_im(2+t, 2), mult_im(2+t, 3), mult_im(2+t, 4), mult_im(2+t, 1)];
-    ram_im(3+t, 1:4) = [mult_im(3+t, 3), mult_im(3+t, 4), mult_im(3+t, 1), mult_im(3+t, 2)];
-    ram_im(4+t, 1:4) = [mult_im(4+t, 4), mult_im(4+t, 1), mult_im(4+t, 2), mult_im(4+t, 3)];
+    ram_re(1+t : 64+t, 1:4) =    [mult_re(1+t : 64+t, 1),    mult_re(1+t : 64+t, 2),    mult_re(1+t : 64+t, 3),    mult_re(1+t : 64+t, 4)];
+    ram_re(65+t : 128+t, 1:4) =  [mult_re(65+t : 128+t, 2),  mult_re(65+t : 128+t, 3),  mult_re(65+t : 128+t, 4),  mult_re(65+t : 128+t, 1)];
+    ram_re(129+t : 192+t, 1:4) = [mult_re(129+t : 192+t, 3), mult_re(129+t : 192+t, 4), mult_re(129+t : 192+t, 1), mult_re(129+t : 192+t, 2)];
+    ram_re(193+t : 256+t, 1:4) = [mult_re(193+t : 256+t, 4), mult_re(193+t : 256+t, 1), mult_re(193+t : 256+t, 2), mult_re(193+t : 256+t, 3)];
+    
+    ram_im(1+t : 64+t, 1:4) =    [mult_im(1+t : 64+t, 1),    mult_im(1+t : 64+t, 2),    mult_im(1+t : 64+t, 3),    mult_im(1+t : 64+t, 4)];
+    ram_im(65+t : 128+t, 1:4) =  [mult_im(65+t : 128+t, 2),  mult_im(65+t : 128+t, 3),  mult_im(65+t : 128+t, 4),  mult_im(65+t : 128+t, 1)];
+    ram_im(129+t : 192+t, 1:4) = [mult_im(129+t : 192+t, 3), mult_im(129+t : 192+t, 4), mult_im(129+t : 192+t, 1), mult_im(129+t : 192+t, 2)];
+    ram_im(193+t : 256+t, 1:4) = [mult_im(193+t : 256+t, 4), mult_im(193+t : 256+t, 1), mult_im(193+t : 256+t, 2), mult_im(193+t : 256+t, 3)];
 end
-%}
+
+%% ===========================    4 stage    ===============================
+
+ram_a_re_buf(1:1024, 1:4) = zeros;
+ram_a_im_buf(1:1024, 1:4) = zeros;
+
+% input mixer + rotate addr:
+for i = 1:16
+    t = (i-1)*256;
     
+    ram_a_re_buf(1+t : 64+t, 1:4) =    [ram_re(1+t : 64+t, 1), ram_re(65+t : 128+t, 4), ram_re(129+t : 192+t, 3), ram_re(193+t : 256+t, 2)];
+    ram_a_re_buf(65+t : 128+t, 1:4) =  [ram_re(1+t : 64+t, 2), ram_re(65+t : 128+t, 1), ram_re(129+t : 192+t, 4), ram_re(193+t : 256+t, 3)];
+    ram_a_re_buf(129+t : 192+t, 1:4) = [ram_re(1+t : 64+t, 3), ram_re(65+t : 128+t, 2), ram_re(129+t : 192+t, 1), ram_re(193+t : 256+t, 4)];
+    ram_a_re_buf(193+t : 256+t, 1:4) = [ram_re(1+t : 64+t, 4), ram_re(65+t : 128+t, 3), ram_re(129+t : 192+t, 2), ram_re(193+t : 256+t, 1)];
+    
+    ram_a_im_buf(1+t : 64+t, 1:4) =    [ram_im(1+t : 64+t, 1), ram_im(65+t : 128+t, 4), ram_im(129+t : 192+t, 3), ram_im(193+t : 256+t, 2)];
+    ram_a_im_buf(65+t : 128+t, 1:4) =  [ram_im(1+t : 64+t, 2), ram_im(65+t : 128+t, 1), ram_im(129+t : 192+t, 4), ram_im(193+t : 256+t, 3)];
+    ram_a_im_buf(129+t : 192+t, 1:4) = [ram_im(1+t : 64+t, 3), ram_im(65+t : 128+t, 2), ram_im(129+t : 192+t, 1), ram_im(193+t : 256+t, 4)];
+    ram_a_im_buf(193+t : 256+t, 1:4) = [ram_im(1+t : 64+t, 4), ram_im(65+t : 128+t, 3), ram_im(129+t : 192+t, 2), ram_im(193+t : 256+t, 1)];
+end
+    
+ram_re = ram_a_re_buf;
+ram_im = ram_a_im_buf;
+clear ram_a_re_buf; clear ram_a_im_buf;
+    
+% butterfly:
+    but_re(1:1024, 1) = (ram_re(1:1024, 1) + ram_re(1:1024, 2) + ram_re(1:1024, 3) + ram_re(1:1024, 4))/4;
+    but_re(1:1024, 2) = (ram_re(1:1024, 1) + ram_im(1:1024, 2) - ram_re(1:1024, 3) - ram_im(1:1024, 4))/4;
+    but_re(1:1024, 3) = (ram_re(1:1024, 1) - ram_re(1:1024, 2) + ram_re(1:1024, 3) - ram_re(1:1024, 4))/4;
+    but_re(1:1024, 4) = (ram_re(1:1024, 1) - ram_im(1:1024, 2) - ram_re(1:1024, 3) + ram_im(1:1024, 4))/4;
+
+    but_im(1:1024, 1) = (ram_im(1:1024, 1) + ram_im(1:1024, 2) + ram_im(1:1024, 3) + ram_im(1:1024, 4))/4;
+    but_im(1:1024, 2) = (ram_im(1:1024, 1) - ram_re(1:1024, 2) - ram_im(1:1024, 3) + ram_re(1:1024, 4))/4;
+    but_im(1:1024, 3) = (ram_im(1:1024, 1) - ram_im(1:1024, 2) + ram_im(1:1024, 3) - ram_im(1:1024, 4))/4;
+    but_im(1:1024, 4) = (ram_im(1:1024, 1) + ram_re(1:1024, 2) - ram_im(1:1024, 3) - ram_re(1:1024, 4))/4;
+    
+% multipiler:
+    mult_re(1:1024, 1) = but_re(1:1024, 1); % 0
+    mult_im(1:1024, 1) = but_im(1:1024, 1);
+
+    mult_re(1:1024, 2) = (but_re(1:1024, 2).*w_re_2_4st(1:1024) - but_im(1:1024, 2).*w_im_2_4st(1:1024))/1024;
+    mult_im(1:1024, 2) = (but_re(1:1024, 2).*w_im_2_4st(1:1024) + but_im(1:1024, 2).*w_re_2_4st(1:1024))/1024;
+
+    mult_re(1:1024, 3) = (but_re(1:1024, 3).*w_re_3_4st(1:1024) - but_im(1:1024, 3).*w_im_3_4st(1:1024))/1024;
+    mult_im(1:1024, 3) = (but_re(1:1024, 3).*w_im_3_4st(1:1024) + but_im(1:1024, 3).*w_re_3_4st(1:1024))/1024;
+
+    mult_re(1:1024, 4) = (but_re(1:1024, 4).*w_re_4_4st(1:1024) - but_im(1:1024, 4).*w_im_4_4st(1:1024))/1024;
+    mult_im(1:1024, 4) = (but_re(1:1024, 4).*w_im_4_4st(1:1024) + but_im(1:1024, 4).*w_re_4_4st(1:1024))/1024;
+    
+    clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
+
+% output mixer:
+for i = 1:64
+    t = (i-1)*256;
+    
+    ram_re(1+t : 64+t, 1:4) =    [mult_re(1+t : 64+t, 1),    mult_re(1+t : 64+t, 2),    mult_re(1+t : 64+t, 3),    mult_re(1+t : 64+t, 4)];
+    ram_re(65+t : 128+t, 1:4) =  [mult_re(65+t : 128+t, 2),  mult_re(65+t : 128+t, 3),  mult_re(65+t : 128+t, 4),  mult_re(65+t : 128+t, 1)];
+    ram_re(129+t : 192+t, 1:4) = [mult_re(129+t : 192+t, 3), mult_re(129+t : 192+t, 4), mult_re(129+t : 192+t, 1), mult_re(129+t : 192+t, 2)];
+    ram_re(193+t : 256+t, 1:4) = [mult_re(193+t : 256+t, 4), mult_re(193+t : 256+t, 1), mult_re(193+t : 256+t, 2), mult_re(193+t : 256+t, 3)];
+    
+    ram_im(1+t : 64+t, 1:4) =    [mult_im(1+t : 64+t, 1),    mult_im(1+t : 64+t, 2),    mult_im(1+t : 64+t, 3),    mult_im(1+t : 64+t, 4)];
+    ram_im(65+t : 128+t, 1:4) =  [mult_im(65+t : 128+t, 2),  mult_im(65+t : 128+t, 3),  mult_im(65+t : 128+t, 4),  mult_im(65+t : 128+t, 1)];
+    ram_im(129+t : 192+t, 1:4) = [mult_im(129+t : 192+t, 3), mult_im(129+t : 192+t, 4), mult_im(129+t : 192+t, 1), mult_im(129+t : 192+t, 2)];
+    ram_im(193+t : 256+t, 1:4) = [mult_im(193+t : 256+t, 4), mult_im(193+t : 256+t, 1), mult_im(193+t : 256+t, 2), mult_im(193+t : 256+t, 3)];
+end
+
+%% ===========================    5 stage    ===============================
+
+ram_a_re_buf(1:1024, 1:4) = zeros;
+ram_a_im_buf(1:1024, 1:4) = zeros;
+
+% input mixer + rotate addr:
+for i = 1:64
+    t = (i-1)*256;
+    
+    ram_a_re_buf(1+t : 64+t, 1:4) =    [ram_re(1+t : 64+t, 1), ram_re(65+t : 128+t, 4), ram_re(129+t : 192+t, 3), ram_re(193+t : 256+t, 2)];
+    ram_a_re_buf(65+t : 128+t, 1:4) =  [ram_re(1+t : 64+t, 2), ram_re(65+t : 128+t, 1), ram_re(129+t : 192+t, 4), ram_re(193+t : 256+t, 3)];
+    ram_a_re_buf(129+t : 192+t, 1:4) = [ram_re(1+t : 64+t, 3), ram_re(65+t : 128+t, 2), ram_re(129+t : 192+t, 1), ram_re(193+t : 256+t, 4)];
+    ram_a_re_buf(193+t : 256+t, 1:4) = [ram_re(1+t : 64+t, 4), ram_re(65+t : 128+t, 3), ram_re(129+t : 192+t, 2), ram_re(193+t : 256+t, 1)];
+    
+    ram_a_im_buf(1+t : 64+t, 1:4) =    [ram_im(1+t : 64+t, 1), ram_im(65+t : 128+t, 4), ram_im(129+t : 192+t, 3), ram_im(193+t : 256+t, 2)];
+    ram_a_im_buf(65+t : 128+t, 1:4) =  [ram_im(1+t : 64+t, 2), ram_im(65+t : 128+t, 1), ram_im(129+t : 192+t, 4), ram_im(193+t : 256+t, 3)];
+    ram_a_im_buf(129+t : 192+t, 1:4) = [ram_im(1+t : 64+t, 3), ram_im(65+t : 128+t, 2), ram_im(129+t : 192+t, 1), ram_im(193+t : 256+t, 4)];
+    ram_a_im_buf(193+t : 256+t, 1:4) = [ram_im(1+t : 64+t, 4), ram_im(65+t : 128+t, 3), ram_im(129+t : 192+t, 2), ram_im(193+t : 256+t, 1)];
+end
+    
+ram_re = ram_a_re_buf;
+ram_im = ram_a_im_buf;
+clear ram_a_re_buf; clear ram_a_im_buf;
+    
+% butterfly:
+    but_re(1:1024, 1) = (ram_re(1:1024, 1) + ram_re(1:1024, 2) + ram_re(1:1024, 3) + ram_re(1:1024, 4))/4;
+    but_re(1:1024, 2) = (ram_re(1:1024, 1) + ram_im(1:1024, 2) - ram_re(1:1024, 3) - ram_im(1:1024, 4))/4;
+    but_re(1:1024, 3) = (ram_re(1:1024, 1) - ram_re(1:1024, 2) + ram_re(1:1024, 3) - ram_re(1:1024, 4))/4;
+    but_re(1:1024, 4) = (ram_re(1:1024, 1) - ram_im(1:1024, 2) - ram_re(1:1024, 3) + ram_im(1:1024, 4))/4;
+
+    but_im(1:1024, 1) = (ram_im(1:1024, 1) + ram_im(1:1024, 2) + ram_im(1:1024, 3) + ram_im(1:1024, 4))/4;
+    but_im(1:1024, 2) = (ram_im(1:1024, 1) - ram_re(1:1024, 2) - ram_im(1:1024, 3) + ram_re(1:1024, 4))/4;
+    but_im(1:1024, 3) = (ram_im(1:1024, 1) - ram_im(1:1024, 2) + ram_im(1:1024, 3) - ram_im(1:1024, 4))/4;
+    but_im(1:1024, 4) = (ram_im(1:1024, 1) + ram_re(1:1024, 2) - ram_im(1:1024, 3) - ram_re(1:1024, 4))/4;
+
 %% output files
 if(strcmp(mode, 'work'))
     file_a_re = fopen('D:\work\fft\matlab\ram_a_re.txt', 'w');
