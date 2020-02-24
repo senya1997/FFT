@@ -36,10 +36,10 @@ else
     error('"mode" is wrong');
 end
 
-%for i = 1:4
-%    file_a_re(1:16, i) = digitrevorder(file_a_re(1:16, i), 4);
-%    file_a_im(1:16, i) = digitrevorder(file_a_im(1:16, i), 4);
-%end
+for i = 1:4
+    file_a_re(1:1024, i) = digitrevorder(file_a_re(1:1024, i), 4);
+    file_a_im(1:1024, i) = digitrevorder(file_a_im(1:1024, i), 4);
+end
 
 ram_a_re(1:1024)	= file_a_re(1:1024, 1); ram_a_im(1:1024)	= file_a_im(1:1024, 1);
 ram_a_re(1025:2048)	= file_a_re(1:1024, 2); ram_a_im(1025:2048)	= file_a_im(1:1024, 2);

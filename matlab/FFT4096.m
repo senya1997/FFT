@@ -8,9 +8,9 @@ Fd = 44100;
 mode = 'home';
 %mode = 'work';
 
-test = 'sin';
+%test = 'sin';
 %test = 'const';
-%test = 'num';
+test = 'num';
 
 %% ===============================   coef:   ===============================
 
@@ -105,6 +105,28 @@ w_re_4_4st = w_re_4_4st'; w_im_4_4st = w_im_4_4st';
 
     clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
     clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
+
+% 5st
+    w_re_2_buf = w_re_2_4st(1:4:1024);
+w_re_2_5st(1:1024) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
+    w_re_3_buf = w_re_3_4st(1:4:1024);
+w_re_3_5st(1:1024) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
+    w_re_4_buf = w_re_4_4st(1:4:1024);
+w_re_4_5st(1:1024) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
+
+    w_im_2_buf = w_im_2_4st(1:4:1024);
+w_im_2_5st(1:1024) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+    w_im_3_buf = w_im_3_4st(1:4:1024);
+w_im_3_5st(1:1024) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+    w_im_4_buf = w_im_4_4st(1:4:1024);
+w_im_4_5st(1:1024) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+
+w_re_2_5st = w_re_2_5st'; w_im_2_5st = w_im_2_5st';
+w_re_3_5st = w_re_3_5st'; w_im_3_5st = w_im_3_5st';
+w_re_4_5st = w_re_4_5st'; w_im_4_5st = w_im_4_5st';
+
+    clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
+    clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
     
 %% ===============================   start:   ==============================
 ram_re(1:1024, 1:4) = zeros;
@@ -145,7 +167,7 @@ for i = 1:4
             ram_re(j, i) = 100;
         elseif(strcmp(test, 'num'))
             ram_re(j, i) = k - 1;
-            ram_im(j, i) = k - 1;
+            %ram_im(j, i) = k - 1;
         end
     end
 end
@@ -506,14 +528,14 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:1024, 1) = but_re(1:1024, 1); % 0
     mult_im(1:1024, 1) = but_im(1:1024, 1);
 
-    mult_re(1:1024, 2) = (but_re(1:1024, 2).*w_re_2_4st(1:1024) - but_im(1:1024, 2).*w_im_2_4st(1:1024))/1024;
-    mult_im(1:1024, 2) = (but_re(1:1024, 2).*w_im_2_4st(1:1024) + but_im(1:1024, 2).*w_re_2_4st(1:1024))/1024;
+    mult_re(1:1024, 2) = (but_re(1:1024, 2).*w_re_2_5st(1:1024) - but_im(1:1024, 2).*w_im_2_5st(1:1024))/1024;
+    mult_im(1:1024, 2) = (but_re(1:1024, 2).*w_im_2_5st(1:1024) + but_im(1:1024, 2).*w_re_2_5st(1:1024))/1024;
 
-    mult_re(1:1024, 3) = (but_re(1:1024, 3).*w_re_3_4st(1:1024) - but_im(1:1024, 3).*w_im_3_4st(1:1024))/1024;
-    mult_im(1:1024, 3) = (but_re(1:1024, 3).*w_im_3_4st(1:1024) + but_im(1:1024, 3).*w_re_3_4st(1:1024))/1024;
+    mult_re(1:1024, 3) = (but_re(1:1024, 3).*w_re_3_5st(1:1024) - but_im(1:1024, 3).*w_im_3_5st(1:1024))/1024;
+    mult_im(1:1024, 3) = (but_re(1:1024, 3).*w_im_3_5st(1:1024) + but_im(1:1024, 3).*w_re_3_5st(1:1024))/1024;
 
-    mult_re(1:1024, 4) = (but_re(1:1024, 4).*w_re_4_4st(1:1024) - but_im(1:1024, 4).*w_im_4_4st(1:1024))/1024;
-    mult_im(1:1024, 4) = (but_re(1:1024, 4).*w_im_4_4st(1:1024) + but_im(1:1024, 4).*w_re_4_4st(1:1024))/1024;
+    mult_re(1:1024, 4) = (but_re(1:1024, 4).*w_re_4_5st(1:1024) - but_im(1:1024, 4).*w_im_4_5st(1:1024))/1024;
+    mult_im(1:1024, 4) = (but_re(1:1024, 4).*w_im_4_5st(1:1024) + but_im(1:1024, 4).*w_re_4_5st(1:1024))/1024;
     
     clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
 
