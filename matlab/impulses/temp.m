@@ -56,7 +56,7 @@ T = 0 : 1/Fd : (FftL - 1)/Fd; % Массив отсчетов времени
 
 Noise = An*randn(1, length(T));
 Signal = Ak + A1*sind((F1*360).* T + Phi1) + A2*sind((F2*360).* T + Phi2);
-
+Signal(1:length(Signal)) = 100;
 %% БПФ
 FftS = fft(Signal, FftL); % Амплитуды преобразования Фурье сигнала
 

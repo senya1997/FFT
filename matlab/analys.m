@@ -36,15 +36,15 @@ else
     error('"mode" is wrong');
 end
 
-for i = 1:4
-    file_a_re(1:16, i) = digitrevorder(file_a_re(1:16, i), 4);
-    file_a_im(1:16, i) = digitrevorder(file_a_im(1:16, i), 4);
-end
+%for i = 1:4
+%    file_a_re(1:16, i) = digitrevorder(file_a_re(1:16, i), 4);
+%    file_a_im(1:16, i) = digitrevorder(file_a_im(1:16, i), 4);
+%end
 
-ram_a_re(1:16)	= file_a_re(1:16, 1); ram_a_im(1:16)	= file_a_im(1:16, 1);
-ram_a_re(17:32)	= file_a_re(1:16, 2); ram_a_im(17:32)	= file_a_im(1:16, 2);
-ram_a_re(33:48) = file_a_re(1:16, 3); ram_a_im(33:48)	= file_a_im(1:16, 3);
-ram_a_re(49:64) = file_a_re(1:16, 4); ram_a_im(49:64)	= file_a_im(1:16, 4);
+ram_a_re(1:1024)	= file_a_re(1:1024, 1); ram_a_im(1:1024)	= file_a_im(1:1024, 1);
+ram_a_re(1025:2048)	= file_a_re(1:1024, 2); ram_a_im(1025:2048)	= file_a_im(1:1024, 2);
+ram_a_re(2049:3072) = file_a_re(1:1024, 3); ram_a_im(2049:3072)	= file_a_im(1:1024, 3);
+ram_a_re(3073:4096) = file_a_re(1:1024, 4); ram_a_im(3073:4096)	= file_a_im(1:1024, 4);
 
 if(strcmp(moodel, 'fpga'))
     ram_b_re(1:512)     = file_b_re(1:512, 1); ram_b_im(1:512)     = file_b_im(1:512, 1);
@@ -101,7 +101,7 @@ sub = sub';
 %}
 
 %% graphics
-N = 64;
+N = 4096;
 Fd = 44100;
 F = 0 : Fd/N : Fd - 1;
 
