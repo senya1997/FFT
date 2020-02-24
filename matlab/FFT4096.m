@@ -8,9 +8,9 @@ Fd = 44100;
 mode = 'home';
 %mode = 'work';
 
-%test = 'sin';
+test = 'sin';
 %test = 'const';
-test = 'num';
+%test = 'num';
 
 %% ===============================   coef:   ===============================
 
@@ -133,7 +133,7 @@ ram_re(1:1024, 1:4) = zeros;
 ram_im(1:1024, 1:4) = zeros;
 
 amp_1 = 10000; % e.g. 16 bit ADC
-amp_2 = 000; % 2nd sine
+amp_2 = 5000; % 2nd sine
 
 freq_1 = 9000; % Hz
 freq_2 = 4500;
@@ -145,6 +145,9 @@ bias = amp_1;
 time = 0 : 1/Fd : (N - 1)/Fd;
 
 signal = bias + amp_1*sind((freq_1*360).* time + phase_1) + amp_2*sind((freq_2*360).* time + phase_2);
+
+[y, Fs] = audioread('impulses/g.wav');
+signal(1:N) = y(1:N);
 
 if(strcmp(test, 'sin'))
     fprintf('signal test\n');

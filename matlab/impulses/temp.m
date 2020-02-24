@@ -37,34 +37,63 @@ legend('24', '16');
 title('Compare cut imp:');
 %}
 
-Fd = 44100;   % Частота дискретизации (Гц)
+Fd = 44100; % Hz
+N = 4096;
 
-A1 = 10000; % Амплитуда первой синусоиды
-A2 = 000; % Амплитуда второй синусоиды
-Ak = A1; % Постоянная составляющая
+a_min = 5000;
+a_max = 10000;
 
-F1 = 9000;  % Частота первой синусоиды (Гц)
-F2 = 4500;  % Частота второй синусоиды (Гц)
+f_min = 100; % Hz
+f_max = 4000;
 
-Phi1 = 0;     % Начальная фаза первой синусоиды (Градусов)
-Phi2 = 37;    % Начальная фаза второй синусоиды (Градусов)
+phase = 0; % grad
+bias = 32767; % e.g. mid value from "0xFFFF" 16 bit ADC
 
-An = 0.5*A1;    % Дисперсия шума
-FftL = 4096;  % Количество линий Фурье спектра
+f_step = (f_max - f_min)*15/N;
+a_step = (a_max - a_min)*15/N;
 
-T = 0 : 1/Fd : (FftL - 1)/Fd; % Массив отсчетов времени
+f = f_min;
+a = a_min;
 
-Noise = An*randn(1, length(T));
-Signal = Ak + A1*sind((F1*360).* T + Phi1) + A2*sind((F2*360).* T + Phi2);
-%Signal(1:length(Signal)) = 100;
-Signal(1:length(Signal)) = (1:length(Signal)) - 1;
-%% БПФ
-FftS = fft(Signal, FftL); % Амплитуды преобразования Фурье сигнала
+time = 0;
+time_local = 0; % for calc period of currnt sin with current freq (i)
+time_step = 1/Fd;
+signal(1:N) = zeros;
 
-fft_re = real(FftS)';
-fft_im = imag(FftS)';
+for i = 1:N
+   signal(i) = bias + a*sind(360*f*time + phase);
+   
+   time = time + time_step;
+   time_local = time_local + time_step;
+   
+   if(time_local > 1/f)
+     time_local = 0;
+       
+     f = f + f_step;
+     a = a + a_step;
+   end
+end
 
-FftS = abs(FftS);
+clear time;
+time = 0 : 1/Fd : (N - 1)/Fd;
+a_noise = ((a_max - a_min)/2);
+
+noise = a_noise * randn(1, length(time));
+
+%signal = bias + A1*sind((F1*360).* time + Phi1) + A2*sind((F2*360).* time + Phi2) + noise;
+%signal(1:length(signal)) = 100;
+%signal(1:length(signal)) = (1:length(signal)) - 1;
+
+[y, Fs] = audioread('g.wav');
+signal(1:N) = y(1:N);
+
+%% FFT:
+fft_comp = fft(signal, N); % Амплитуды преобразования Фурье сигнала
+
+fft_re = (real(fft_comp)')./(N/4*4);
+fft_im = (imag(fft_comp)')./(N/4*4);
+
+fft_abs = abs(fft_comp)./(N/4*4);
 
 %FftS = 2*FftS./FftL; % Нормировка спектра по амплитуде
 %FftS(1) = FftS(1)/2; % Нормировка постоянной составляющей в спектре
@@ -73,22 +102,22 @@ FftS = abs(FftS);
 %FftSh = 2*FftSh./FftL; % Нормировка спектра по амплитуде
 %FftSh(1) = FftSh(1)/2; % Нормировка постоянной составляющей в спектре
 
-%% Графики
+%% graphics:
 figure;
-plot(T, Signal);
+plot(time, signal);
 title('Сигнал');
 xlabel('Время (с)');
 ylabel('Амплитуда');
 grid on;
 
-F = 0 : Fd/FftL : Fd - 1; % Массив частот вычисляемого спектра Фурье
+F = 0 : Fd/N : Fd - 1; % Массив частот вычисляемого спектра Фурье
 
 figure;
-plot(F, FftS);
-for j = 1:FftL
-    hold on;
-    plot([F(j), F(j)], [0, FftS(j)], 'c--');
-end
+plot(F, fft_abs);
+%for j = 1:N
+%    hold on;
+%    plot([F(j), F(j)], [0, fft_abs(j)], 'c--');
+%end
 title('Спектр сигнала');
 xlabel('Частота (Гц)');
 ylabel('Амплитуда');

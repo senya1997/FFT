@@ -107,10 +107,10 @@ F = 0 : Fd/N : Fd - 1;
 
 figure;    
 plot(F, ram_afc_a);
-for j = 1:N
-    hold on;
-    plot([F(j), F(j)], [0, ram_afc_a(j)], 'c--');
-end
+%for j = 1:N
+%    hold on;
+%    plot([F(j), F(j)], [0, ram_afc_a(j)], 'c--');
+%end
 title('FFT from RAM "A" without change position harm:');
 grid on;
 
