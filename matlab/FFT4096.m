@@ -2,36 +2,38 @@ clear;
 close all;
 clc;
 
-N = 4096;
-Fd = 44100;
+%mode = 'home';
+mode = 'work';
 
-mode = 'home';
-%mode = 'work';
-
+% choose test signal:
 test = 'sin';
 %test = 'const';
 %test = 'num';
 
+N = 4096;
+N_bank = N/4; % cause Radix-4
+Fd = 44100;
+
 %% ===============================   coef:   ===============================
 
 if(strcmp(mode, 'work'))
-    w_re_2(1:1024) = load('D:\work\fft\matlab\w_re4096_1.txt');
-    w_im_2(1:1024) = load('D:\work\fft\matlab\w_im4096_1.txt');
+    w_re_2(1:1024) = load('D:\work\fft\matlab\w_re_1.txt');
+    w_im_2(1:1024) = load('D:\work\fft\matlab\w_im_1.txt');
 
-    w_re_3(1:1024) = load('D:\work\fft\matlab\w_re4096_2.txt');
-    w_im_3(1:1024) = load('D:\work\fft\matlab\w_im4096_2.txt');
+    w_re_3(1:1024) = load('D:\work\fft\matlab\w_re_2.txt');
+    w_im_3(1:1024) = load('D:\work\fft\matlab\w_im_2.txt');
 
-    w_re_4(1:1024) = load('D:\work\fft\matlab\w_re4096_3.txt');
-    w_im_4(1:1024) = load('D:\work\fft\matlab\w_im4096_3.txt');
+    w_re_4(1:1024) = load('D:\work\fft\matlab\w_re_3.txt');
+    w_im_4(1:1024) = load('D:\work\fft\matlab\w_im_3.txt');
 elseif(strcmp(mode, 'home'))
-    w_re_2(1:1024) = load('D:\SS\fpga\fft\matlab\w_re4096_1.txt');
-    w_im_2(1:1024) = load('D:\SS\fpga\fft\matlab\w_im4096_1.txt');
+    w_re_2(1:1024) = load('D:\SS\fpga\fft\matlab\w_re_1.txt');
+    w_im_2(1:1024) = load('D:\SS\fpga\fft\matlab\w_im_1.txt');
 
-    w_re_3(1:1024) = load('D:\SS\fpga\fft\matlab\w_re4096_2.txt');
-    w_im_3(1:1024) = load('D:\SS\fpga\fft\matlab\w_im4096_2.txt');
+    w_re_3(1:1024) = load('D:\SS\fpga\fft\matlab\w_re_2.txt');
+    w_im_3(1:1024) = load('D:\SS\fpga\fft\matlab\w_im_2.txt');
 
-    w_re_4(1:1024) = load('D:\SS\fpga\fft\matlab\w_re4096_3.txt');
-    w_im_4(1:1024) = load('D:\SS\fpga\fft\matlab\w_im4096_3.txt');
+    w_re_4(1:1024) = load('D:\SS\fpga\fft\matlab\w_re_3.txt');
+    w_im_4(1:1024) = load('D:\SS\fpga\fft\matlab\w_im_3.txt');
 else
     error('"mode" is wrong');
 end
@@ -146,8 +148,8 @@ time = 0 : 1/Fd : (N - 1)/Fd;
 
 signal = bias + amp_1*sind((freq_1*360).* time + phase_1) + amp_2*sind((freq_2*360).* time + phase_2);
 
-[y, Fs] = audioread('impulses/g.wav');
-signal(1:N) = y(1:N);
+%[y, Fs] = audioread('impulses/g.wav');
+%signal(1:N) = y(1:N);
 
 if(strcmp(test, 'sin'))
     fprintf('signal test\n');

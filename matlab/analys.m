@@ -1,13 +1,21 @@
 clear;
 clc;
 
-mode = 'home';
-%mode = 'work';
+%mode = 'home';
+mode = 'work';
 
-%moodel = 'fpga';
-moodel = 'math';
+moodel = 'math'; % for analys files from matlab model FFT
+%moodel = 'fpga'; % for analys files from modelsim with 2nd 'B' RAM
 
-%% load files
+N = 4096;
+N_bank = N/4; % cause Radix-4
+
+lines = 0; % if '= 1' - plot vertical lines which corresponds FFT dots 
+
+fprintf('\n\tBegin\n');
+fprintf('\n\t\tread ".txt" RAM...\n');
+
+%% read files:
 if(strcmp(mode, 'work'))
     if(strcmp(moodel, 'math'))
         file_a_re = load('D:\work\fft\matlab\ram_a_re.txt');
@@ -18,7 +26,7 @@ if(strcmp(mode, 'work'))
         file_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
         file_b_im = load('D:\work\modelsim\fft\ram_b_im.txt');
     else
-        error('"func" is wrong');
+        error('"moodel" is wrong');
     end
 elseif(strcmp(mode, 'home'))
     if(strcmp(moodel, 'math'))
@@ -30,98 +38,92 @@ elseif(strcmp(mode, 'home'))
         file_b_re = load('D:\SS\fpga\modelsim\fft\ram_b_re.txt');
         file_b_im = load('D:\SS\fpga\modelsim\fft\ram_b_im.txt');
     else
-        error('"func" is wrong');
+        error('"moodel" is wrong');
     end
 else
     error('"mode" is wrong');
 end
 
+%% bit reverse change to normal by banks:
+fprintf('\n\t\tbit reverse change to normal...\n');
+a_re_buf(1:N_bank, 1:4) = zeros;
+a_im_buf(1:N_bank, 1:4) = zeros;
+
+if(strcmp(moodel, 'fpga'))
+    b_re_buf(1:N_bank, 1:4) = zeros;
+    b_im_buf(1:N_bank, 1:4) = zeros;
+end
+    
 for i = 1:4
-    file_a_re(1:1024, i) = digitrevorder(file_a_re(1:1024, i), 4);
-    file_a_im(1:1024, i) = digitrevorder(file_a_im(1:1024, i), 4);
+    a_re_buf(1:N_bank, i) = digitrevorder(file_a_re(1:N_bank, i), 4); % every banks need to digit reverse
+    a_im_buf(1:N_bank, i) = digitrevorder(file_a_im(1:N_bank, i), 4); % 2nd param '= 4', cause Radix-4
+    
+    if(strcmp(moodel, 'fpga'))
+        b_re_buf = digitrevorder(file_b_re(1:N_bank, i), 4);
+        b_im_buf = digitrevorder(file_b_im(1:N_bank, i), 4);
+    end
 end
 
-ram_a_re(1:1024)	= file_a_re(1:1024, 1); ram_a_im(1:1024)	= file_a_im(1:1024, 1);
-ram_a_re(1025:2048)	= file_a_re(1:1024, 2); ram_a_im(1025:2048)	= file_a_im(1:1024, 2);
-ram_a_re(2049:3072) = file_a_re(1:1024, 3); ram_a_im(2049:3072)	= file_a_im(1:1024, 3);
-ram_a_re(3073:4096) = file_a_re(1:1024, 4); ram_a_im(3073:4096)	= file_a_im(1:1024, 4);
-
-if(strcmp(moodel, 'fpga'))
-    ram_b_re(1:512)     = file_b_re(1:512, 1); ram_b_im(1:512)     = file_b_im(1:512, 1);
-    ram_b_re(513:1024)  = file_b_re(1:512, 2); ram_b_im(513:1024)  = file_b_im(1:512, 2);
-    ram_b_re(1025:1536) = file_b_re(1:512, 3); ram_b_im(1025:1536) = file_b_im(1:512, 3);
-    ram_b_re(1537:2048) = file_b_re(1:512, 4); ram_b_im(1537:2048) = file_b_im(1:512, 4);
-end
-
-%{
-for i = 1:16
-    ram_a_re(1, (1 + (i-1)*4) : (i*4)) = file_a_re(i, 1:4);
-    ram_a_im(1, (1 + (i-1)*4) : (i*4)) = file_a_im(i, 1:4);
-end
-%}
-
-ram_a_re = ram_a_re';
-ram_a_im = ram_a_im';
-
-%% bit reverse change to normal
-%{
-a_re = digitrevorder(ram_a_re, 4);
-a_im = digitrevorder(ram_a_im, 4);
-
-if(strcmp(moodel, 'fpga'))
-    b_re = digitrevorder(ram_b_re, 4);
-    b_im = digitrevorder(ram_b_im, 4);
-end
+a_re(1 : N_bank)                = a_re_buf(1:N_bank, 1); a_im(1 : (N_bank))              = a_im_buf(1:N_bank, 1);
+a_re((1*N_bank + 1):(2*N_bank)) = a_re_buf(1:N_bank, 2); a_im((1*N_bank + 1):(2*N_bank)) = a_im_buf(1:N_bank, 2);
+a_re((2*N_bank + 1):(3*N_bank)) = a_re_buf(1:N_bank, 3); a_im((2*N_bank + 1):(3*N_bank)) = a_im_buf(1:N_bank, 3);
+a_re((3*N_bank + 1):(4*N_bank)) = a_re_buf(1:N_bank, 4); a_im((3*N_bank + 1):(4*N_bank)) = a_im_buf(1:N_bank, 4);
 
 a_re = a_re';
 a_im = a_im';
 
 if(strcmp(moodel, 'fpga'))
+    b_re(1 : N_bank)                = b_re_buf(1:N_bank, 1); b_im(1 : N_bank)                = b_im_buf(1:N_bank, 1);
+    b_re((1*N_bank + 1):(2*N_bank)) = b_re_buf(1:N_bank, 2); b_im((1*N_bank + 1):(2*N_bank)) = b_im_buf(1:N_bank, 2);
+    b_re((2*N_bank + 1):(3*N_bank)) = b_re_buf(1:N_bank, 3); b_im((2*N_bank + 1):(3*N_bank)) = b_im_buf(1:N_bank, 3);
+    b_re((3*N_bank + 1):(4*N_bank)) = b_re_buf(1:N_bank, 4); b_im((3*N_bank + 1):(4*N_bank)) = b_im_buf(1:N_bank, 4);
+    
     b_re = b_re';
     b_im = b_im';
 end
+
+% alternative way to read data from RAM banks - line by line:
+%{
+for i = 1:N_bank
+    a_re(1, (1 + (i-1)*4) : (i*4)) = a_re_buf(i, 1:4);
+    a_im(1, (1 + (i-1)*4) : (i*4)) = a_im_buf(i, 1:4);
+end
 %}
 
-%% AFC from "A" RAM
-ram_afc_a = sqrt(ram_a_re.^2 + ram_a_im.^2);
-
-%afc_a = sqrt(a_re.^2 + a_im.^2);
+%% AFC:
+fprintf('\n\t\tcalc AFC and build graphics...\n');
+afc_a = sqrt(a_re.^2 + a_im.^2);
 %afc_b = sqrt(b_re.^2 + b_im.^2);
 
-%% subtraction first half from second, mirror left and right part of AFC
-%{
-half_afc_a_1 = afc_a(1:1024);
-half_afc_a_2 = afc_a(1025:2048);
+% subtraction 1st half from 2nd, mirror left and right part of AFC
+half_afc_a_1 = afc_a(1:(N/2));
+half_afc_a_2 = afc_a((N/2 + 1):N);
 
-sub(1:1024) = zeros;
-for i = 1:1024
+sub(1:N/2) = zeros;
+for i = 1:N/2
 	sub(i) = half_afc_a_1(i) - half_afc_a_2(i);
 end
 sub = sub';
-%}
 
-%% graphics
-N = 4096;
+%% graphics:
 Fd = 44100;
-F = 0 : Fd/N : Fd - 1;
+freq = 0 : Fd/N : Fd - 1;
 
 figure;    
-plot(F, ram_afc_a);
-%for j = 1:N
-%    hold on;
-%    plot([F(j), F(j)], [0, ram_afc_a(j)], 'c--');
-%end
-title('FFT from RAM "A" without change position harm:');
-grid on;
-
-%{
-figure;    
-plot(F, afc_a);
-title('AFC from RAM "A":');
+plot(freq, afc_a);
+if(lines == 1)
+    for j = 1:N
+        hold on;
+        plot([freq(j), freq(j)], [0, afc_a(j)], 'c--');
+    end
+end
+xlabel('Freq, Hz');
+title('FFT from RAM "A":');
 grid on;
 
 figure;
 plot(sub);
-title('subtraction:');
+title('Subtraction 1st and 2nd half:');
 grid on;
-%}
+
+fprintf('\n\tComplete\n');

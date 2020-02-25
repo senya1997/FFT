@@ -5,9 +5,9 @@ close all;
 % input parameters:
     file_name = 'rom_re_3.mif';
     width = 12;
-    depth = 512;
+    depth = 1024;
 
-fprintf('\n	Begin\n');
+fprintf('\n\tBegin\n');
 
 figure; plot(res);
 title('res:'); grid on;
@@ -22,7 +22,7 @@ fout = fopen(file_name, 'wt');
 	fprintf(fout, '\n');
 	fprintf(fout, 'CONTENT BEGIN\n');
 
-fprintf('\n		add data in ".mif"...\n');
+fprintf('\n\t\tadd data in ".mif"...\n');
 
 for i = 1:depth
     m = dec2hex((res(i) < 0)*2^width + res(i), width/4);
@@ -32,4 +32,4 @@ end
 fprintf(fout,'END;');   
 fclose(fout);
 
-fprintf('\n	Complete\n');
+fprintf('\n\tComplete\n');
