@@ -9,7 +9,7 @@ mode = 'work';
     test = 'sin';
     %test = 'audio';
     %test = 'const';
-    %test = 'num';
+    %test = 'num'; % numbers 0...N (function 'y = x', x > 0)
 
 audiofile = 'impulses/g.wav';
     
@@ -23,115 +23,115 @@ fprintf('\n\t\tread and sort coef...\n');
 %% ==============================   coef:   ===============================
 
 if(strcmp(mode, 'work'))
-    w_re_2(1:N_bank) = load('D:\work\fft\matlab\w_re_1.txt');
-    w_im_2(1:N_bank) = load('D:\work\fft\matlab\w_im_1.txt');
+    w_re_1(1:N_bank) = load('D:\work\fft\matlab\w_re_1.txt');
+    w_im_1(1:N_bank) = load('D:\work\fft\matlab\w_im_1.txt');
 
-    w_re_3(1:N_bank) = load('D:\work\fft\matlab\w_re_2.txt');
-    w_im_3(1:N_bank) = load('D:\work\fft\matlab\w_im_2.txt');
+    w_re_2(1:N_bank) = load('D:\work\fft\matlab\w_re_2.txt');
+    w_im_2(1:N_bank) = load('D:\work\fft\matlab\w_im_2.txt');
 
-    w_re_4(1:N_bank) = load('D:\work\fft\matlab\w_re_3.txt');
-    w_im_4(1:N_bank) = load('D:\work\fft\matlab\w_im_3.txt');
+    w_re_3(1:N_bank) = load('D:\work\fft\matlab\w_re_3.txt');
+    w_im_3(1:N_bank) = load('D:\work\fft\matlab\w_im_3.txt');
 elseif(strcmp(mode, 'home'))
-    w_re_2(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_1.txt');
-    w_im_2(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_1.txt');
+    w_re_1(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_1.txt');
+    w_im_1(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_1.txt');
 
-    w_re_3(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_2.txt');
-    w_im_3(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_2.txt');
+    w_re_2(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_2.txt');
+    w_im_2(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_2.txt');
 
-    w_re_4(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_3.txt');
-    w_im_4(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_3.txt');
+    w_re_3(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_3.txt');
+    w_im_3(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_3.txt');
 else
     error('"mode" is wrong');
 end
 
+w_re_1 = w_re_1'; w_im_1 = w_im_1';
 w_re_2 = w_re_2'; w_im_2 = w_im_2';
 w_re_3 = w_re_3'; w_im_3 = w_im_3';
-w_re_4 = w_re_4'; w_im_4 = w_im_4';
 
 % 2st
+    w_re_1_buf = w_re_1(1:4:N_bank);
+w_re_1_2st(1:N_bank) = [w_re_1_buf, w_re_1_buf, w_re_1_buf, w_re_1_buf];
     w_re_2_buf = w_re_2(1:4:N_bank);
 w_re_2_2st(1:N_bank) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
     w_re_3_buf = w_re_3(1:4:N_bank);
 w_re_3_2st(1:N_bank) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-    w_re_4_buf = w_re_4(1:4:N_bank);
-w_re_4_2st(1:N_bank) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
 
-    w_im_2_buf = w_im_2(1:4:N_bank);
-w_im_2_2st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_3(1:4:N_bank);
-w_im_3_2st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_4(1:4:N_bank);
-w_im_4_2st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+    w_im_2_buf = w_im_1(1:4:N_bank);
+w_im_1_2st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+    w_im_3_buf = w_im_2(1:4:N_bank);
+w_im_2_2st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+    w_im_4_buf = w_im_3(1:4:N_bank);
+w_im_3_2st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
 
+w_re_1_2st = w_re_1_2st'; w_im_1_2st = w_im_1_2st';
 w_re_2_2st = w_re_2_2st'; w_im_2_2st = w_im_2_2st';
 w_re_3_2st = w_re_3_2st'; w_im_3_2st = w_im_3_2st';
-w_re_4_2st = w_re_4_2st'; w_im_4_2st = w_im_4_2st';
 
     clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
     clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
 
 % 3st
+    w_re_1_buf = w_re_1_2st(1:4:N_bank);
+w_re_1_3st(1:N_bank) = [w_re_1_buf, w_re_1_buf, w_re_1_buf, w_re_1_buf];
     w_re_2_buf = w_re_2_2st(1:4:N_bank);
 w_re_2_3st(1:N_bank) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
     w_re_3_buf = w_re_3_2st(1:4:N_bank);
 w_re_3_3st(1:N_bank) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-    w_re_4_buf = w_re_4_2st(1:4:N_bank);
-w_re_4_3st(1:N_bank) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
 
-    w_im_2_buf = w_im_2_2st(1:4:N_bank);
-w_im_2_3st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_3_2st(1:4:N_bank);
-w_im_3_3st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_4_2st(1:4:N_bank);
-w_im_4_3st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+    w_im_2_buf = w_im_1_2st(1:4:N_bank);
+w_im_1_3st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+    w_im_3_buf = w_im_2_2st(1:4:N_bank);
+w_im_2_3st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+    w_im_4_buf = w_im_3_2st(1:4:N_bank);
+w_im_3_3st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
 
+w_re_1_3st = w_re_1_3st'; w_im_1_3st = w_im_1_3st';
 w_re_2_3st = w_re_2_3st'; w_im_2_3st = w_im_2_3st';
 w_re_3_3st = w_re_3_3st'; w_im_3_3st = w_im_3_3st';
-w_re_4_3st = w_re_4_3st'; w_im_4_3st = w_im_4_3st';
 
     clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
     clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
     
 % 4st
+    w_re_1_buf = w_re_1_3st(1:4:N_bank);
+w_re_1_4st(1:N_bank) = [w_re_1_buf, w_re_1_buf, w_re_1_buf, w_re_1_buf];
     w_re_2_buf = w_re_2_3st(1:4:N_bank);
 w_re_2_4st(1:N_bank) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
     w_re_3_buf = w_re_3_3st(1:4:N_bank);
 w_re_3_4st(1:N_bank) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-    w_re_4_buf = w_re_4_3st(1:4:N_bank);
-w_re_4_4st(1:N_bank) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
 
-    w_im_2_buf = w_im_2_3st(1:4:N_bank);
-w_im_2_4st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_3_3st(1:4:N_bank);
-w_im_3_4st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_4_3st(1:4:N_bank);
-w_im_4_4st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+    w_im_2_buf = w_im_1_3st(1:4:N_bank);
+w_im_1_4st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+    w_im_3_buf = w_im_2_3st(1:4:N_bank);
+w_im_2_4st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+    w_im_4_buf = w_im_3_3st(1:4:N_bank);
+w_im_3_4st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
 
+w_re_1_4st = w_re_1_4st'; w_im_1_4st = w_im_1_4st';
 w_re_2_4st = w_re_2_4st'; w_im_2_4st = w_im_2_4st';
 w_re_3_4st = w_re_3_4st'; w_im_3_4st = w_im_3_4st';
-w_re_4_4st = w_re_4_4st'; w_im_4_4st = w_im_4_4st';
 
     clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
     clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
 
 % 5st
+    w_re_1_buf = w_re_1_4st(1:4:N_bank);
+w_re_1_5st(1:N_bank) = [w_re_1_buf, w_re_1_buf, w_re_1_buf, w_re_1_buf];
     w_re_2_buf = w_re_2_4st(1:4:N_bank);
 w_re_2_5st(1:N_bank) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
     w_re_3_buf = w_re_3_4st(1:4:N_bank);
 w_re_3_5st(1:N_bank) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-    w_re_4_buf = w_re_4_4st(1:4:N_bank);
-w_re_4_5st(1:N_bank) = [w_re_4_buf, w_re_4_buf, w_re_4_buf, w_re_4_buf];
 
-    w_im_2_buf = w_im_2_4st(1:4:N_bank);
-w_im_2_5st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_3_4st(1:4:N_bank);
-w_im_3_5st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_4_4st(1:4:N_bank);
-w_im_4_5st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
+    w_im_2_buf = w_im_1_4st(1:4:N_bank);
+w_im_1_5st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
+    w_im_3_buf = w_im_2_4st(1:4:N_bank);
+w_im_2_5st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
+    w_im_4_buf = w_im_3_4st(1:4:N_bank);
+w_im_3_5st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
 
+w_re_1_5st = w_re_1_5st'; w_im_1_5st = w_im_1_5st';
 w_re_2_5st = w_re_2_5st'; w_im_2_5st = w_im_2_5st';
 w_re_3_5st = w_re_3_5st'; w_im_3_5st = w_im_3_5st';
-w_re_4_5st = w_re_4_5st'; w_im_4_5st = w_im_4_5st';
 
     clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
     clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
@@ -305,14 +305,14 @@ fprintf('\n\t\tstart FFT...\n');
     mult_re(1:N_bank, 1) = but_re(1:N_bank, 1);
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_2(1:N_bank) - but_im(1:N_bank, 2).*w_im_2(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_2(1:N_bank) + but_im(1:N_bank, 2).*w_re_2(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1(1:N_bank) - but_im(1:N_bank, 2).*w_im_1(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1(1:N_bank) + but_im(1:N_bank, 2).*w_re_1(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_3(1:N_bank) - but_im(1:N_bank, 3).*w_im_3(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_3(1:N_bank) + but_im(1:N_bank, 3).*w_re_3(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2(1:N_bank) - but_im(1:N_bank, 3).*w_im_2(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2(1:N_bank) + but_im(1:N_bank, 3).*w_re_2(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_4(1:N_bank) - but_im(1:N_bank, 4).*w_im_4(1:N_bank))/w_amp; 
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_4(1:N_bank) + but_im(1:N_bank, 4).*w_re_4(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3(1:N_bank) - but_im(1:N_bank, 4).*w_im_3(1:N_bank))/w_amp; 
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3(1:N_bank) + but_im(1:N_bank, 4).*w_re_3(1:N_bank))/w_amp;
 
 % output mixer:
     ram_re(1:256,   1:4) = [mult_re(1:256,   1), mult_re(1:256,   2), mult_re(1:256,   3), mult_re(1:256,   4)];
@@ -356,14 +356,14 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:N_bank, 1) = but_re(1:N_bank, 1);
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_2_2st(1:N_bank) - but_im(1:N_bank, 2).*w_im_2_2st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_2_2st(1:N_bank) + but_im(1:N_bank, 2).*w_re_2_2st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1_2st(1:N_bank) - but_im(1:N_bank, 2).*w_im_1_2st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1_2st(1:N_bank) + but_im(1:N_bank, 2).*w_re_1_2st(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_3_2st(1:N_bank) - but_im(1:N_bank, 3).*w_im_3_2st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_3_2st(1:N_bank) + but_im(1:N_bank, 3).*w_re_3_2st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2_2st(1:N_bank) - but_im(1:N_bank, 3).*w_im_2_2st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2_2st(1:N_bank) + but_im(1:N_bank, 3).*w_re_2_2st(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_4_2st(1:N_bank) - but_im(1:N_bank, 4).*w_im_4_2st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_4_2st(1:N_bank) + but_im(1:N_bank, 4).*w_re_4_2st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3_2st(1:N_bank) - but_im(1:N_bank, 4).*w_im_3_2st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3_2st(1:N_bank) + but_im(1:N_bank, 4).*w_re_3_2st(1:N_bank))/w_amp;
     
     clear w_re_2_2st; clear w_re_3_2st; clear w_re_4_2st;
     
@@ -421,14 +421,14 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:N_bank, 1) = but_re(1:N_bank, 1); % 0
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_2_3st(1:N_bank) - but_im(1:N_bank, 2).*w_im_2_3st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_2_3st(1:N_bank) + but_im(1:N_bank, 2).*w_re_2_3st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1_3st(1:N_bank) - but_im(1:N_bank, 2).*w_im_1_3st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1_3st(1:N_bank) + but_im(1:N_bank, 2).*w_re_1_3st(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_3_3st(1:N_bank) - but_im(1:N_bank, 3).*w_im_3_3st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_3_3st(1:N_bank) + but_im(1:N_bank, 3).*w_re_3_3st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2_3st(1:N_bank) - but_im(1:N_bank, 3).*w_im_2_3st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2_3st(1:N_bank) + but_im(1:N_bank, 3).*w_re_2_3st(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_4_3st(1:N_bank) - but_im(1:N_bank, 4).*w_im_4_3st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_4_3st(1:N_bank) + but_im(1:N_bank, 4).*w_re_4_3st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3_3st(1:N_bank) - but_im(1:N_bank, 4).*w_im_3_3st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3_3st(1:N_bank) + but_im(1:N_bank, 4).*w_re_3_3st(1:N_bank))/w_amp;
     
     clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
 
@@ -486,14 +486,14 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:N_bank, 1) = but_re(1:N_bank, 1); % 0
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_2_4st(1:N_bank) - but_im(1:N_bank, 2).*w_im_2_4st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_2_4st(1:N_bank) + but_im(1:N_bank, 2).*w_re_2_4st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1_4st(1:N_bank) - but_im(1:N_bank, 2).*w_im_1_4st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1_4st(1:N_bank) + but_im(1:N_bank, 2).*w_re_1_4st(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_3_4st(1:N_bank) - but_im(1:N_bank, 3).*w_im_3_4st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_3_4st(1:N_bank) + but_im(1:N_bank, 3).*w_re_3_4st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2_4st(1:N_bank) - but_im(1:N_bank, 3).*w_im_2_4st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2_4st(1:N_bank) + but_im(1:N_bank, 3).*w_re_2_4st(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_4_4st(1:N_bank) - but_im(1:N_bank, 4).*w_im_4_4st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_4_4st(1:N_bank) + but_im(1:N_bank, 4).*w_re_4_4st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3_4st(1:N_bank) - but_im(1:N_bank, 4).*w_im_3_4st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3_4st(1:N_bank) + but_im(1:N_bank, 4).*w_re_3_4st(1:N_bank))/w_amp;
     
     clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
 
@@ -551,14 +551,14 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:N_bank, 1) = but_re(1:N_bank, 1); % 0
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_2_5st(1:N_bank) - but_im(1:N_bank, 2).*w_im_2_5st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_2_5st(1:N_bank) + but_im(1:N_bank, 2).*w_re_2_5st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1_5st(1:N_bank) - but_im(1:N_bank, 2).*w_im_1_5st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1_5st(1:N_bank) + but_im(1:N_bank, 2).*w_re_1_5st(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_3_5st(1:N_bank) - but_im(1:N_bank, 3).*w_im_3_5st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_3_5st(1:N_bank) + but_im(1:N_bank, 3).*w_re_3_5st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2_5st(1:N_bank) - but_im(1:N_bank, 3).*w_im_2_5st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2_5st(1:N_bank) + but_im(1:N_bank, 3).*w_re_2_5st(1:N_bank))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_4_5st(1:N_bank) - but_im(1:N_bank, 4).*w_im_4_5st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_4_5st(1:N_bank) + but_im(1:N_bank, 4).*w_re_4_5st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3_5st(1:N_bank) - but_im(1:N_bank, 4).*w_im_3_5st(1:N_bank))/w_amp;
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3_5st(1:N_bank) + but_im(1:N_bank, 4).*w_re_3_5st(1:N_bank))/w_amp;
     
     clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
 

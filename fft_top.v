@@ -1,31 +1,15 @@
 `include "fft_defines.v"
 
-// `define WORK
-// `define MY_ROT_COEF
-// `define FILL_IM_RAM_A // filling up imagine part of RAM data from input
+`define WORK
 
 `ifdef WORK
 	`define MIF_1 "D:/work/fft/matlab/rom_1.mif"
 	`define MIF_2 "D:/work/fft/matlab/rom_2.mif"
 	`define MIF_3 "D:/work/fft/matlab/rom_3.mif"
-
-	`define MIF_RE_1 "D:/work/fft/matlab/rom_re_1.mif"
-	`define MIF_IM_1 "D:/work/fft/matlab/rom_im_1.mif"
-	`define MIF_RE_2 "D:/work/fft/matlab/rom_re_2.mif"
-	`define MIF_IM_2 "D:/work/fft/matlab/rom_im_2.mif"
-	`define MIF_RE_3 "D:/work/fft/matlab/rom_re_3.mif"
-	`define MIF_IM_3 "D:/work/fft/matlab/rom_im_3.mif"
 `else
 	`define MIF_1 "D:/SS/fpga/fft/matlab/rom_1.mif"
 	`define MIF_2 "D:/SS/fpga/fft/matlab/rom_2.mif"
 	`define MIF_3 "D:/SS/fpga/fft/matlab/rom_3.mif"
-
-	`define MIF_RE_1 "D:/SS/fpga/fft/matlab/rom_re_1.mif"
-	`define MIF_IM_1 "D:/SS/fpga/fft/matlab/rom_im_1.mif"
-	`define MIF_RE_2 "D:/SS/fpga/fft/matlab/rom_re_2.mif"
-	`define MIF_IM_2 "D:/SS/fpga/fft/matlab/rom_im_2.mif"
-	`define MIF_RE_3 "D:/SS/fpga/fft/matlab/rom_re_3.mif"
-	`define MIF_IM_3 "D:/SS/fpga/fft/matlab/rom_im_3.mif"
 `endif
 	
 module fft_top(
@@ -270,22 +254,14 @@ wire [16 : 0] IM_BUT_MULT [0 : 3];
 		.oY3_IM(IM_MULT_OUTMIX[3])
 	);	
 	
-// =================   memory   ===================
-
 // ==================== RAM: ======================
 
 wire [16 : 0] IM_RAM_A [0 : 3];
-`ifdef FILL_IM_RAM_A
-	assign IM_RAM_A[0] = SOURCE_CONT ? {iDATA[15], iDATA} : IM_OUTMIX[0];
-	assign IM_RAM_A[1] = SOURCE_CONT ? {iDATA[15], iDATA} : IM_OUTMIX[1];
-	assign IM_RAM_A[2] = SOURCE_CONT ? {iDATA[15], iDATA} : IM_OUTMIX[2];
-	assign IM_RAM_A[3] = SOURCE_CONT ? {iDATA[15], iDATA} : IM_OUTMIX[3];	
-`else
-	assign IM_RAM_A[0] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[0];
-	assign IM_RAM_A[1] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[1];
-	assign IM_RAM_A[2] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[2];
-	assign IM_RAM_A[3] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[3];	
-`endif
+
+assign IM_RAM_A[0] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[0];
+assign IM_RAM_A[1] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[1];
+assign IM_RAM_A[2] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[2];
+assign IM_RAM_A[3] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[3];	
 	
 	fft_ram_block RAM_A(
 		.iCLK(iCLK),
@@ -363,63 +339,23 @@ wire [16 : 0] IM_RAM_A [0 : 3];
 
 // ==================== ROM: ======================
 
-`ifndef MY_ROT_COEF
-		fft_rom_fast #(.MIF(`MIF_1)) ROM_1(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q({W_IM[1], W_RE[1]})
-		);
+	fft_rom_fast #(.MIF(`MIF_1)) ROM_1( // 'fast' mean that don't use reg for output data 
+		.address(ADDR_COEF),
+		.clock(iCLK),
+		.q({W_IM[1], W_RE[1]})
+	);
 
-		fft_rom_fast #(.MIF(`MIF_2)) ROM_2(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q({W_IM[2], W_RE[2]})
-		);
+	fft_rom_fast #(.MIF(`MIF_2)) ROM_2(
+		.address(ADDR_COEF),
+		.clock(iCLK),
+		.q({W_IM[2], W_RE[2]})
+	);
 
-		fft_rom_fast #(.MIF(`MIF_3)) ROM_3(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q({W_IM[3], W_RE[3]})
-		);
-`else
-	// *************** real:
-		fft_rom_fast_12bit #(.MIF(`MIF_RE_1)) ROM_RE_1(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q(W_RE[1])
-		);
-
-		fft_rom_fast_12bit #(.MIF(`MIF_RE_2)) ROM_RE_2(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q(W_RE[2])
-		);	
-
-		fft_rom_fast_12bit #(.MIF(`MIF_RE_3)) ROM_RE_3(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q(W_RE[3])
-		);
-
-	// *************** imagine:
-		fft_rom_fast_12bit #(.MIF(`MIF_IM_1)) ROM_IM_1(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q(W_IM[1])
-		);
-
-		fft_rom_fast_12bit #(.MIF(`MIF_IM_2)) ROM_IM_2(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q(W_IM[2])
-		);
-
-		fft_rom_fast_12bit #(.MIF(`MIF_IM_3)) ROM_IM_3(
-			.address(ADDR_COEF),
-			.clock(iCLK),
-			.q(W_IM[3])
-		);
-`endif
+	fft_rom_fast #(.MIF(`MIF_3)) ROM_3(
+		.address(ADDR_COEF),
+		.clock(iCLK),
+		.q({W_IM[3], W_RE[3]})
+	);
 
 assign oDATA_RE_0 = RE_RAM_A_INMIX[0];
 assign oDATA_RE_1 = RE_RAM_A_INMIX[1];
