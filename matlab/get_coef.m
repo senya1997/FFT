@@ -14,7 +14,7 @@ fprintf('\n\t\tget and modify data...\n');
 
 %% read files:
 if(strcmp(mode, 'work'))
-    w_re_buf(1:N) = load('D:\work\fft\matlab\w_re_1.txt'); % 'N' dots from excel
+    w_re_buf(1:N) = load('D:\work\fft\matlab\w_re_1.txt'); % 'N' twiddle coef from excel
     w_im_buf(1:N) = load('D:\work\fft\matlab\w_im_1.txt');
 elseif(strcmp(mode, 'home'))
     w_re_buf(1:N) = load('D:\SS\fpga\fft\matlab\w_re_1.txt');
