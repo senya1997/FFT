@@ -96,11 +96,11 @@ afc_a = sqrt(a_re.^2 + a_im.^2);
 %afc_b = sqrt(b_re.^2 + b_im.^2);
 
 % subtraction 1st half from 2nd, mirror left and right part of AFC
-half_afc_a_1 = afc_a(1:(N/2));
-half_afc_a_2 = afc_a((N/2 + 1):N);
+half_afc_a_1 = afc_a(2:(N/2));
+half_afc_a_2 = wrev(afc_a((N/2 + 1):N));
 
 sub(1:N/2) = zeros;
-for i = 1:N/2
+for i = 1:(N/2 - 1)
 	sub(i) = half_afc_a_1(i) - half_afc_a_2(i);
 end
 sub = sub';

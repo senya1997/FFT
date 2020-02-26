@@ -2,146 +2,16 @@ clear;
 close all;
 clc;
 
-%mode = 'home';
-mode = 'work';
-
 % choose test signal:
     test = 'sin';
     %test = 'audio';
     %test = 'const';
     %test = 'num'; % numbers 0...N (function 'y = x', x > 0)
 
-audiofile = 'impulses/g.wav';
-    
-N = 4096;
-N_bank = N/4; % cause Radix-4
-w_amp = 1024; % amplitude of twiddle coef use to normalize data after multiplier
-
-fprintf('\n\tBegin\n');
-fprintf('\n\t\tread and sort coef...\n');
-
-%% ==============================   coef:   ===============================
-
-if(strcmp(mode, 'work'))
-    w_re_1(1:N_bank) = load('D:\work\fft\matlab\w_re_1.txt');
-    w_im_1(1:N_bank) = load('D:\work\fft\matlab\w_im_1.txt');
-
-    w_re_2(1:N_bank) = load('D:\work\fft\matlab\w_re_2.txt');
-    w_im_2(1:N_bank) = load('D:\work\fft\matlab\w_im_2.txt');
-
-    w_re_3(1:N_bank) = load('D:\work\fft\matlab\w_re_3.txt');
-    w_im_3(1:N_bank) = load('D:\work\fft\matlab\w_im_3.txt');
-elseif(strcmp(mode, 'home'))
-    w_re_1(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_1.txt');
-    w_im_1(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_1.txt');
-
-    w_re_2(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_2.txt');
-    w_im_2(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_2.txt');
-
-    w_re_3(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_re_3.txt');
-    w_im_3(1:N_bank) = load('D:\SS\fpga\fft\matlab\w_im_3.txt');
-else
-    error('"mode" is wrong');
-end
-
-w_re_1 = w_re_1'; w_im_1 = w_im_1';
-w_re_2 = w_re_2'; w_im_2 = w_im_2';
-w_re_3 = w_re_3'; w_im_3 = w_im_3';
-
-% 2st
-    w_re_1_buf = w_re_1(1:4:N_bank);
-w_re_1_2st(1:N_bank) = [w_re_1_buf, w_re_1_buf, w_re_1_buf, w_re_1_buf];
-    w_re_2_buf = w_re_2(1:4:N_bank);
-w_re_2_2st(1:N_bank) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
-    w_re_3_buf = w_re_3(1:4:N_bank);
-w_re_3_2st(1:N_bank) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-
-    w_im_2_buf = w_im_1(1:4:N_bank);
-w_im_1_2st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_2(1:4:N_bank);
-w_im_2_2st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_3(1:4:N_bank);
-w_im_3_2st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
-
-w_re_1_2st = w_re_1_2st'; w_im_1_2st = w_im_1_2st';
-w_re_2_2st = w_re_2_2st'; w_im_2_2st = w_im_2_2st';
-w_re_3_2st = w_re_3_2st'; w_im_3_2st = w_im_3_2st';
-
-    clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
-    clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
-
-% 3st
-    w_re_1_buf = w_re_1_2st(1:4:N_bank);
-w_re_1_3st(1:N_bank) = [w_re_1_buf, w_re_1_buf, w_re_1_buf, w_re_1_buf];
-    w_re_2_buf = w_re_2_2st(1:4:N_bank);
-w_re_2_3st(1:N_bank) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
-    w_re_3_buf = w_re_3_2st(1:4:N_bank);
-w_re_3_3st(1:N_bank) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-
-    w_im_2_buf = w_im_1_2st(1:4:N_bank);
-w_im_1_3st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_2_2st(1:4:N_bank);
-w_im_2_3st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_3_2st(1:4:N_bank);
-w_im_3_3st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
-
-w_re_1_3st = w_re_1_3st'; w_im_1_3st = w_im_1_3st';
-w_re_2_3st = w_re_2_3st'; w_im_2_3st = w_im_2_3st';
-w_re_3_3st = w_re_3_3st'; w_im_3_3st = w_im_3_3st';
-
-    clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
-    clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
-    
-% 4st
-    w_re_1_buf = w_re_1_3st(1:4:N_bank);
-w_re_1_4st(1:N_bank) = [w_re_1_buf, w_re_1_buf, w_re_1_buf, w_re_1_buf];
-    w_re_2_buf = w_re_2_3st(1:4:N_bank);
-w_re_2_4st(1:N_bank) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
-    w_re_3_buf = w_re_3_3st(1:4:N_bank);
-w_re_3_4st(1:N_bank) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-
-    w_im_2_buf = w_im_1_3st(1:4:N_bank);
-w_im_1_4st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_2_3st(1:4:N_bank);
-w_im_2_4st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_3_3st(1:4:N_bank);
-w_im_3_4st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
-
-w_re_1_4st = w_re_1_4st'; w_im_1_4st = w_im_1_4st';
-w_re_2_4st = w_re_2_4st'; w_im_2_4st = w_im_2_4st';
-w_re_3_4st = w_re_3_4st'; w_im_3_4st = w_im_3_4st';
-
-    clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
-    clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
-
-% 5st
-    w_re_1_buf = w_re_1_4st(1:4:N_bank);
-w_re_1_5st(1:N_bank) = [w_re_1_buf, w_re_1_buf, w_re_1_buf, w_re_1_buf];
-    w_re_2_buf = w_re_2_4st(1:4:N_bank);
-w_re_2_5st(1:N_bank) = [w_re_2_buf, w_re_2_buf, w_re_2_buf, w_re_2_buf];
-    w_re_3_buf = w_re_3_4st(1:4:N_bank);
-w_re_3_5st(1:N_bank) = [w_re_3_buf, w_re_3_buf, w_re_3_buf, w_re_3_buf];
-
-    w_im_2_buf = w_im_1_4st(1:4:N_bank);
-w_im_1_5st(1:N_bank) = [w_im_2_buf, w_im_2_buf, w_im_2_buf, w_im_2_buf];
-    w_im_3_buf = w_im_2_4st(1:4:N_bank);
-w_im_2_5st(1:N_bank) = [w_im_3_buf, w_im_3_buf, w_im_3_buf, w_im_3_buf];
-    w_im_4_buf = w_im_3_4st(1:4:N_bank);
-w_im_3_5st(1:N_bank) = [w_im_4_buf, w_im_4_buf, w_im_4_buf, w_im_4_buf];
-
-w_re_1_5st = w_re_1_5st'; w_im_1_5st = w_im_1_5st';
-w_re_2_5st = w_re_2_5st'; w_im_2_5st = w_im_2_5st';
-w_re_3_5st = w_re_3_5st'; w_im_3_5st = w_im_3_5st';
-
-    clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
-    clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
-    
-%% ===========================   test signal:   ===========================
-fprintf('\n\t\tbuild test signal...\n');
-if(strcmp(test, 'sin'))
+% sin spec:
     Fd = 44100;
 
-    amp_1 = 10000; % e.g. 16 bit ADC
+    amp_1 = 10000; % 1st sine from e.g. 16 bit ADC
     amp_2 = 5000; % 2nd sine
 
     freq_1 = 9000; % Hz
@@ -151,27 +21,78 @@ if(strcmp(test, 'sin'))
     phase_2 = 37;
 
     bias = amp_1;
-    time = 0 : 1/Fd : (N - 1)/Fd;
+% auido sample path:   
+    audiofile = 'impulses/g.wav';
+% const:
+    dc = 100;
 
+N = 4096;
+N_bank = N/4; % cause Radix-4
+
+w_amp = 1024; % amplitude of twiddle coef use to normalize data after multiplier
+stage = 6; % number of stage
+
+fprintf('\n\tBegin\n');
+fprintf('\n\t\tread and sort coef...\n');
+
+%% ==============================   coef:   ===============================
+w_re_1(1:N_bank, 1) = load('w_re_1.txt'); % column mean stage of FFT
+w_re_2(1:N_bank, 1) = load('w_re_2.txt');
+w_re_3(1:N_bank, 1) = load('w_re_3.txt');
+
+w_im_1(1:N_bank, 1) = load('w_im_1.txt');
+w_im_2(1:N_bank, 1) = load('w_im_2.txt');
+w_im_3(1:N_bank, 1) = load('w_im_3.txt');
+
+for i = 1:(stage - 2) % '- 2' because stage with multiplier '= stage - 1'
+        w_re_1_buf = w_re_1(1:4:N_bank, i);
+    w_re_1(1:N_bank, i + 1) = [w_re_1_buf; w_re_1_buf; w_re_1_buf; w_re_1_buf];
+        w_re_2_buf = w_re_2(1:4:N_bank, i);
+    w_re_2(1:N_bank, i + 1) = [w_re_2_buf; w_re_2_buf; w_re_2_buf; w_re_2_buf];
+        w_re_3_buf = w_re_3(1:4:N_bank, i);
+    w_re_3(1:N_bank, i + 1) = [w_re_3_buf; w_re_3_buf; w_re_3_buf; w_re_3_buf];
+
+        w_im_2_buf = w_im_1(1:4:N_bank, i);
+    w_im_1(1:N_bank, i + 1) = [w_im_2_buf; w_im_2_buf; w_im_2_buf; w_im_2_buf];
+        w_im_3_buf = w_im_2(1:4:N_bank, i);
+    w_im_2(1:N_bank, i + 1) = [w_im_3_buf; w_im_3_buf; w_im_3_buf; w_im_3_buf];
+        w_im_4_buf = w_im_3(1:4:N_bank, i);
+    w_im_3(1:N_bank, i + 1) = [w_im_4_buf; w_im_4_buf; w_im_4_buf; w_im_4_buf];
+end
+
+clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
+clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
+
+%% ===========================   test signal:   ===========================
+fprintf('\n\t\tbuild test signal...\n');
+if(strcmp(test, 'sin'))
+    time = 0 : 1/Fd : (N - 1)/Fd;
     signal = bias + amp_1*sind((freq_1*360).* time + phase_1) + amp_2*sind((freq_2*360).* time + phase_2);
     
     clear Fd; clear bias; clear time;
     clear amp_1; clear amp_2;
     clear freq_1; clear freq_2;
     clear phase_1; clear phase_2;
+    
+    fprintf('\n\t\tsine signal test\n');
 elseif(strcmp(test, 'audio'))
     [y, fs] = audioread(audiofile);
     signal(1:N) = y(1:N);
     
     clear y; clear fs;
+    
+    fprintf('\n\t\taudio test\n');
 elseif(strcmp(test, 'const'))
+    signal(1:N) = dc;
     fprintf('\n\t\tconst test\n');
 elseif(strcmp(test, 'num'))
+    signal(1:N) = 0 : (N-1);
     fprintf('\n\t\tindex number test\n');
 else
     error('"test" is wrong\n');
 end
 
+% filling RAM:
 ram_re(1:N_bank, 1:4) = zeros;
 ram_im(1:N_bank, 1:4) = zeros;
 
@@ -179,18 +100,11 @@ k = 0;
 for i = 1:4 
     for j = 1:N_bank
         k = k + 1;
-        
-        if(strcmp(test, 'sin') || strcmp(test, 'audio'))
-            ram_re(j, i) = round(signal(k));
-        elseif(strcmp(test, 'const'))
-            ram_re(j, i) = 100;
-        elseif(strcmp(test, 'num'))
-            ram_re(j, i) = k - 1;
-            %ram_im(j, i) = k - 1;
-        end
+        ram_re(j, i) = round(signal(k));
     end
 end
 
+% graphic of test signal:
 figure;
 signal_buf(1:N) = [ram_re(:,1), ram_re(:,2), ram_re(:,3), ram_re(:,4)];
 plot(signal_buf);
@@ -305,14 +219,14 @@ fprintf('\n\t\tstart FFT...\n');
     mult_re(1:N_bank, 1) = but_re(1:N_bank, 1);
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1(1:N_bank) - but_im(1:N_bank, 2).*w_im_1(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1(1:N_bank) + but_im(1:N_bank, 2).*w_re_1(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1(1:N_bank, 1) - but_im(1:N_bank, 2).*w_im_1(1:N_bank, 1))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1(1:N_bank, 1) + but_im(1:N_bank, 2).*w_re_1(1:N_bank, 1))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2(1:N_bank) - but_im(1:N_bank, 3).*w_im_2(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2(1:N_bank) + but_im(1:N_bank, 3).*w_re_2(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2(1:N_bank, 1) - but_im(1:N_bank, 3).*w_im_2(1:N_bank, 1))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2(1:N_bank, 1) + but_im(1:N_bank, 3).*w_re_2(1:N_bank, 1))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3(1:N_bank) - but_im(1:N_bank, 4).*w_im_3(1:N_bank))/w_amp; 
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3(1:N_bank) + but_im(1:N_bank, 4).*w_re_3(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3(1:N_bank, 1) - but_im(1:N_bank, 4).*w_im_3(1:N_bank, 1))/w_amp; 
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3(1:N_bank, 1) + but_im(1:N_bank, 4).*w_re_3(1:N_bank, 1))/w_amp;
 
 % output mixer:
     ram_re(1:256,   1:4) = [mult_re(1:256,   1), mult_re(1:256,   2), mult_re(1:256,   3), mult_re(1:256,   4)];
@@ -356,16 +270,14 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:N_bank, 1) = but_re(1:N_bank, 1);
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1_2st(1:N_bank) - but_im(1:N_bank, 2).*w_im_1_2st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1_2st(1:N_bank) + but_im(1:N_bank, 2).*w_re_1_2st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1(1:N_bank, 2) - but_im(1:N_bank, 2).*w_im_1(1:N_bank, 2))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1(1:N_bank, 2) + but_im(1:N_bank, 2).*w_re_1(1:N_bank, 2))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2_2st(1:N_bank) - but_im(1:N_bank, 3).*w_im_2_2st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2_2st(1:N_bank) + but_im(1:N_bank, 3).*w_re_2_2st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2(1:N_bank, 2) - but_im(1:N_bank, 3).*w_im_2(1:N_bank, 2))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2(1:N_bank, 2) + but_im(1:N_bank, 3).*w_re_2(1:N_bank, 2))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3_2st(1:N_bank) - but_im(1:N_bank, 4).*w_im_3_2st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3_2st(1:N_bank) + but_im(1:N_bank, 4).*w_re_3_2st(1:N_bank))/w_amp;
-    
-    clear w_re_2_2st; clear w_re_3_2st; clear w_re_4_2st;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3(1:N_bank, 2) - but_im(1:N_bank, 4).*w_im_3(1:N_bank, 2))/w_amp;
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3(1:N_bank, 2) + but_im(1:N_bank, 4).*w_re_3(1:N_bank, 2))/w_amp;
     
 % output mixer:
 for i = 1:4
@@ -418,19 +330,17 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     but_im(1:N_bank, 4) = (ram_im(1:N_bank, 1) + ram_re(1:N_bank, 2) - ram_im(1:N_bank, 3) - ram_re(1:N_bank, 4))/4;
     
 % multipiler:
-    mult_re(1:N_bank, 1) = but_re(1:N_bank, 1); % 0
+    mult_re(1:N_bank, 1) = but_re(1:N_bank, 1);
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1_3st(1:N_bank) - but_im(1:N_bank, 2).*w_im_1_3st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1_3st(1:N_bank) + but_im(1:N_bank, 2).*w_re_1_3st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1(1:N_bank, 3) - but_im(1:N_bank, 2).*w_im_1(1:N_bank, 3))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1(1:N_bank, 3) + but_im(1:N_bank, 2).*w_re_1(1:N_bank, 3))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2_3st(1:N_bank) - but_im(1:N_bank, 3).*w_im_2_3st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2_3st(1:N_bank) + but_im(1:N_bank, 3).*w_re_2_3st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2(1:N_bank, 3) - but_im(1:N_bank, 3).*w_im_2(1:N_bank, 3))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2(1:N_bank, 3) + but_im(1:N_bank, 3).*w_re_2(1:N_bank, 3))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3_3st(1:N_bank) - but_im(1:N_bank, 4).*w_im_3_3st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3_3st(1:N_bank) + but_im(1:N_bank, 4).*w_re_3_3st(1:N_bank))/w_amp;
-    
-    clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3(1:N_bank, 3) - but_im(1:N_bank, 4).*w_im_3(1:N_bank, 3))/w_amp;
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3(1:N_bank, 3) + but_im(1:N_bank, 4).*w_re_3(1:N_bank, 3))/w_amp;
 
 % output mixer:
 for i = 1:16
@@ -483,20 +393,18 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     but_im(1:N_bank, 4) = (ram_im(1:N_bank, 1) + ram_re(1:N_bank, 2) - ram_im(1:N_bank, 3) - ram_re(1:N_bank, 4))/4;
     
 % multipiler:
-    mult_re(1:N_bank, 1) = but_re(1:N_bank, 1); % 0
+    mult_re(1:N_bank, 1) = but_re(1:N_bank, 1);
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1_4st(1:N_bank) - but_im(1:N_bank, 2).*w_im_1_4st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1_4st(1:N_bank) + but_im(1:N_bank, 2).*w_re_1_4st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1(1:N_bank, 4) - but_im(1:N_bank, 2).*w_im_1(1:N_bank, 4))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1(1:N_bank, 4) + but_im(1:N_bank, 2).*w_re_1(1:N_bank, 4))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2_4st(1:N_bank) - but_im(1:N_bank, 3).*w_im_2_4st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2_4st(1:N_bank) + but_im(1:N_bank, 3).*w_re_2_4st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2(1:N_bank, 4) - but_im(1:N_bank, 3).*w_im_2(1:N_bank, 4))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2(1:N_bank, 4) + but_im(1:N_bank, 3).*w_re_2(1:N_bank, 4))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3_4st(1:N_bank) - but_im(1:N_bank, 4).*w_im_3_4st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3_4st(1:N_bank) + but_im(1:N_bank, 4).*w_re_3_4st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3(1:N_bank, 4) - but_im(1:N_bank, 4).*w_im_3(1:N_bank, 4))/w_amp;
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3(1:N_bank, 4) + but_im(1:N_bank, 4).*w_re_3(1:N_bank, 4))/w_amp;
     
-    clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
-
 % output mixer:
 for i = 1:64
     t = (i-1)*16;
@@ -551,17 +459,15 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     mult_re(1:N_bank, 1) = but_re(1:N_bank, 1); % 0
     mult_im(1:N_bank, 1) = but_im(1:N_bank, 1);
 
-    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1_5st(1:N_bank) - but_im(1:N_bank, 2).*w_im_1_5st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1_5st(1:N_bank) + but_im(1:N_bank, 2).*w_re_1_5st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_re_1(1:N_bank, 5) - but_im(1:N_bank, 2).*w_im_1(1:N_bank, 5))/w_amp;
+    mult_im(1:N_bank, 2) = (but_re(1:N_bank, 2).*w_im_1(1:N_bank, 5) + but_im(1:N_bank, 2).*w_re_1(1:N_bank, 5))/w_amp;
 
-    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2_5st(1:N_bank) - but_im(1:N_bank, 3).*w_im_2_5st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2_5st(1:N_bank) + but_im(1:N_bank, 3).*w_re_2_5st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_re_2(1:N_bank, 5) - but_im(1:N_bank, 3).*w_im_2(1:N_bank, 5))/w_amp;
+    mult_im(1:N_bank, 3) = (but_re(1:N_bank, 3).*w_im_2(1:N_bank, 5) + but_im(1:N_bank, 3).*w_re_2(1:N_bank, 5))/w_amp;
 
-    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3_5st(1:N_bank) - but_im(1:N_bank, 4).*w_im_3_5st(1:N_bank))/w_amp;
-    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3_5st(1:N_bank) + but_im(1:N_bank, 4).*w_re_3_5st(1:N_bank))/w_amp;
+    mult_re(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_re_3(1:N_bank, 5) - but_im(1:N_bank, 4).*w_im_3(1:N_bank, 5))/w_amp;
+    mult_im(1:N_bank, 4) = (but_re(1:N_bank, 4).*w_im_3(1:N_bank, 5) + but_im(1:N_bank, 4).*w_re_3(1:N_bank, 5))/w_amp;
     
-    clear w_re_2_3st; clear w_re_3_3st; clear w_re_4_3st;
-
 % output mixer:
 for i = 1:256
     t = (i-1)*4;
@@ -614,13 +520,9 @@ clear ram_a_re_buf; clear ram_a_im_buf;
 
 %% output files
 fprintf('\n\t\tsave files...\n');
-if(strcmp(mode, 'work'))
-    file_a_re = fopen('D:\work\fft\matlab\ram_a_re.txt', 'w');
-    file_a_im = fopen('D:\work\fft\matlab\ram_a_im.txt', 'w');
-elseif(strcmp(mode, 'home'))
-    file_a_re = fopen('D:\SS\fpga\fft\matlab\ram_a_re.txt', 'w');
-    file_a_im = fopen('D:\SS\fpga\fft\matlab\ram_a_im.txt', 'w');
-end
+
+file_a_re = fopen('ram_a_re.txt', 'w');
+file_a_im = fopen('ram_a_im.txt', 'w');
 
 for i = 1:N_bank
     fprintf(file_a_re, '%d\t%d\t%d\t%d\n', but_re(i, 1:4)); 

@@ -1,5 +1,5 @@
-clc;
 clear;
+clc;
 
 %    in '.mif' complex coef save in one data where   %
 %    1st half MSB is imag part of coef               %
@@ -7,77 +7,43 @@ clear;
 %                imag(1) | real(2)                   %
 %                23...12 | 11...0                    %
 
-%mode = 'home';
-mode = 'work';
-
-%data = 'hex';
-data = 'bin';
-
-width = 24;
+width = 12; % imag and real separate
 depth = 1024;
-
-%% read files:
-if(strcmp(mode, 'work'))
-    w_2(1:depth, 2) = load('D:\work\fft\matlab\w_re_1.txt');
-    w_2(1:depth, 1) = load('D:\work\fft\matlab\w_im_1.txt');
-
-    w_3(1:depth, 2) = load('D:\work\fft\matlab\w_re_2.txt');
-    w_3(1:depth, 1) = load('D:\work\fft\matlab\w_im_2.txt');
-
-    w_4(1:depth, 2) = load('D:\work\fft\matlab\w_re_3.txt');
-    w_4(1:depth, 1) = load('D:\work\fft\matlab\w_im_3.txt');
-    
-        file_1 = fopen('D:\work\fft\matlab\rom_1.mif', 'wt');
-        file_2 = fopen('D:\work\fft\matlab\rom_2.mif', 'wt');
-        file_3 = fopen('D:\work\fft\matlab\rom_3.mif', 'wt');
-elseif(strcmp(mode, 'home'))
-    w_2(1:depth, 2) = load('D:\SS\fpga\fft\matlab\w_re_1.txt');
-    w_2(1:depth, 1) = load('D:\SS\fpga\fft\matlab\w_im_1.txt');
-
-    w_3(1:depth, 2) = load('D:\SS\fpga\fft\matlab\w_re_2.txt');
-    w_3(1:depth, 1) = load('D:\SS\fpga\fft\matlab\w_im_2.txt');
-
-    w_4(1:depth, 2) = load('D:\SS\fpga\fft\matlab\w_re_3.txt');
-    w_4(1:depth, 1) = load('D:\SS\fpga\fft\matlab\w_im_3.txt');
-    
-        file_1 = fopen('D:\SS\fpga\fft\matlab\rom_1.mif', 'wt');
-        file_2 = fopen('D:\SS\fpga\fft\matlab\rom_2.mif', 'wt');
-        file_3 = fopen('D:\SS\fpga\fft\matlab\rom_3.mif', 'wt');
-else
-    error('"mode" is wrong');
-end
 
 fprintf('\n\tBegin\n');
 
-	fprintf(fout, 'WIDTH=%d;\n', width);
-	fprintf(fout, 'DEPTH=%d;\n', depth);
-	fprintf(fout, '\n');
-	fprintf(fout, 'ADDRESS_RADIX=UNS;\n');
+%% read files:
+    w_re(1:depth, 1:3) = [load('w_re_1.txt'), load('w_re_2.txt'), load('w_re_3.txt')];
+    w_im(1:depth, 1:3) = [load('w_im_1.txt'), load('w_im_2.txt'), load('w_im_3.txt')];
     
-    if(strcmp(data, 'hex'))
-        fprintf(fout, 'DATA_RADIX=HEX;\n');
-    elseif(strcmp(data, 'bin'))
-        fprintf(fout, 'DATA_RADIX=BIN;\n');
-    else
-        error('\n\twrong data type');
-    end
-        
-	fprintf(fout, '\n');
-	fprintf(fout, 'CONTENT BEGIN\n');
+    file_mif(1:3) = [fopen('rom_1.mif', 'wt'), fopen('rom_2.mif', 'wt'), fopen('rom_3.mif', 'wt')];
+
+%% descriptor:
+for i = 1:3
+	fprintf(file_mif(i), 'WIDTH=%d;\n', 2*width);
+	fprintf(file_mif(i), 'DEPTH=%d;\n', depth);
+	fprintf(file_mif(i), '\n');
+	fprintf(file_mif(i), 'ADDRESS_RADIX=UNS;\n');
+    fprintf(file_mif(i), 'DATA_RADIX=HEX;\n');
+	fprintf(file_mif(i), '\n');
+	fprintf(file_mif(i), 'CONTENT BEGIN\n');
+end
 
 fprintf('\n\t\tadd data in ".mif"...\n');
 
-for i = 1:depth
-    if(strcmp(data, 'hex'))
-        m = dec2hex((res(i) < 0)*2^width + res(i), width/4);
-    else
-        m = dec2bin((res(i) < 0)*2^width + res(i), width/4);
+%% add data:
+for k = 1:3
+    for i = 1:depth
+        w_str = [num2str(dec2hex((w_im(i, k) < 0)*2^width + w_im(i, k), width/4)),...
+                 num2str(dec2hex((w_re(i, k) < 0)*2^width + w_re(i, k), width/4))];
+
+        fprintf(file_mif(k), '%d\t:\t%s;\n', i - 1, w_str);
     end
-    
-    fprintf(fout, '%d\t:\t%s;\n', i - 1, m);
 end
 
-fprintf(file_1,'END;'); fprintf(file_2,'END;'); fprintf(file_3,'END;');
-fclose(file_1); fclose(file_2); fclose(file_3);
+for i = 1:3
+    fprintf(file_mif(i),'END;');
+    fclose(file_mif(i));
+end
 
 fprintf('\n\tComplete\n');
