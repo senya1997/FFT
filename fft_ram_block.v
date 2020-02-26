@@ -1,4 +1,4 @@
-module fft_ram_block #(parameter D_BIT = 17, A_BIT = 9)(
+module fft_ram_block #(parameter D_BIT = 17, A_BIT = 10)(
 	input iCLK,
 	
 	input [D_BIT - 1 : 0] iDATA_RE_0,
@@ -78,7 +78,7 @@ generate
 	for(k = 0; k < 4; k = k + 1)
 		begin: ram_bank
 		
-			fft_ram_fast RAM_RE(
+			fft_ram RAM_RE(
 				.clock(iCLK),
 				.data(DATA_RE_IN[k]),
 				.rdaddress(ADDR_RD[k]),
@@ -87,7 +87,7 @@ generate
 				.q(DATA_RE_OUT[k])
 			);	
 		
-			fft_ram_fast RAM_IM(
+			fft_ram RAM_IM(
 				.clock(iCLK),
 				.data(DATA_IM_IN[k]),
 				.rdaddress(ADDR_RD[k]),

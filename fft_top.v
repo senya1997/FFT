@@ -1,16 +1,8 @@
 `include "fft_defines.v"
 
-`define WORK
-
-`ifdef WORK
-	`define MIF_1 "D:/work/fft/matlab/rom_1.mif"
-	`define MIF_2 "D:/work/fft/matlab/rom_2.mif"
-	`define MIF_3 "D:/work/fft/matlab/rom_3.mif"
-`else
-	`define MIF_1 "D:/SS/fpga/fft/matlab/rom_1.mif"
-	`define MIF_2 "D:/SS/fpga/fft/matlab/rom_2.mif"
-	`define MIF_3 "D:/SS/fpga/fft/matlab/rom_3.mif"
-`endif
+`define MIF_1 "./matlab/rom_1.mif"
+`define MIF_2 "./matlab/rom_2.mif"
+`define MIF_3 "./matlab/rom_3.mif"
 	
 module fft_top(
 	input	iCLK,
@@ -339,19 +331,19 @@ assign IM_RAM_A[3] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[3];
 
 // ==================== ROM: ======================
 
-	fft_rom_fast #(.MIF(`MIF_1)) ROM_1( // 'fast' mean that don't use reg for output data 
+	fft_rom #(.MIF(`MIF_1)) ROM_1(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[1], W_RE[1]})
 	);
 
-	fft_rom_fast #(.MIF(`MIF_2)) ROM_2(
+	fft_rom #(.MIF(`MIF_2)) ROM_2(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[2], W_RE[2]})
 	);
 
-	fft_rom_fast #(.MIF(`MIF_3)) ROM_3(
+	fft_rom #(.MIF(`MIF_3)) ROM_3(
 		.address(ADDR_COEF),
 		.clock(iCLK),
 		.q({W_IM[3], W_RE[3]})

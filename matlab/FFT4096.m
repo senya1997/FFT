@@ -3,8 +3,8 @@ close all;
 clc;
 
 % choose test signal:
-    test = 'sin';
-    %test = 'audio';
+    %test = 'sin';
+    test = 'audio';
     %test = 'const';
     %test = 'num'; % numbers 0...N (function 'y = x', x > 0)
 
@@ -22,8 +22,9 @@ clc;
 
     bias = amp_1;
 % auido sample path:   
-    audiofile = 'impulses/g.wav';
-% const:
+    audiofile = 'impulses/sample_in.wav';
+    boost = 1.5e4; % all sample points multiple on this coef for normalize
+% const signal:
     dc = 100;
 
 N = 4096;
@@ -52,16 +53,16 @@ for i = 1:(stage - 2) % '- 2' because stage with multiplier '= stage - 1'
         w_re_3_buf = w_re_3(1:4:N_bank, i);
     w_re_3(1:N_bank, i + 1) = [w_re_3_buf; w_re_3_buf; w_re_3_buf; w_re_3_buf];
 
-        w_im_2_buf = w_im_1(1:4:N_bank, i);
-    w_im_1(1:N_bank, i + 1) = [w_im_2_buf; w_im_2_buf; w_im_2_buf; w_im_2_buf];
-        w_im_3_buf = w_im_2(1:4:N_bank, i);
-    w_im_2(1:N_bank, i + 1) = [w_im_3_buf; w_im_3_buf; w_im_3_buf; w_im_3_buf];
-        w_im_4_buf = w_im_3(1:4:N_bank, i);
-    w_im_3(1:N_bank, i + 1) = [w_im_4_buf; w_im_4_buf; w_im_4_buf; w_im_4_buf];
+        w_im_1_buf = w_im_1(1:4:N_bank, i);
+    w_im_1(1:N_bank, i + 1) = [w_im_1_buf; w_im_1_buf; w_im_1_buf; w_im_1_buf];
+        w_im_2_buf = w_im_2(1:4:N_bank, i);
+    w_im_2(1:N_bank, i + 1) = [w_im_2_buf; w_im_2_buf; w_im_2_buf; w_im_2_buf];
+        w_im_3_buf = w_im_3(1:4:N_bank, i);
+    w_im_3(1:N_bank, i + 1) = [w_im_3_buf; w_im_3_buf; w_im_3_buf; w_im_3_buf];
 end
 
-clear w_re_2_buf; clear w_re_3_buf; clear w_re_4_buf;  
-clear w_im_2_buf; clear w_im_3_buf; clear w_im_4_buf;
+clear w_re_1_buf; clear w_re_2_buf; clear w_re_3_buf;  
+clear w_im_1_buf; clear w_im_2_buf; clear w_im_3_buf;
 
 %% ===========================   test signal:   ===========================
 fprintf('\n\t\tbuild test signal...\n');
@@ -77,7 +78,7 @@ if(strcmp(test, 'sin'))
     fprintf('\n\t\tsine signal test\n');
 elseif(strcmp(test, 'audio'))
     [y, fs] = audioread(audiofile);
-    signal(1:N) = y(1:N);
+    signal(1:N) = y(1:N).*boost;
     
     clear y; clear fs;
     

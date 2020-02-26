@@ -1,9 +1,6 @@
 clear;
 clc;
 
-%mode = 'home';
-mode = 'work';
-
 moodel = 'math'; % for analys files from matlab model FFT
 %moodel = 'fpga'; % for analys files from modelsim with 2nd 'B' RAM
 
@@ -16,32 +13,16 @@ fprintf('\n\tBegin\n');
 fprintf('\n\t\tread ".txt" RAM...\n');
 
 %% read files:
-if(strcmp(mode, 'work'))
-    if(strcmp(moodel, 'math'))
-        file_a_re = load('D:\work\fft\matlab\ram_a_re.txt');
-        file_a_im = load('D:\work\fft\matlab\ram_a_im.txt');
-    elseif(strcmp(moodel, 'fpga'))
-        file_a_re = load('D:\work\modelsim\fft\ram_a_re.txt');
-        file_a_im = load('D:\work\modelsim\fft\ram_a_im.txt');
-        file_b_re = load('D:\work\modelsim\fft\ram_b_re.txt');
-        file_b_im = load('D:\work\modelsim\fft\ram_b_im.txt');
-    else
-        error('"moodel" is wrong');
-    end
-elseif(strcmp(mode, 'home'))
-    if(strcmp(moodel, 'math'))
-        file_a_re = load('D:\SS\fpga\fft\matlab\ram_a_re.txt');
-        file_a_im = load('D:\SS\fpga\fft\matlab\ram_a_im.txt');
-    elseif(strcmp(moodel, 'fpga'))
-        file_a_re = load('D:\SS\fpga\modelsim\fft\ram_a_re.txt');
-        file_a_im = load('D:\SS\fpga\modelsim\fft\ram_a_im.txt');
-        file_b_re = load('D:\SS\fpga\modelsim\fft\ram_b_re.txt');
-        file_b_im = load('D:\SS\fpga\modelsim\fft\ram_b_im.txt');
-    else
-        error('"moodel" is wrong');
-    end
+if(strcmp(moodel, 'math'))
+    file_a_re = load('ram_a_re.txt');
+    file_a_im = load('ram_a_im.txt');
+elseif(strcmp(moodel, 'fpga'))
+    file_a_re = load('..\..\modelsim\fft\ram_a_re.txt');
+    file_a_im = load('..\..\modelsim\fft\ram_a_im.txt');
+    file_b_re = load('..\..\modelsim\fft\ram_b_re.txt');
+    file_b_im = load('..\..\modelsim\fft\ram_b_im.txt');
 else
-    error('"mode" is wrong');
+    error('"moodel" is wrong');
 end
 
 %% bit reverse change to normal by banks:
@@ -123,7 +104,7 @@ grid on;
 
 figure;
 plot(sub);
-title('Subtraction 1st and 2nd half:');
+title('Error between 1st and 2nd half:');
 grid on;
 
 fprintf('\n\tComplete\n');
