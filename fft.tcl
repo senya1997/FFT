@@ -1,16 +1,13 @@
 set_current_revision fft;
-set work_pc 1
-set compile 1
+
+set compile 0
 set upd_script 1
 
 puts "**********   start   ***********"
 puts " "
-
-if {$work_pc} { set path_work D:/work 
-} else { set path_work D:/SS/fpga }
 	
 set path_script	./tb/scripts
-set path_modelsim $path_work/modelsim/fft/
+set path_modelsim ../modelsim/fft/
 
 if {$compile} {
 	puts "compiling..."

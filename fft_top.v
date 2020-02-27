@@ -1,9 +1,5 @@
 `include "fft_defines.v"
 
-`define MIF_1 "./matlab/rom_1.mif"
-`define MIF_2 "./matlab/rom_2.mif"
-`define MIF_3 "./matlab/rom_3.mif"
-	
 module fft_top(
 	input	iCLK,
 	input	iRESET,
@@ -136,7 +132,7 @@ wire [16 : 0] IM_MULT_OUTMIX [0 : 3];
 
 wire [16 : 0] IM_OUTMIX [0 : 3];
 
-	fft_input_mix INPUT_MIX(
+	fft_input_mix #(.BIT(`D_BIT)) INPUT_MIX(
 		.iCLK(iCLK),
 		.iRESET(iRESET),
 		
@@ -161,7 +157,7 @@ wire [16 : 0] IM_OUTMIX [0 : 3];
 		.oY3_IM(IM_INMIX_BUT[3])
 	);
 	
-	fft_output_mix OUTPUT_MIX(
+	fft_output_mix #(.BIT(`D_BIT)) OUTPUT_MIX(
 		.iCLK(iCLK),
 		.iRESET(iRESET),
 		
@@ -191,7 +187,7 @@ wire [16 : 0] IM_OUTMIX [0 : 3];
 wire [16 : 0] RE_BUT_MULT [0 : 3];
 wire [16 : 0] IM_BUT_MULT [0 : 3];
 
-	fft_but_comp BUTTER(
+	fft_but_comp #(.BIT(`D_BIT)) BUTTER(
 		.iCLK(iCLK),
 		.iRESET(iRESET),
 		
@@ -216,7 +212,7 @@ wire [16 : 0] IM_BUT_MULT [0 : 3];
 		.oY3_IM(IM_BUT_MULT[3])
 	);
 	
-	fft_mult_block MULT_BLOCK(
+	fft_mult_block #(.D_BIT(`D_BIT), .W_BIT(`W_BIT)) MULT_BLOCK(
 		.iCLK(iCLK),
 		.iRESET(iRESET),
 		
@@ -255,7 +251,7 @@ assign IM_RAM_A[1] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[1];
 assign IM_RAM_A[2] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[2];
 assign IM_RAM_A[3] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[3];	
 	
-	fft_ram_block RAM_A(
+	fft_ram_block #(.D_BIT(`D_BIT), .A_BIT(`A_BIT)) RAM_A(
 		.iCLK(iCLK),
 		
 		.iDATA_RE_0(RE_RAM_A[0]),
@@ -292,7 +288,7 @@ assign IM_RAM_A[3] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[3];
 		.oDATA_IM_3(IM_RAM_A_INMIX[3])
 	);
 	
-	fft_ram_block RAM_B(
+	fft_ram_block #(.D_BIT(`D_BIT), .A_BIT(`A_BIT)) RAM_B(
 		.iCLK(iCLK),
 		
 		.iDATA_RE_0(RE_OUTMIX[0]),
