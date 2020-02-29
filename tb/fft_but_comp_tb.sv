@@ -4,15 +4,12 @@
 `define BIT_SIZE 17 // data - signed
 `define MAX_D 32768
 
-`define NUM_OF_RPT_4DOT 15 // number of repeat test
-`define NUM_OF_RPT_2DOT 8
+`define NUM_OF_RPT_4DOT 30 // number of repeat test
 
 module fft_but_comp_tb;
 
 bit clk;
 bit reset;
-
-bit but_sel; // "0" - 4 dot, "1" - 2 dot butterfly
 
 bit signed [`BIT_SIZE - 1 : 0] x_re [0:3];
 bit signed [`BIT_SIZE - 1 : 0] x_im [0:3];
@@ -21,18 +18,6 @@ wire signed [`BIT_SIZE - 1 : 0] Y_RE [0:3];
 wire signed [`BIT_SIZE - 1 : 0] Y_IM [0:3];
 
 // reference signals:
-wire signed [`BIT_SIZE : 0] Y0_RE_2DOT = x_re[0] + x_re[1] + 2'sd1; // 2 dot butterfly
-wire signed [`BIT_SIZE : 0] Y0_IM_2DOT = x_im[0] + x_im[1] + 2'sd1;
-
-wire signed [`BIT_SIZE : 0] Y1_RE_2DOT = x_re[0] - x_im[1] + 2'sd1;
-wire signed [`BIT_SIZE : 0] Y1_IM_2DOT = x_im[0] - x_re[1] + 2'sd1;
-
-wire signed [`BIT_SIZE : 0] Y2_RE_2DOT = x_re[2] + x_re[3] + 2'sd1;
-wire signed [`BIT_SIZE : 0] Y2_IM_2DOT = x_im[2] + x_im[3] + 2'sd1;
-
-wire signed [`BIT_SIZE : 0] Y3_RE_2DOT = x_re[2] - x_im[3] + 2'sd1;
-wire signed [`BIT_SIZE : 0] Y3_IM_2DOT = x_im[2] - x_re[3] + 2'sd1;
-
 wire signed [`BIT_SIZE + 1 : 0] Y0_RE_4DOT = x_re[0] + x_re[1] + x_re[2] + x_re[3] + 3'sd2; // 4 dot
 wire signed [`BIT_SIZE + 1 : 0] Y0_IM_4DOT = x_im[0] + x_im[1] + x_im[2] + x_im[3] + 3'sd2;
 
@@ -47,9 +32,7 @@ wire signed [`BIT_SIZE + 1 : 0] Y3_IM_4DOT = x_im[0] + x_re[1] - x_im[2] - x_re[
 
 // compare output with reference:	
 wire MATCH_4DOT = Y_RE[0] == Y0_RE_4DOT[`BIT_SIZE + 1 : 2] & Y_RE[1] == Y1_RE_4DOT[`BIT_SIZE + 1 : 2] & Y_RE[2] == Y2_RE_4DOT[`BIT_SIZE + 1 : 2] & Y_RE[3] == Y3_RE_4DOT[`BIT_SIZE + 1 : 2] &
-				  Y_IM[0] == Y0_IM_4DOT[`BIT_SIZE + 1 : 2] & Y_IM[1] == Y1_IM_4DOT[`BIT_SIZE + 1 : 2] & Y_IM[2] == Y2_IM_4DOT[`BIT_SIZE + 1 : 2] & Y_IM[3] == Y3_IM_4DOT[`BIT_SIZE + 1 : 2];
-wire MATCH_2DOT = Y_RE[0] == Y0_RE_2DOT[`BIT_SIZE : 1] & Y_RE[1] == Y1_RE_2DOT[`BIT_SIZE : 1] & Y_RE[2] == Y2_RE_2DOT[`BIT_SIZE : 1] & Y_RE[3] == Y3_RE_2DOT[`BIT_SIZE : 1] &
-				  Y_IM[0] == Y0_IM_2DOT[`BIT_SIZE : 1] & Y_IM[1] == Y1_IM_2DOT[`BIT_SIZE : 1] & Y_IM[2] == Y2_IM_2DOT[`BIT_SIZE : 1] & Y_IM[3] == Y3_IM_2DOT[`BIT_SIZE : 1];				  
+				  Y_IM[0] == Y0_IM_4DOT[`BIT_SIZE + 1 : 2] & Y_IM[1] == Y1_IM_4DOT[`BIT_SIZE + 1 : 2] & Y_IM[2] == Y2_IM_4DOT[`BIT_SIZE + 1 : 2] & Y_IM[3] == Y3_IM_4DOT[`BIT_SIZE + 1 : 2];			  
 	
 initial begin
 	$timeformat(-6, 3, " us", 6);
@@ -86,31 +69,8 @@ initial begin
 					$display("\t\tIM: y0 = %6d", Y0_IM_4DOT[`BIT_SIZE + 1 : 2], "\ty1 = %6d", Y1_IM_4DOT[`BIT_SIZE + 1 : 2], "\ty2 = %6d", Y2_IM_4DOT[`BIT_SIZE + 1 : 2], "\ty3 = %6d", Y3_IM_4DOT[`BIT_SIZE + 1 : 2]);
 				end
 			DISP_OUTPUT_SIGN;
-		end	
-
-	$display("\n\n\t\t\tSTART TEST TWO '2 DOT' COMPLEX BUTTERFLY\n");
-	but_sel = 1'b1;
-	repeat(`NUM_OF_RPT_2DOT)
-		begin
-			GET_COMP_NUM(x_re[0], x_im[0]);
-			GET_COMP_NUM(x_re[1], x_im[1]);
-			GET_COMP_NUM(x_re[2], x_im[2]);
-			GET_COMP_NUM(x_re[3], x_im[3]);
-			
-			DISP_INPUT_SIGN;
-			
-			#(`TACT);
-			
-			assert(MATCH_2DOT) $display("\tOK output signals:");
-			else
-				begin
-					$display("\tERROR reference/output signals:");
-					$display("\t\tRE: y0 = %6d", Y0_RE_2DOT[`BIT_SIZE : 1], "\ty1 = %6d", Y1_RE_2DOT[`BIT_SIZE : 1], "\ty2 = %6d", Y2_RE_2DOT[`BIT_SIZE : 1], "\ty3 = %6d", Y3_RE_2DOT[`BIT_SIZE : 1]);
-					$display("\t\tIM: y0 = %6d", Y0_IM_2DOT[`BIT_SIZE : 1], "\ty1 = %6d", Y1_IM_2DOT[`BIT_SIZE : 1], "\ty2 = %6d", Y2_IM_2DOT[`BIT_SIZE : 1], "\ty3 = %6d", Y3_IM_2DOT[`BIT_SIZE : 1]);
-				end
-			DISP_OUTPUT_SIGN;
 		end
-
+		
 	#(5*`TACT);
 	$display("\n\n\t\t\t\tCOMPLETE\n");
 	
@@ -147,8 +107,6 @@ endtask;
 fft_but_comp #(.BIT(`BIT_SIZE)) BUT(
 	.iCLK(clk),
 	.iRESET(reset),
-	
-	.iBUT_SEL(but_sel),
 	
 	.iX0_RE(x_re[0]),
 	.iX0_IM(x_im[0]),

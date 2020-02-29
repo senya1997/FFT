@@ -47,7 +47,7 @@ end
 assign oY0_RE = y0_re_align;
 assign oY0_IM = y0_im_align;
 
-fft_mult_comp #(.D_BIT(`D_BIT), .W_BIT(`W_BIT)) MULT_1(
+fft_mult_comp #(.D_BIT(D_BIT), .W_BIT(W_BIT)) MULT_1(
 	.iCLK(iCLK),
 	.iRESET(iRESET),
 
@@ -61,7 +61,7 @@ fft_mult_comp #(.D_BIT(`D_BIT), .W_BIT(`W_BIT)) MULT_1(
 	.oIM(oY1_IM)
 );
 
-fft_mult_comp #(.D_BIT(`D_BIT), .W_BIT(`W_BIT)) MULT_2(
+fft_mult_comp #(.D_BIT(D_BIT), .W_BIT(W_BIT)) MULT_2(
 	.iCLK(iCLK),
 	.iRESET(iRESET),
 	
@@ -75,7 +75,7 @@ fft_mult_comp #(.D_BIT(`D_BIT), .W_BIT(`W_BIT)) MULT_2(
 	.oIM(oY2_IM)
 );
 
-fft_mult_comp #(.D_BIT(`D_BIT), .W_BIT(`W_BIT)) MULT_3(
+fft_mult_comp #(.D_BIT(D_BIT), .W_BIT(W_BIT)) MULT_3(
 	.iCLK(iCLK),
 	.iRESET(iRESET),
 	

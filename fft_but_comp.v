@@ -1,8 +1,6 @@
 module fft_but_comp #(parameter BIT = 17)(
 	input iCLK,
 	input iRESET,
-	
-	input iBUT_SEL, // "0" - 4 dot butterfly, "1" - 2 dot inputs: "x0-x1" and "x2-x3"
 
 	input signed [BIT - 1 : 0] iX0_RE,
 	input signed [BIT - 1 : 0] iX0_IM,
@@ -26,47 +24,17 @@ module fft_but_comp #(parameter BIT = 17)(
 reg signed [BIT - 1 : 0] re_buf [0 : 3];
 reg signed [BIT - 1 : 0] im_buf [0 : 3];
 
-/*
-wire signed [BIT + 1 : 0] Y0_RE_2DOT = {iX0_RE, 1'b1} + {iX1_RE, 1'b1}; // 2 dot butterfly
-wire signed [BIT + 1 : 0] Y0_IM_2DOT = {iX0_IM, 1'b1} + {iX1_IM, 1'b1};
-
-wire signed [BIT : 0] Y1_RE_2DOT = iX0_RE - iX1_IM + 2'sd1;
-wire signed [BIT : 0] Y1_IM_2DOT = iX0_IM - iX1_RE + 2'sd1;
-
-wire signed [BIT + 1 : 0] Y2_RE_2DOT = {iX2_RE, 1'b1} + {iX3_RE, 1'b1};
-wire signed [BIT + 1 : 0] Y2_IM_2DOT = {iX2_IM, 1'b1} + {iX3_IM, 1'b1};
-
-wire signed [BIT : 0] Y3_RE_2DOT = iX2_RE - iX3_IM + 2'sd1;
-wire signed [BIT : 0] Y3_IM_2DOT = iX2_IM - iX3_RE + 2'sd1;
-*/
-
-wire signed [BIT : 0] Y0_RE_2DOT = iX0_RE + iX1_RE + 2'sd1; // 2 dot butterfly
-wire signed [BIT : 0] Y0_IM_2DOT = iX0_IM + iX1_IM + 2'sd1;
-
-wire signed [BIT : 0] Y1_RE_2DOT = iX0_RE - iX1_IM + 2'sd1;
-wire signed [BIT : 0] Y1_IM_2DOT = iX0_IM - iX1_RE + 2'sd1;
-
-wire signed [BIT : 0] Y2_RE_2DOT = iX2_RE + iX3_RE + 2'sd1;
-wire signed [BIT : 0] Y2_IM_2DOT = iX2_IM + iX3_IM + 2'sd1;
-
-wire signed [BIT : 0] Y3_RE_2DOT = iX2_RE - iX3_IM + 2'sd1;
-wire signed [BIT : 0] Y3_IM_2DOT = iX2_IM - iX3_RE + 2'sd1;
-
-
-
-wire signed [BIT + 1 : 0] Y0_RE_4DOT = Y0_RE_2DOT + Y2_RE_2DOT;
-wire signed [BIT + 1 : 0] Y0_IM_4DOT = Y0_IM_2DOT + Y2_IM_2DOT;
+wire signed [BIT + 1 : 0] Y0_RE_4DOT = iX0_RE + iX1_RE + iX2_RE + iX3_RE + 3'sd2;
+wire signed [BIT + 1 : 0] Y0_IM_4DOT = iX0_IM + iX1_IM + iX2_IM + iX3_IM + 3'sd2;
 
 wire signed [BIT + 1 : 0] Y1_RE_4DOT = iX0_RE + iX1_IM - iX2_RE - iX3_IM + 3'sd2;
-wire signed [BIT + 1 : 0] Y1_IM_4DOT = Y1_IM_2DOT - Y3_IM_2DOT + 3'sd2;
+wire signed [BIT + 1 : 0] Y1_IM_4DOT = iX0_IM - iX1_RE - iX2_IM + iX3_RE + 3'sd2;
 
 wire signed [BIT + 1 : 0] Y2_RE_4DOT = iX0_RE - iX1_RE + iX2_RE - iX3_RE + 3'sd2;
 wire signed [BIT + 1 : 0] Y2_IM_4DOT = iX0_IM - iX1_IM + iX2_IM - iX3_IM + 3'sd2;
 
-wire signed [BIT + 1 : 0] Y3_RE_4DOT = Y1_RE_2DOT - Y3_RE_2DOT + 3'sd2;
+wire signed [BIT + 1 : 0] Y3_RE_4DOT = iX0_RE - iX1_IM - iX2_RE + iX3_IM + 3'sd2;
 wire signed [BIT + 1 : 0] Y3_IM_4DOT = iX0_IM + iX1_RE - iX2_IM - iX3_RE + 3'sd2;
-
-
 
 always@(posedge iCLK or negedge iRESET)begin
 	if(!iRESET)
@@ -79,21 +47,6 @@ always@(posedge iCLK or negedge iRESET)begin
 			im_buf[2] = 0;
 			re_buf[3] = 0;
 			im_buf[3] = 0;
-		end
-	else if(iBUT_SEL)
-		begin
-			// re_buf[0] = Y0_RE_2DOT >>> 2;
-			// im_buf[0] = Y0_IM_2DOT >>> 2;
-			
-			re_buf[0] = Y0_RE_2DOT[BIT : 1];
-			im_buf[0] = Y0_IM_2DOT[BIT : 1];
-			
-			re_buf[1] = Y1_RE_2DOT[BIT : 1];
-			im_buf[1] = Y1_IM_2DOT[BIT : 1];
-			re_buf[2] = Y2_RE_2DOT[BIT : 1];
-			im_buf[2] = Y2_IM_2DOT[BIT : 1];
-			re_buf[3] = Y3_RE_2DOT[BIT : 1];
-			im_buf[3] = Y3_IM_2DOT[BIT : 1];
 		end
 	else
 		begin

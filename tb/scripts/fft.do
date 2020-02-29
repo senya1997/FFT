@@ -1,20 +1,16 @@
 transcript on
-set work_pc 0
 
 quit -sim
 
-if {$work_pc} { set path_work D:/work 
-} else { 		set path_work D:/SS/fpga }
-
 #remove .vo from prj
-	set path_vo $path_work/fft/simulation/modelsim/fft.vo	
+	set path_vo ../../fft/simulation/modelsim/fft.vo	
 	project::addfile 	$path_vo
 	project::removefile $path_vo
 
 project::compileall
 	
 #compile .c to .dll
-	file copy -force $path_work/fft/tb/scripts/signal.c $path_work/modelsim/fft
+	file copy -force ../../fft/tb/scripts/signal.c ../../modelsim/fft
 	if {![file exist signal.dll]} { file delete -force signal.dll }
 	
 	#if {$work_pc} { exec c:/mingw/bin/gcc -shared -o signal.dll signal.c
@@ -24,5 +20,5 @@ project::compileall
 	#vlog fft_tb.sv
 	vsim -L altera_mf_ver -c fft_tb -sv_lib signal -novopt
 	
-do $path_work/fft/tb/wave/wave.do
+do ../../fft/tb/wave/wave.do
 configure wave -timelineunits us
