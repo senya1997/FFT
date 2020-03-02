@@ -1,21 +1,75 @@
 `timescale 1ns/1ns
 `include "../fft_defines.v"
-  
+`include "../fft_defines_tb.v"
+
+`define N 4096
+`define N_bank (`N/4) /* cause Radix-4 */
+
+// choose test signal:
+	// `define SIN
+	// `define AUDIO /* from '.wav' file */
+	`define BIAS /* integer const */
+	// `define NUM /* default test signal, numbers 0..N (function 'y = x', x > 0) */
+
+`ifdef TEST_MIXER
+	`undef SIN
+	`undef AUDIO
+	`undef BIAS
+	
+	`define NUM
+`endif
+
+`ifdef SIN
+	`undef AUDIO
+	`undef BIAS
+	`undef NUM
+	
+	// SIN spec:
+		`define AMP_1 10000
+		`define AMP_2 5000
+		
+		`define FREQ_1 9000
+		`define FREQ_2 4500
+		
+		`define PHASE_1 0
+		`define PHASE_2 37
+		
+		`define BIAS `AMP_1
+		`define TIME_STEP 0.0001
+`elif AUDIO
+	`undef BIAS
+	`undef NUM
+	
+	`define AUDIO_PATH "../../fft/matlab/impulses/g.wav"
+`elif BIAS
+	`undef NUM
+	
+	`define CONST 100
+`elif
+	`define NUM
+`endif
+
 module fft_tb;
 
 bit clk;
 bit reset;
 
 shortint i, j;
-
 real temp;
-real time_s;
 
 bit start;
 
-bit signed [15 : 0] data_adc;
-bit [8 : 0] addr_rd [0 : 3];
-bit [8 : 0] addr_wr [0 : 3];
+`ifdef SIN
+	real time_s = 0;
+`endif
+
+`ifdef NUM
+	shortint k = 0;
+`endif
+	
+bit signed [`D_BIT - 2 : 0] data_adc; // '-2' because data from ADC don't have bit expansion
+bit [`A_BIT - 1 : 0] addr_rd [0 : 3];
+bit [`A_BIT - 1 : 0] addr_wr [0 : 3];
 bit [3 : 0] we;
 
 wire RDY;
@@ -35,22 +89,46 @@ initial begin
 end
 
 initial begin
-	$display("\n\n\t\t\tSTART TEST FFT\n");
+	`ifdef TEST_FFT
+		$display("\n\n\t\t\tSTART TEST FFT\n");
+	`elif TEST_MIXER
+		$display("\n\n\t\t\tSTART TEST DATA MIXERS WITH CONTROL\n");
+	`endif
 	
 	start = 1'b0;
 	#(10*`TACT);
 	
-	$display("\twrite adc data point in ram, time: %t", $time);
-	time_s = 0;
+	`ifdef SIN
+		$display("\ttest signal: sine wave with next config");
+		$display("\tamp = %d, %d, freq = %d, %d, phase = %d, %d, bias = %d", 
+				 `AMP_1, `AMP_2, `FREQ_1, `FREQ_2, `PHASE_1, `PHASE_2, `BIAS);
+	`elif AUDIO
+		$display("\ttest signal: audio from path - ", `AUDIO_PATH);
+	`elif BIAS
+		$display("\ttest signal: const = %d", `CONST);
+	`elif NUM
+		$display("\ttest signal: numbers (function 'y = x')");
+	`endif
+	
+	$display("\twrite ADC data point in RAM, time: %t", $time);
 	
 	for(i = 0; i <= 3; i = i + 1)
-		for(j = 0; j < 512; j = j + 1)
+		for(j = 0; j < `N_bank; j = j + 1)
 			begin
-				// temp = 32767*(signal(1_000_000, time_s) + signal(400_000, time_s))/2;
-				temp = 20000*signal(48.828125, time_s);
-				// temp = $unsigned($random)%(65535);
-				// temp = 100;
-				 
+				`ifdef SIN
+					// temp = 20000*signal(48.828125, time_s);
+					// temp = $unsigned($random)%(65535);
+					temp = `BIAS + `AMP_1*(signal(`FREQ_1, time_s) + `AMP_2*signal(`FREQ_2, time_s))/2;
+					time_s = time_s + `TIME_STEP;
+				`elif AUDIO
+				
+				`elif BIAS
+					temp = `CONST;
+				`elif NUM
+					temp = k;
+					k = k + 1;
+				`endif
+				
 				data_adc = temp;
 				
 				addr_wr[i] = j;
@@ -58,8 +136,6 @@ initial begin
 				we[i] = 1'b1;
 					#(`TACT);
 				we[i] = 1'b0;
-				
-				time_s = time_s + 0.0001;
 			end
 		
 	#(10*`TACT);
@@ -112,7 +188,7 @@ task SAVE_RAM_DATA(
 			f_ram_b_im = $fopen(name_b_im, "w");
 		end
 	
-	for(j = 0; j < 512; j = j + 1)
+	for(j = 0; j < `N_bank; j = j + 1)
 		begin
 			if(ram_choose != 1)
 				begin
@@ -184,19 +260,21 @@ initial begin
 end
 */
 
-// package math_pkg;
-  //// import dpi task      C Name = SV function name
-  // import "DPI" pure function real cos (input real rTheta);
-  // import "DPI" pure function real sin (input real rTheta);
-  // import "DPI" pure function real log (input real rVal);
-  // import "DPI" pure function real log10 (input real rVal);
-// endpackage : math_pkg
+/*
+package math_pkg;
+  // import dpi task      C Name = SV function name
+  import "DPI" pure function real cos (input real rTheta);
+  import "DPI" pure function real sin (input real rTheta);
+  import "DPI" pure function real log (input real rVal);
+  import "DPI" pure function real log10 (input real rVal);
+endpackage : math_pkg
 
-// function real GET_SIN(input real time_s);
-  // import math_pkg::*;
+function real GET_SIN(input real time_s);
+  import math_pkg::*;
   
-  // GET_SIN = `OFFSET + (`AMPL * sin(2*`PI*`FREQ*time_s));
-// endfunction
+  GET_SIN = `OFFSET + (`AMPL * sin(2*`PI*`FREQ*time_s));
+endfunction
+*/
 
 fft_top FFT(
 	.iCLK(clk),

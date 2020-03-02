@@ -1,4 +1,5 @@
 `include "fft_defines.v"
+`include "fft_defines_tb.v"
 
 module fft_top(
 	input	iCLK,
@@ -6,27 +7,27 @@ module fft_top(
 	
 	input iSTART,
 	
-	input [15 : 0] iDATA,
+	input [`D_BIT - 2 : 0] iDATA, // ADC data without expansion bit
 	
-	input [8 : 0] iADDR_RD_0,
-	input [8 : 0] iADDR_RD_1,
-	input [8 : 0] iADDR_RD_2,
-	input [8 : 0] iADDR_RD_3,
+	input [`A_BIT - 1 : 0] iADDR_RD_0,
+	input [`A_BIT - 1 : 0] iADDR_RD_1,
+	input [`A_BIT - 1 : 0] iADDR_RD_2,
+	input [`A_BIT - 1 : 0] iADDR_RD_3,
 
-	input [8 : 0] iADDR_WR_0,
-	input [8 : 0] iADDR_WR_1,
-	input [8 : 0] iADDR_WR_2,
-	input [8 : 0] iADDR_WR_3,
+	input [`A_BIT - 1 : 0] iADDR_WR_0,
+	input [`A_BIT - 1 : 0] iADDR_WR_1,
+	input [`A_BIT - 1 : 0] iADDR_WR_2,
+	input [`A_BIT - 1 : 0] iADDR_WR_3,
 	
 	input iWE_0,
 	input iWE_1,
 	input iWE_2,
 	input iWE_3,	
 	
-	output [16 : 0] oDATA_RE_0,
-	output [16 : 0] oDATA_RE_1,
-	output [16 : 0] oDATA_RE_2,
-	output [16 : 0] oDATA_RE_3,
+	output [`D_BIT - 1 : 0] oDATA_RE_0,
+	output [`D_BIT - 1 : 0] oDATA_RE_1,
+	output [`D_BIT - 1 : 0] oDATA_RE_2,
+	output [`D_BIT - 1 : 0] oDATA_RE_3,
 	
 	output oRDY
 );
@@ -36,22 +37,22 @@ wire SOURCE_CONT;
 wire [1 : 0] BANK_RD_ROT;
 wire [1 : 0] BANK_WR_ROT;
 
-wire [16 : 0] RE_RAM_A [0 : 3];
-wire [16 : 0] RE_OUTMIX [0 : 3];
+wire [`D_BIT - 1 : 0] RE_RAM_A [0 : 3];
+wire [`D_BIT - 1 : 0] RE_OUTMIX [0 : 3];
 	assign RE_RAM_A[0] = SOURCE_CONT ? {iDATA[15], iDATA} : RE_OUTMIX[0];
 	assign RE_RAM_A[1] = SOURCE_CONT ? {iDATA[15], iDATA} : RE_OUTMIX[1];
 	assign RE_RAM_A[2] = SOURCE_CONT ? {iDATA[15], iDATA} : RE_OUTMIX[2];
 	assign RE_RAM_A[3] = SOURCE_CONT ? {iDATA[15], iDATA} : RE_OUTMIX[3];
 
-wire [8 : 0] ADDR_RD_CTRL [0 : 3];
-wire [8 : 0] ADDR_RD [0 : 3];
+wire [`A_BIT - 1 : 0] ADDR_RD_CTRL [0 : 3];
+wire [`A_BIT - 1 : 0] ADDR_RD [0 : 3];
 	assign ADDR_RD[0] = SOURCE_CONT ? iADDR_RD_0 : ADDR_RD_CTRL[0];
 	assign ADDR_RD[1] = SOURCE_CONT ? iADDR_RD_1 : ADDR_RD_CTRL[1];
 	assign ADDR_RD[2] = SOURCE_CONT ? iADDR_RD_2 : ADDR_RD_CTRL[2];
 	assign ADDR_RD[3] = SOURCE_CONT ? iADDR_RD_3 : ADDR_RD_CTRL[3];
 
-wire [8 : 0] ADDR_WR_CTRL;	
-wire [8 : 0] ADDR_WR [0 : 3];
+wire [`A_BIT - 1 : 0] ADDR_WR_CTRL;	
+wire [`A_BIT - 1 : 0] ADDR_WR [0 : 3];
 	assign ADDR_WR[0] = SOURCE_CONT ? iADDR_WR_0 : ADDR_WR_CTRL;
 	assign ADDR_WR[1] = SOURCE_CONT ? iADDR_WR_1 : ADDR_WR_CTRL;
 	assign ADDR_WR[2] = SOURCE_CONT ? iADDR_WR_2 : ADDR_WR_CTRL;
@@ -64,20 +65,25 @@ wire [3 : 0] WE;
 	assign WE[1] = SOURCE_CONT ? iWE_1 : WE_A_CTRL;
 	assign WE[2] = SOURCE_CONT ? iWE_2 : WE_A_CTRL;
 	assign WE[3] = SOURCE_CONT ? iWE_3 : WE_A_CTRL;
-	
-wire [8 : 0] ADDR_COEF;
+
+`ifdef TEXT_MIXER	
+	wire [`A_BIT - 1 : 0] ADDR_COEF = 0; // "turn off" multipliers
+`else
+	wire [`A_BIT - 1 : 0] ADDR_COEF;
+`endif
+
 wire [11 : 0] W_RE [1 : 3];
 wire [11 : 0] W_IM [1 : 3];
 
 // syntax: RE_"FROM"_"TO", IM_"FROM"_"TO"
 
-wire [16 : 0] RE_RAM_A_INMIX [0 : 3];
-wire [16 : 0] IM_RAM_A_INMIX [0 : 3];
-wire [16 : 0] RE_RAM_B_INMIX [0 : 3];
-wire [16 : 0] IM_RAM_B_INMIX [0 : 3];
+wire [`D_BIT - 1 : 0] RE_RAM_A_INMIX [0 : 3];
+wire [`D_BIT - 1 : 0] IM_RAM_A_INMIX [0 : 3];
+wire [`D_BIT - 1 : 0] RE_RAM_B_INMIX [0 : 3];
+wire [`D_BIT - 1 : 0] IM_RAM_B_INMIX [0 : 3];
 
-wire [16 : 0] RE_INMIX [0 : 3];
-wire [16 : 0] IM_INMIX [0 : 3];
+wire [`D_BIT - 1 : 0] RE_INMIX [0 : 3];
+wire [`D_BIT - 1 : 0] IM_INMIX [0 : 3];
 
 wire SOURCE_DATA;
 	assign RE_INMIX[0] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? RE_RAM_B_INMIX[0] : RE_RAM_A_INMIX[0]);
@@ -88,12 +94,10 @@ wire SOURCE_DATA;
 	assign IM_INMIX[2] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? IM_RAM_B_INMIX[2] : IM_RAM_A_INMIX[2]);
 	assign RE_INMIX[3] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? RE_RAM_B_INMIX[3] : RE_RAM_A_INMIX[3]);
 	assign IM_INMIX[3] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? IM_RAM_B_INMIX[3] : IM_RAM_A_INMIX[3]);
-
-wire BUT_TYPE;
 	
 // =================   control   ===================
 
-	fft_control CONTROL(
+	fft_control #(.A_BIT(`A_BIT)) CONTROL(
 		.iCLK(iCLK),
 		.iRESET(iRESET),
 		
@@ -117,20 +121,18 @@ wire BUT_TYPE;
 		.oSOURCE_DATA(SOURCE_DATA),
 		.oSOURCE_CONT(SOURCE_CONT),
 		
-		.oBUT_TYPE(BUT_TYPE),
-		
 		.oRDY(oRDY)
 	);
 
 // =================   rotator   ===================
 
-wire [16 : 0] RE_INMIX_BUT [0 : 3];
-wire [16 : 0] IM_INMIX_BUT [0 : 3];
+wire [`D_BIT - 1 : 0] RE_INMIX_BUT [0 : 3];
+wire [`D_BIT - 1 : 0] IM_INMIX_BUT [0 : 3];
 
-wire [16 : 0] RE_MULT_OUTMIX [0 : 3];
-wire [16 : 0] IM_MULT_OUTMIX [0 : 3];
+wire [`D_BIT - 1 : 0] RE_MULT_OUTMIX [0 : 3];
+wire [`D_BIT - 1 : 0] IM_MULT_OUTMIX [0 : 3];
 
-wire [16 : 0] IM_OUTMIX [0 : 3];
+wire [`D_BIT - 1 : 0] IM_OUTMIX [0 : 3];
 
 	fft_input_mix #(.BIT(`D_BIT)) INPUT_MIX(
 		.iCLK(iCLK),
@@ -184,14 +186,14 @@ wire [16 : 0] IM_OUTMIX [0 : 3];
 
 // =================   butterfly and multipiler   ===================
 
-wire [16 : 0] RE_BUT_MULT [0 : 3];
-wire [16 : 0] IM_BUT_MULT [0 : 3];
+wire [`D_BIT - 1 : 0] RE_BUT_MULT [0 : 3];
+wire [`D_BIT - 1 : 0] IM_BUT_MULT [0 : 3];
+
+//`ifdef TEST_MIXER
 
 	fft_but_comp #(.BIT(`D_BIT)) BUTTER(
 		.iCLK(iCLK),
 		.iRESET(iRESET),
-		
-		.iBUT_SEL(BUT_TYPE),
 
 		.iX0_RE(RE_INMIX_BUT[0]),
 		.iX0_IM(IM_INMIX_BUT[0]),
@@ -244,12 +246,12 @@ wire [16 : 0] IM_BUT_MULT [0 : 3];
 	
 // ==================== RAM: ======================
 
-wire [16 : 0] IM_RAM_A [0 : 3];
+wire [`D_BIT - 1 : 0] IM_RAM_A [0 : 3];
 
-assign IM_RAM_A[0] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[0];
-assign IM_RAM_A[1] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[1];
-assign IM_RAM_A[2] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[2];
-assign IM_RAM_A[3] = SOURCE_CONT ? 17'd0 : IM_OUTMIX[3];	
+assign IM_RAM_A[0] = SOURCE_CONT ? 0 : IM_OUTMIX[0];
+assign IM_RAM_A[1] = SOURCE_CONT ? 0 : IM_OUTMIX[1];
+assign IM_RAM_A[2] = SOURCE_CONT ? 0 : IM_OUTMIX[2];
+assign IM_RAM_A[3] = SOURCE_CONT ? 0 : IM_OUTMIX[3];	
 	
 	fft_ram_block #(.D_BIT(`D_BIT), .A_BIT(`A_BIT)) RAM_A(
 		.iCLK(iCLK),

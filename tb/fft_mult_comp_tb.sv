@@ -1,13 +1,14 @@
 `timescale 1ns/1ns
 `include "../fft_defines.v"
+`include "../fft_defines_tb.v"
 
-`define D_SIZE 17 // data - signed
-`define W_SIZE 12 // rotation coefficients - signed
+`define D_SIZE 17 /* data - signed */
+`define W_SIZE 12 /* rotation coefficients - signed */
 
 `define MAX_D 32768
 `define MAX_W 1024
 
-`define NUM_OF_RPT 30 // number of repeat test
+`define NUM_OF_RPT 30 /* number of repeat test */
 
 module fft_mult_comp_tb;
 

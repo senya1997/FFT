@@ -1,10 +1,11 @@
 `timescale 1ns/1ns
 `include "../fft_defines.v"
+`include "../fft_defines_tb.v"
 
-`define BIT_SIZE 17 // data - signed
+`define BIT_SIZE 17 /* data - signed */
 `define MAX_D 32768
 
-`define NUM_OF_RPT_4DOT 30 // number of repeat test
+`define NUM_OF_RPT_4DOT 30 /* number of repeat test */
 
 module fft_but_comp_tb;
 

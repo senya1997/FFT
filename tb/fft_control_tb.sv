@@ -1,8 +1,8 @@
 `timescale 1ns/1ns
 `include "../fft_defines.v"
+`include "../fft_defines_tb.v"
 
-`define COMP_PER 10 // period of compare output signals "VHDL" and "DUT" in tact
-`define NUM_OF_RPT 3 // number of repeat test
+`define NUM_OF_RPT 1 /* number of repeat test */
 
 module fft_control_tb;
  
@@ -12,24 +12,24 @@ reg reset;
 reg start;
 reg start_d;
 
-wire [1 : 0] BANK_RD_ROT [0 : 1]; // 0 - DUT, 1 - vhdl original
+wire [1 : 0] BANK_RD_ROT [0 : 1]; // 0 - DUT, 1 - vhdl
 wire [1 : 0] BANK_WR_ROT [0 : 1];
 
-wire [8 : 0] ADDR_WR_DUT;
-wire [8 : 0] ADDR_WR_VHDL [0 : 3]; // 0..3 addr write is match
+wire [`A_BIT - 1 : 0] ADDR_RD_DUT [0 : 3];
+wire [`A_BIT - 1 : 0] ADDR_WR_DUT;
+wire [`A_BIT - 1 : 0] ADDR_COEF;
 
-wire [8 : 0] ADDR_COEF [0 : 1];
-
-wire [8 : 0] ADDR_RD_DUT [0 : 3];
 wire [8 : 0] ADDR_RD_VHDL [0 : 3];
+wire [8 : 0] ADDR_WR_VHDL [0 : 3]; // 0..3 addr write is match
+wire [8 : 0] ADDR_COEF_VHDL;
+
+int f_addr_rd;
 
 // wire WE_A,
 // wire WE_B,
 
 // wire SOURCE_DATA,
 // wire SOURCE_CONT,
-
-// wire BUT_TYPE,
 	
 wire RDY;
 
@@ -46,13 +46,12 @@ initial begin
 end
 
 initial begin
-	bit flag_er = 1'b0;
-	
 	start = 1'b0;
 	start_d = 1'b0;
 	
 	#(100*`TACT);
 	$display("\n\n\t\t\tSTART TEST CONTROL FFT\n");
+	$display("\t\t'addr_rd' save like array in 'txt' file\n");
 	
 	repeat(`NUM_OF_RPT)
 		begin
@@ -65,30 +64,42 @@ initial begin
 				#(`TACT);
 			start_d = 1'b0;
 				#(`TACT - 1); // compensetion "#1" 
-	
-			while(!RDY)
-				begin
-					if(BANK_RD_ROT[0] != BANK_RD_ROT[1]) begin	$display("\tinput rotation	does't match, time: %t", $time); flag_er = 1'b1; end
-					if(BANK_WR_ROT[0] != BANK_WR_ROT[1]) begin	$display("\toutput rotation	does't match, time: %t", $time); flag_er = 1'b1; end
-					
-					if( ADDR_RD_DUT[0] != ADDR_RD_VHDL[0] | 
-						ADDR_RD_DUT[1] != ADDR_RD_VHDL[1] |
-						ADDR_RD_DUT[2] != ADDR_RD_VHDL[2] | 
-						ADDR_RD_DUT[3] != ADDR_RD_VHDL[3])begin $display("\taddr read		does't match, time: %t", $time); flag_er = 1'b1; end
-					
-					if(ADDR_COEF[0] != ADDR_COEF[1]) begin 		$display("\taddr coef		does't match, time: %t", $time); flag_er = 1'b1; end
-					if(ADDR_WR_DUT != ADDR_WR_VHDL[0]) begin	$display("\taddr write		does't match, time: %t", $time); flag_er = 1'b1; end
-					
-					if(flag_er) $display();
-					flag_er = 1'b0;
-					#(`COMP_PER * `TACT);
-				end
-				
+			
+			$display("\t0 stage FFT, time: %t", $time);
+			
+			f_addr_rd = $fopen("addr_rd.txt", "w");
+			$fwrite(f_addr_rd, "\t\tSTAGE: 0\n");
+			$fclose(f_addr_rd);
+			
+			while(!RDY) #(`TACT);
+			
 			#(100*`TACT);
 		end
 		
 	$display("\n\t\t\t\tCOMPLETE\n");
 	mti_fli::mti_Cmd("stop -sync");
+end
+
+always@(CONTROL.cnt_stage)begin
+	if(!RDY)
+		begin
+			$display("\t%d stage FFT, time: %t", CONTROL.cnt_stage, $time);
+			
+			f_addr_rd = $fopen("addr_rd.txt", "a");
+			$fwrite(f_addr_rd, "\t\tSTAGE: %d\n", CONTROL.cnt_stage);
+			$fclose(f_addr_rd);
+		end
+end
+
+always@(posedge clk)begin
+	if(!RDY & (CONTROL.cnt_stage_time <= 1024))
+		begin
+			#(`TACT);
+			
+			f_addr_rd = $fopen("addr_rd.txt", "a");
+			$fwrite(f_addr_rd, "%d\t%d\t%d\t%d\n", ADDR_RD_DUT[0], ADDR_RD_DUT[1], ADDR_RD_DUT[2], ADDR_RD_DUT[3]);
+			$fclose(f_addr_rd);
+		end
 end
 
 fft_control CONTROL(
@@ -107,15 +118,13 @@ fft_control CONTROL(
 	
 	.oADDR_WR(ADDR_WR_DUT),
 	
-	.oADDR_COEF(ADDR_COEF[0]),
+	.oADDR_COEF(ADDR_COEF),
 	
 	.oWE_A(),
 	.oWE_B(),
 	
 	.oSOURCE_DATA(),
 	.oSOURCE_CONT(),
-	
-	.oBUT_TYPE(),
 	
 	.oRDY(RDY)
 );
@@ -140,7 +149,7 @@ FFT_Control_vhdl CONTROL_VHDL(
 	.WRITE_EN_A_ro(),
 	.WRITE_EN_B_ro(),
 
-	.ADDR_COEF_ro(ADDR_COEF[1]),
+	.ADDR_COEF_ro(ADDR_COEF_VHDL),
 
 	.INPUT_ROTATION_ro(BANK_RD_ROT[1]),
 	.OUTPUT_ROTATION_ro(BANK_WR_ROT[1])
