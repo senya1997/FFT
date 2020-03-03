@@ -2,7 +2,7 @@
 `include "../fft_defines.v"
 `include "../fft_defines_tb.v"
 
-`define NUM_OF_RPT 1 /* number of repeat test */
+`define NUM_OF_RPT 1 // number of repeat test 
 
 module fft_control_tb;
  

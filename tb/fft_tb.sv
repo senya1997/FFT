@@ -3,13 +3,13 @@
 `include "../fft_defines_tb.v"
 
 `define N 4096
-`define N_bank (`N/4) /* cause Radix-4 */
+`define N_bank (`N/4) // cause Radix-4 
 
 // choose test signal:
 	// `define SIN
-	// `define AUDIO /* from '.wav' file */
-	`define BIAS /* integer const */
-	// `define NUM /* default test signal, numbers 0..N (function 'y = x', x > 0) */
+	// `define AUDIO // from '.wav' file 
+	`define BIAS // integer const 
+	// `define NUM // default test signal, numbers 0..N (function 'y = x', x > 0)
 
 `ifdef TEST_MIXER
 	`undef SIN
@@ -36,16 +36,16 @@
 		
 		`define BIAS `AMP_1
 		`define TIME_STEP 0.0001
-`elif AUDIO
+`elsif AUDIO
 	`undef BIAS
 	`undef NUM
 	
 	`define AUDIO_PATH "../../fft/matlab/impulses/g.wav"
-`elif BIAS
+`elsif BIAS
 	`undef NUM
 	
 	`define CONST 100
-`elif
+`elsif
 	`define NUM
 `endif
 
@@ -56,6 +56,7 @@ bit reset;
 
 shortint i, j;
 real temp;
+bit flag_en_save_ram = 0;
 
 bit start;
 
@@ -90,9 +91,9 @@ end
 
 initial begin
 	`ifdef TEST_FFT
-		$display("\n\n\t\t\tSTART TEST FFT\n");
-	`elif TEST_MIXER
-		$display("\n\n\t\t\tSTART TEST DATA MIXERS WITH CONTROL\n");
+		$display("\n\n\t\tSTART TEST FFT\n");
+	`elsif TEST_MIXER
+		$display("\n\n\t\tSTART TEST DATA MIXERS WITH CONTROL\n");
 	`endif
 	
 	start = 1'b0;
@@ -100,14 +101,14 @@ initial begin
 	
 	`ifdef SIN
 		$display("\ttest signal: sine wave with next config");
-		$display("\tamp = %d, %d, freq = %d, %d, phase = %d, %d, bias = %d", 
+		$display("\tamp = %d, %d, freq = %d, %d, phase = %d, %d, bias = %d\n", 
 				 `AMP_1, `AMP_2, `FREQ_1, `FREQ_2, `PHASE_1, `PHASE_2, `BIAS);
-	`elif AUDIO
-		$display("\ttest signal: audio from path - ", `AUDIO_PATH);
-	`elif BIAS
-		$display("\ttest signal: const = %d", `CONST);
-	`elif NUM
-		$display("\ttest signal: numbers (function 'y = x')");
+	`elsif AUDIO
+		$display("\ttest signal: audio from path - ", `AUDIO_PATH, "\n");
+	`elsif BIAS
+		$display("\ttest signal: const = %d\n", `CONST);
+	`elsif NUM
+		$display("\ttest signal: numbers (function 'y = x')\n");
 	`endif
 	
 	$display("\twrite ADC data point in RAM, time: %t", $time);
@@ -120,11 +121,11 @@ initial begin
 					// temp = $unsigned($random)%(65535);
 					temp = `BIAS + `AMP_1*(signal(`FREQ_1, time_s) + `AMP_2*signal(`FREQ_2, time_s))/2;
 					time_s = time_s + `TIME_STEP;
-				`elif AUDIO
+				`elsif AUDIO
 				
-				`elif BIAS
+				`elsif BIAS
 					temp = `CONST;
-				`elif NUM
+				`elsif NUM
 					temp = k;
 					k = k + 1;
 				`endif
@@ -137,7 +138,9 @@ initial begin
 					#(`TACT);
 				we[i] = 1'b0;
 			end
-		
+			
+	SAVE_RAM_DATA("1st_ram_a_re.txt", "1st_ram_a_im.txt", "1st_ram_b_re.txt", "1st_ram_b_im.txt", 0);
+	flag_en_save_ram = 1;	
 	#(10*`TACT);
 	
 	$display("\tlaunch FFT, time: %t", $time);
@@ -155,14 +158,15 @@ initial begin
 end
 
 always@(FFT.CONTROL.cnt_stage) begin
-	case(FFT.CONTROL.cnt_stage)
-		1: #(2*`TACT) SAVE_RAM_DATA("1st_ram_a_re.txt", "1st_ram_a_im.txt", "1st_ram_b_re.txt", "1st_ram_b_im.txt", 1);
-		2: #(2*`TACT) SAVE_RAM_DATA("2st_ram_a_re.txt", "2st_ram_a_im.txt", "2st_ram_b_re.txt", "2st_ram_b_im.txt", 0);
-		3: #(2*`TACT) SAVE_RAM_DATA("3st_ram_a_re.txt", "3st_ram_a_im.txt", "3st_ram_b_re.txt", "3st_ram_b_im.txt", 1);
-		4: #(2*`TACT) SAVE_RAM_DATA("4st_ram_a_re.txt", "4st_ram_a_im.txt", "4st_ram_b_re.txt", "4st_ram_b_im.txt", 0);
-		5: #(2*`TACT) SAVE_RAM_DATA("5st_ram_a_re.txt", "5st_ram_a_im.txt", "5st_ram_b_re.txt", "5st_ram_b_im.txt", 1);
-		0: #(2*`TACT) SAVE_RAM_DATA("6st_ram_a_re.txt", "6st_ram_a_im.txt", "6st_ram_b_re.txt", "6st_ram_b_im.txt", 0);
-	endcase	
+	if(flag_en_save_ram)
+		case(FFT.CONTROL.cnt_stage)
+			// 1: #(2*`TACT) SAVE_RAM_DATA("1st_ram_a_re.txt", "1st_ram_a_im.txt", "1st_ram_b_re.txt", "1st_ram_b_im.txt", 1);
+			2: #(2*`TACT) SAVE_RAM_DATA("2st_ram_a_re.txt", "2st_ram_a_im.txt", "2st_ram_b_re.txt", "2st_ram_b_im.txt", 1);
+			3: #(2*`TACT) SAVE_RAM_DATA("3st_ram_a_re.txt", "3st_ram_a_im.txt", "3st_ram_b_re.txt", "3st_ram_b_im.txt", 0);
+			4: #(2*`TACT) SAVE_RAM_DATA("4st_ram_a_re.txt", "4st_ram_a_im.txt", "4st_ram_b_re.txt", "4st_ram_b_im.txt", 1);
+			5: #(2*`TACT) SAVE_RAM_DATA("5st_ram_a_re.txt", "5st_ram_a_im.txt", "5st_ram_b_re.txt", "5st_ram_b_im.txt", 0);
+			0: #(2*`TACT) SAVE_RAM_DATA("6st_ram_a_re.txt", "6st_ram_a_im.txt", "6st_ram_b_re.txt", "6st_ram_b_im.txt", 1);
+		endcase	
 end
 
 task SAVE_RAM_DATA(
@@ -174,7 +178,7 @@ task SAVE_RAM_DATA(
 	int f_ram_a_re, f_ram_a_im;
 	int f_ram_b_re, f_ram_b_im;
 	
-	$display("\tsave data from RAM in files, time: %t", $time);
+	$display("\t* save data from RAM in files, time: %t", $time);
 	
 	if(ram_choose != 1)
 		begin

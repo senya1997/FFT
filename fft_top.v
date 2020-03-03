@@ -66,7 +66,7 @@ wire [3 : 0] WE;
 	assign WE[2] = SOURCE_CONT ? iWE_2 : WE_A_CTRL;
 	assign WE[3] = SOURCE_CONT ? iWE_3 : WE_A_CTRL;
 
-`ifdef TEXT_MIXER	
+`ifdef TEST_MIXER	
 	wire [`A_BIT - 1 : 0] ADDR_COEF = 0; // "turn off" multipliers
 `else
 	wire [`A_BIT - 1 : 0] ADDR_COEF;
@@ -113,7 +113,11 @@ wire SOURCE_DATA;
 		
 		.oADDR_WR(ADDR_WR_CTRL),
 		
-		.oADDR_COEF(ADDR_COEF),
+		`ifdef TEST_MIXER
+			.oADDR_COEF(),
+		`elsif
+			.oADDR_COEF(ADDR_COEF),
+		`endif
 		
 		.oWE_A(WE_A_CTRL),
 		.oWE_B(WE_B_CTRL),
@@ -189,8 +193,29 @@ wire [`D_BIT - 1 : 0] IM_OUTMIX [0 : 3];
 wire [`D_BIT - 1 : 0] RE_BUT_MULT [0 : 3];
 wire [`D_BIT - 1 : 0] IM_BUT_MULT [0 : 3];
 
-//`ifdef TEST_MIXER
+`ifdef TEST_MIXER
+	reg [`D_BIT - 1 : 0] re_delay [0 : 3];
+	reg [`D_BIT - 1 : 0] im_delay [0 : 3];
+	
+	genvar k;
+	generate
+		for(k = 0; k < 4; k = k + 1)
+			begin: but_delay
+				always@(posedge iCLK or negedge iRESET)begin
+					if(!iRESET) re_delay[k] = 0;
+					else re_delay[k] = RE_INMIX_BUT[k];
+				end
 
+				always@(posedge iCLK or negedge iRESET)begin
+					if(!iRESET) im_delay[k] = 0;
+					else im_delay[k] = IM_INMIX_BUT[k];
+				end
+				
+				assign RE_BUT_MULT[k] = re_delay[k];
+				assign IM_BUT_MULT[k] = im_delay[k];
+			end
+	endgenerate
+`else
 	fft_but_comp #(.BIT(`D_BIT)) BUTTER(
 		.iCLK(iCLK),
 		.iRESET(iRESET),
@@ -213,6 +238,7 @@ wire [`D_BIT - 1 : 0] IM_BUT_MULT [0 : 3];
 		.oY3_RE(RE_BUT_MULT[3]),
 		.oY3_IM(IM_BUT_MULT[3])
 	);
+`endif
 	
 	fft_mult_block #(.D_BIT(`D_BIT), .W_BIT(`W_BIT)) MULT_BLOCK(
 		.iCLK(iCLK),

@@ -26,7 +26,7 @@ if {$compile} {
 	close $f_def
 	
 	puts "compiling..."
-#	execute_flow -compile;
+	execute_flow -compile;
 	
 	puts "copy sdf..."
 	file copy -force ./simulation/modelsim/fft_v.sdo $path_modelsim
