@@ -2,6 +2,8 @@ transcript on
 
 quit -sim
 
+#set work_pc 1
+
 #remove .vo from prj
 	set path_vo ../../fft/simulation/modelsim/fft.vo	
 	project::addfile 	$path_vo

@@ -123,7 +123,7 @@ end
 
 always@(posedge iCLK or negedge iRESET) begin
 	if(!iRESET) bank_wr_rot <= 2'd0;
-	else if(iSTART | EOF_STAGE_DELAY | rdy) bank_wr_rot <= 2'd0;
+	else if(iSTART | EOF_STAGE_DELAY | rdy | LAST_STAGE) bank_wr_rot <= 2'd0;
 	else if(eof_block_tw_delay[4]) bank_wr_rot <= bank_wr_rot + 1'b1;
 end
 
