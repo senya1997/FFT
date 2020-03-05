@@ -1,13 +1,13 @@
 clear;
 clc;
 
-moodel = 'math'; % for analys files from matlab model FFT
-%moodel = 'fpga'; % for analys files from modelsim with 2nd 'B' RAM
+%moodel = 'math'; % for analys files from matlab model FFT
+moodel = 'fpga'; % for analys files from modelsim with 2nd 'B' RAM
 
 N = 4096;
 N_bank = N/4; % cause Radix-4
 
-lines = 0; % if '= 1' - plot vertical lines which corresponds FFT dots 
+lines = 1; % if '= 1' - plot vertical lines which corresponds FFT dots 
 
 fprintf('\n\tBegin\n');
 fprintf('\n\t\tread ".txt" RAM...\n');
@@ -40,8 +40,8 @@ for i = 1:4
     a_im_buf(1:N_bank, i) = digitrevorder(file_a_im(1:N_bank, i), 4); % 2nd param '= 4', cause Radix-4
     
     if(strcmp(moodel, 'fpga'))
-        b_re_buf = digitrevorder(file_b_re(1:N_bank, i), 4);
-        b_im_buf = digitrevorder(file_b_im(1:N_bank, i), 4);
+        b_re_buf(1:N_bank, i) = digitrevorder(file_b_re(1:N_bank, i), 4);
+        b_im_buf(1:N_bank, i) = digitrevorder(file_b_im(1:N_bank, i), 4);
     end
 end
 
@@ -54,7 +54,7 @@ a_re = a_re';
 a_im = a_im';
 
 if(strcmp(moodel, 'fpga'))
-    b_re(1 : N_bank)                = b_re_buf(1:N_bank, 1); b_im(1 : N_bank)                = b_im_buf(1:N_bank, 1);
+    b_re(1 : N_bank)                = b_re_buf(1:N_bank, 1); b_im(1 : (N_bank))              = b_im_buf(1:N_bank, 1);
     b_re((1*N_bank + 1):(2*N_bank)) = b_re_buf(1:N_bank, 2); b_im((1*N_bank + 1):(2*N_bank)) = b_im_buf(1:N_bank, 2);
     b_re((2*N_bank + 1):(3*N_bank)) = b_re_buf(1:N_bank, 3); b_im((2*N_bank + 1):(3*N_bank)) = b_im_buf(1:N_bank, 3);
     b_re((3*N_bank + 1):(4*N_bank)) = b_re_buf(1:N_bank, 4); b_im((3*N_bank + 1):(4*N_bank)) = b_im_buf(1:N_bank, 4);

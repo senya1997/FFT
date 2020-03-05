@@ -9,9 +9,9 @@
 	`define NUM
 `else
 // choose test signal:
-	// `define SIN
+	`define SIN
 	// `define AUDIO // from '.wav' file 
-	`define BIAS // integer const 
+	// `define BIAS // integer const 
 	// `define NUM // default test signal, numbers 0..N (function 'y = x', x > 0)
 `endif
 
@@ -21,17 +21,18 @@
 	`undef NUM
 	
 	// SIN spec:
-		`define AMP_1 10000
+		`define AMP_1 10000 // integer [`D_BIT - 2 : 0]
 		`define AMP_2 5000
+		`define AMP_NOISE 15000
 		
-		`define FREQ_1 9000
+		`define FREQ_1 9000 // integer Hz
 		`define FREQ_2 4500
 		
-		`define PHASE_1 0
-		`define PHASE_2 37
+		`define PHASE_1 0 // float Rad
+		`define PHASE_2 0.645
 		
-		`define BIAS `AMP_1
-		`define TIME_STEP 0.0001
+		`define BIAS 0 // integer ~ MAX_AMP/2 if use unsigned (by default - decimal format)
+		`define TIME_STEP 2.267e-5 // = 1/Freq_desc
 `elsif AUDIO
 	`undef BIAS
 	`undef NUM
@@ -55,6 +56,7 @@ bit start;
 
 `ifdef SIN
 	real time_s = 0;
+	real noise = 0;
 `endif
 
 `ifdef NUM
@@ -68,7 +70,7 @@ bit [3 : 0] we;
 
 wire RDY;
 
-import "DPI-C" function real signal(input real f, input real t);
+import "DPI-C" function real signal(input real f, input real t, input real p);
 
 initial begin
 	$timeformat(-6, 3, " us", 6);
@@ -83,8 +85,11 @@ initial begin
 end
 
 initial begin
+real asd = 0.3;
+$display("%20.18f", asd);
+
 	`ifdef TEST_FFT
-		$display("\n\n\t\tSTART TEST FFT\n");
+		$display("\n\n\t\t\tSTART TEST FFT\n");
 	`elsif TEST_MIXER
 		$display("\n\n\t\tSTART TEST DATA MIXERS WITH CONTROL\n");
 	`endif
@@ -93,9 +98,9 @@ initial begin
 	#(10*`TACT);
 	
 	`ifdef SIN
-		$display("\ttest signal: sine wave with next config");
-		$display("\tamp = %d, %d, freq = %d, %d, phase = %d, %d, bias = %d\n", 
-				 `AMP_1, `AMP_2, `FREQ_1, `FREQ_2, `PHASE_1, `PHASE_2, `BIAS);
+		$display("\ttest signal: sine wave with next config:");
+		$display("\t  amp\t=\t%6d, %6d\n\t  freq\t=\t%6d, %6d Hz\n\t  phase\t=\t%6.3f, %6.3f Rad\n\t  bias\t=\t%6d\n\t  noise\t=\t%6d\n", 
+				 `AMP_1, `AMP_2, `FREQ_1, `FREQ_2, `PHASE_1, `PHASE_2, `BIAS, `AMP_NOISE);
 	`elsif AUDIO
 		$display("\ttest signal: audio from path - ", `AUDIO_PATH, "\n");
 	`elsif BIAS
@@ -110,9 +115,11 @@ initial begin
 		for(j = 0; j < `N_bank; j = j + 1)
 			begin
 				`ifdef SIN
-					// temp = 20000*signal(48.828125, time_s);
-					// temp = $unsigned($random)%(65535);
-					temp = `BIAS + `AMP_1*(signal(`FREQ_1, time_s) + `AMP_2*signal(`FREQ_2, time_s))/2;
+					noise = $unsigned($random)%(`AMP_NOISE);
+
+					temp = `BIAS + `AMP_1*(signal(`FREQ_1, time_s, `PHASE_1)) + 
+								   `AMP_2*(signal(`FREQ_2, time_s, `PHASE_2)) + noise;
+								   
 					time_s = time_s + `TIME_STEP;
 				`elsif AUDIO
 				

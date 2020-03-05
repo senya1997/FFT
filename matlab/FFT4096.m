@@ -3,8 +3,8 @@ close all;
 clc;
 
 % choose test signal:
-    %test = 'sin';
-    test = 'audio';
+    test = 'sin';
+    %test = 'audio';
     %test = 'const';
     %test = 'num'; % numbers 0...N (function 'y = x', x > 0)
 
@@ -13,14 +13,15 @@ clc;
 
     amp_1 = 10000; % 1st sine from e.g. 16 bit ADC
     amp_2 = 5000; % 2nd sine
-
+    amp_noise = 15000;
+    
     freq_1 = 9000; % Hz
     freq_2 = 4500;
 
     phase_1 = 0; % grad
     phase_2 = 37;
 
-    bias = amp_1;
+    bias = 10000;
 % auido sample path:   
     audiofile = 'impulses/sample_in.wav';
     boost = 1.5e4; % all sample points multiple on this coef for normalize
@@ -68,7 +69,10 @@ clear w_im_1_buf; clear w_im_2_buf; clear w_im_3_buf;
 fprintf('\n\t\tbuild test signal...\n');
 if(strcmp(test, 'sin'))
     time = 0 : 1/Fd : (N - 1)/Fd;
-    signal = bias + amp_1*sind((freq_1*360).* time + phase_1) + amp_2*sind((freq_2*360).* time + phase_2);
+    
+    noise = amp_noise * randn(1, length(time));
+    signal = bias + amp_1*sind((freq_1*360).* time + phase_1) +...
+                    amp_2*sind((freq_2*360).* time + phase_2) + noise;
     
     clear Fd; clear bias; clear time;
     clear amp_1; clear amp_2;
@@ -200,6 +204,30 @@ for i = 1:64
     ram_a_re_buf(5+t : 8+t, 1:4) =   [ram_re(1+t : 4+t, 2), ram_re(5+t : 8+t, 1), ram_re(9+t : 12+t, 4), ram_re(13+t : 16+t, 3)];
     ram_a_re_buf(9+t : 12+t, 1:4) =  [ram_re(1+t : 4+t, 3), ram_re(5+t : 8+t, 2), ram_re(9+t : 12+t, 1), ram_re(13+t : 16+t, 4)];
     ram_a_re_buf(13+t : 16+t, 1:4) = [ram_re(1+t : 4+t, 4), ram_re(5+t : 8+t, 3), ram_re(9+t : 12+t, 2), ram_re(13+t : 16+t, 1)];
+end
+
+% output mixer:
+for i = 1:256
+    t = (i-1)*4;
+    
+    ram_re(1+t, 1:4) = [ram_a_re_buf(1+t, 1), ram_a_re_buf(1+t, 2), ram_a_re_buf(1+t, 3), ram_a_re_buf(1+t, 4)];
+    ram_re(2+t, 1:4) = [ram_a_re_buf(2+t, 2), ram_a_re_buf(2+t, 3), ram_a_re_buf(2+t, 4), ram_a_re_buf(2+t, 1)];
+    ram_re(3+t, 1:4) = [ram_a_re_buf(3+t, 3), ram_a_re_buf(3+t, 4), ram_a_re_buf(3+t, 1), ram_a_re_buf(3+t, 2)];
+    ram_re(4+t, 1:4) = [ram_a_re_buf(4+t, 4), ram_a_re_buf(4+t, 1), ram_a_re_buf(4+t, 2), ram_a_re_buf(4+t, 3)];
+end
+
+%% ===========================    6 stage    ===============================
+
+ram_a_re_buf(1:N_bank, 1:4) = zeros;
+
+% input mixer + rotate addr:
+for i = 1:256
+    t = (i-1)*4;
+    
+    ram_a_re_buf(1+t, 1:4) = [ram_re(1+t, 1), ram_re(2+t, 4), ram_re(3+t, 3), ram_re(4+t, 2)];
+    ram_a_re_buf(2+t, 1:4) = [ram_re(1+t, 2), ram_re(2+t, 1), ram_re(3+t, 4), ram_re(4+t, 3)];
+    ram_a_re_buf(3+t, 1:4) = [ram_re(1+t, 3), ram_re(2+t, 2), ram_re(3+t, 1), ram_re(4+t, 4)];
+    ram_a_re_buf(4+t, 1:4) = [ram_re(1+t, 4), ram_re(2+t, 3), ram_re(3+t, 2), ram_re(4+t, 1)];
 end
 %}
 

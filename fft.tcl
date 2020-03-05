@@ -1,6 +1,6 @@
 set_current_revision fft;
 
-set compile 0
+set compile 1
 set upd_script 1
 
 puts " "
