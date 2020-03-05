@@ -2,7 +2,7 @@ transcript on
 
 quit -sim
 
-#set work_pc 1
+set work_pc 0
 
 #remove .vo from prj
 	set path_vo ../../fft/simulation/modelsim/fft.vo	
@@ -15,8 +15,8 @@ project::compileall
 	file copy -force ../../fft/tb/scripts/signal.c ../../modelsim/fft
 	if {![file exist signal.dll]} { file delete -force signal.dll }
 	
-	#if {$work_pc} { exec c:/mingw/bin/gcc -shared -o signal.dll signal.c
-	#} else { exec "D:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/gcc" -shared -o signal.dll signal.c }
+	if {$work_pc} { exec c:/mingw/bin/gcc -shared -o signal.dll signal.c
+	} else { exec "D:/Program Files/mingw-w64/x86_64-8.1.0-posix-seh-rt_v6-rev0/mingw64/bin/gcc" -shared -o signal.dll signal.c }
 		
 #simulate	
 	#vlog fft_tb.sv

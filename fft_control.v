@@ -51,7 +51,7 @@ reg we_a;
 reg we_b;
 
 reg source_data;
-// reg source_cont;
+reg source_cont;
 
 reg rdy;
 
@@ -244,6 +244,12 @@ always@(posedge iCLK or negedge iRESET) begin
 	else if(LAST_STAGE & EOF_STAGE_DELAY) rdy <= 1'b1;
 end
 
+always@(posedge iCLK or negedge iRESET)begin
+	if(!iRESET) source_cont <= 1'b0;
+	else if(iSTART) source_cont <= 1'b0;
+	else source_cont <= rdy;
+end
+
 // ************ output ports: ************ //
 
 assign oBANK_RD_ROT = bank_rd_rot;
@@ -261,7 +267,7 @@ assign oWE_A = we_a;
 assign oWE_B = we_b;
 
 assign oSOURCE_DATA = source_data;
-assign oSOURCE_CONT = rdy; // "oSOURCE_CONT" match with "rdy" (in general - not)
+assign oSOURCE_CONT = source_cont;
 
 assign oRDY = rdy;
 

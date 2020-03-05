@@ -35,7 +35,9 @@ if {$compile} {
 
 if {$upd_script} {
 	puts "copy scripts..."
-	file copy -force $path_wave/wave.do $path_modelsim
+	file copy -force $path_wave/test_fft.do $path_modelsim
+	file copy -force $path_wave/test_mixer.do $path_modelsim
+	
 	file copy -force $path_wave/but.do $path_modelsim
 	file copy -force $path_wave/mult.do $path_modelsim
 	file copy -force $path_wave/control.do $path_modelsim
@@ -43,6 +45,8 @@ if {$upd_script} {
 	file copy -force $path_script/fft_control.do $path_modelsim
 	file copy -force $path_script/fft_control_sdf.do $path_modelsim
 	file copy -force $path_script/fft.do $path_modelsim
+	
+	file copy -force $path_script/lib_setup.tcl $path_modelsim
 }
 
 puts " "

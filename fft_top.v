@@ -115,7 +115,7 @@ wire SOURCE_DATA;
 		
 		`ifdef TEST_MIXER
 			.oADDR_COEF(),
-		`elsif
+		`elsif TEST_FFT
 			.oADDR_COEF(ADDR_COEF),
 		`endif
 		

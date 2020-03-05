@@ -5,18 +5,14 @@
 `define N 4096
 `define N_bank (`N/4) // cause Radix-4 
 
+`ifdef TEST_MIXER
+	`define NUM
+`else
 // choose test signal:
 	// `define SIN
 	// `define AUDIO // from '.wav' file 
 	`define BIAS // integer const 
 	// `define NUM // default test signal, numbers 0..N (function 'y = x', x > 0)
-
-`ifdef TEST_MIXER
-	`undef SIN
-	`undef AUDIO
-	`undef BIAS
-	
-	`define NUM
 `endif
 
 `ifdef SIN
@@ -45,8 +41,6 @@
 	`undef NUM
 	
 	`define CONST 100
-`elsif
-	`define NUM
 `endif
 
 module fft_tb;
@@ -56,7 +50,6 @@ bit reset;
 
 shortint i, j;
 real temp;
-bit flag_en_save_ram = 0;
 
 bit start;
 
@@ -111,7 +104,7 @@ initial begin
 		$display("\ttest signal: numbers (function 'y = x')\n");
 	`endif
 	
-	$display("\twrite ADC data point in RAM, time: %t", $time);
+	$display("\twrite ADC data point in RAM, time: %t\n", $time);
 	
 	for(i = 0; i <= 3; i = i + 1)
 		for(j = 0; j < `N_bank; j = j + 1)
@@ -138,12 +131,12 @@ initial begin
 					#(`TACT);
 				we[i] = 1'b0;
 			end
-			
-	SAVE_RAM_DATA("1st_ram_a_re.txt", "1st_ram_a_im.txt", 0);
-	flag_en_save_ram = 1;	
+		
 	#(10*`TACT);
 	
-	$display("\tlaunch FFT, time: %t", $time);
+	SAVE_RAM_DATA("start_ram_a_re.txt", "start_ram_a_im.txt", 0);
+	
+	$display("\n\tlaunch FFT, time: %t\n", $time);
 	start = 1'b1;
 		#(`TACT);
 	start = 1'b0;
@@ -151,55 +144,69 @@ initial begin
 	wait(RDY);
 	
 	#(10*`TACT);
-	SAVE_RAM_DATA("ram_a_re.txt", "ram_a_im.txt", 0);
+	SAVE_RAM_DATA("ram_a_re.txt", "ram_a_im.txt", 0); // name must not change, this use in matlab 'analys'
+	SAVE_RAM_DATA("ram_b_re.txt", "ram_b_im.txt", 0);
 	
 	$display("\n\t\t\tCOMPLETE\n");
 	mti_fli::mti_Cmd("stop -sync");
 end
 
 always@(FFT.CONTROL.cnt_stage) begin
-	if(flag_en_save_ram)
-		case(FFT.CONTROL.cnt_stage)
-			// 1: #(2*`TACT) SAVE_RAM_DATA("1st_ram_b_re.txt", "1st_ram_b_im.txt", 1);
-			2: #(2*`TACT) SAVE_RAM_DATA("2st_ram_b_re.txt", "2st_ram_b_im.txt", 1);
-			3: #(2*`TACT) SAVE_RAM_DATA("3st_ram_a_re.txt", "3st_ram_a_im.txt", 0);
-			4: #(2*`TACT) SAVE_RAM_DATA("4st_ram_b_re.txt", "4st_ram_b_im.txt", 1);
-			5: #(2*`TACT) SAVE_RAM_DATA("5st_ram_a_re.txt", "5st_ram_a_im.txt", 0);
-			0: #(2*`TACT) SAVE_RAM_DATA("6st_ram_b_re.txt", "6st_ram_b_im.txt", 1);
-		endcase	
+	case(FFT.CONTROL.cnt_stage)
+		1: #(2*`TACT) SAVE_RAM_DATA("before_2st_ram_a_re.txt", "before_2st_ram_a_im.txt", 0);
+		2: #(2*`TACT) SAVE_RAM_DATA("before_3st_ram_b_re.txt", "before_3st_ram_b_im.txt", 1);
+		3: #(2*`TACT) SAVE_RAM_DATA("before_4st_ram_a_re.txt", "before_4st_ram_a_im.txt", 0);
+		4: #(2*`TACT) SAVE_RAM_DATA("before_5st_ram_b_re.txt", "before_5st_ram_b_im.txt", 1);
+		5: #(2*`TACT) SAVE_RAM_DATA("before_6st_ram_a_re.txt", "before_6st_ram_a_im.txt", 0);
+	endcase	
 end
 
 task SAVE_RAM_DATA(string name_re, name_im, bit ram_sel); // 0 - RAM A, 1 - RAM B
-	bit signed [`D_BIT - 1 : 0] buf_re_signed;
-	bit signed [`D_BIT - 1 : 0] buf_im_signed;
+	bit signed [`D_BIT - 1 : 0] buf_re_signed [0 : 3];
+	bit signed [`D_BIT - 1 : 0] buf_im_signed [0 : 3];
 	
 	int f_ram_re;
 	int f_ram_im;
 	
-	$display("\t* save data from RAM in files %s, time: %t", name_re, $time);
+	$display("\t *** save data from RAM in files: '%s', '%s', time: %t", name_re, name_im, $time);
 	
 	f_ram_re = $fopen(name_re, "w");
 	f_ram_im = $fopen(name_im, "w");
 	
 	for(j = 0; j < `N_bank; j = j + 1)
 		begin
+		// cycle 'for' impossible to use because expression
+		// '...RAM_A.ram_bank[i].RAM_RE...' provide to error in modelsim
+		// number of bank memory must be the 'integer number', not a 'variable'
+			if(ram_sel == 0)
+				begin
+					buf_re_signed[0] = FFT.RAM_A.ram_bank[0].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_im_signed[0] = FFT.RAM_A.ram_bank[0].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_re_signed[1] = FFT.RAM_A.ram_bank[1].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_im_signed[1] = FFT.RAM_A.ram_bank[1].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_re_signed[2] = FFT.RAM_A.ram_bank[2].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_im_signed[2] = FFT.RAM_A.ram_bank[2].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_re_signed[3] = FFT.RAM_A.ram_bank[3].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_im_signed[3] = FFT.RAM_A.ram_bank[3].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				end
+			else if(ram_sel == 1)
+				begin
+					buf_re_signed[0] = FFT.RAM_B.ram_bank[0].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_im_signed[0] = FFT.RAM_B.ram_bank[0].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_re_signed[1] = FFT.RAM_B.ram_bank[1].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_im_signed[1] = FFT.RAM_B.ram_bank[1].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_re_signed[2] = FFT.RAM_B.ram_bank[2].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_im_signed[2] = FFT.RAM_B.ram_bank[2].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_re_signed[3] = FFT.RAM_B.ram_bank[3].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+					buf_im_signed[3] = FFT.RAM_B.ram_bank[3].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
+				end
+			
 			for(i = 0; i < 4; i = i + 1)
 				begin
-					if(ram_sel == 0)
-						begin
-							buf_re_signed = FFT.RAM_A.ram_bank[i].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-							buf_im_signed = FFT.RAM_A.ram_bank[i].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-						end
-					else if(ram_sel == 1)
-						begin
-							buf_re_signed = FFT.RAM_B.ram_bank[i].RAM_RE.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-							buf_im_signed = FFT.RAM_B.ram_bank[i].RAM_IM.altsyncram_component.m_non_arria10.altsyncram_inst.mem_data[j];
-						end
-						
-					$fwrite(f_ram_re, "%d", buf_re_signed, "\t\t");
-					$fwrite(f_ram_im, "%d", buf_im_signed, "\t\t");
+					$fwrite(f_ram_re, "%d", buf_re_signed[i], "\t\t");
+					$fwrite(f_ram_im, "%d", buf_im_signed[i], "\t\t");
 				end
-				
+			
 			$fwrite(f_ram_re, "\n");
 			$fwrite(f_ram_im, "\n");
 		end
