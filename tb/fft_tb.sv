@@ -85,9 +85,6 @@ initial begin
 end
 
 initial begin
-real asd = 0.3;
-$display("%20.18f", asd);
-
 	`ifdef TEST_FFT
 		$display("\n\n\t\t\tSTART TEST FFT\n");
 	`elsif TEST_MIXER
