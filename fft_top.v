@@ -86,14 +86,15 @@ wire [`D_BIT - 1 : 0] RE_INMIX [0 : 3];
 wire [`D_BIT - 1 : 0] IM_INMIX [0 : 3];
 
 wire SOURCE_DATA;
-	assign RE_INMIX[0] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? RE_RAM_B_INMIX[0] : RE_RAM_A_INMIX[0]);
-	assign IM_INMIX[0] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? IM_RAM_B_INMIX[0] : IM_RAM_A_INMIX[0]);
-	assign RE_INMIX[1] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? RE_RAM_B_INMIX[1] : RE_RAM_A_INMIX[1]);
-	assign IM_INMIX[1] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? IM_RAM_B_INMIX[1] : IM_RAM_A_INMIX[1]);
-	assign RE_INMIX[2] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? RE_RAM_B_INMIX[2] : RE_RAM_A_INMIX[2]);
-	assign IM_INMIX[2] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? IM_RAM_B_INMIX[2] : IM_RAM_A_INMIX[2]);
-	assign RE_INMIX[3] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? RE_RAM_B_INMIX[3] : RE_RAM_A_INMIX[3]);
-	assign IM_INMIX[3] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? IM_RAM_B_INMIX[3] : IM_RAM_A_INMIX[3]);
+
+genvar k;
+generate
+	for(k = 0; k < 4; k = k + 1)
+		begin: data_for_inmix
+			assign RE_INMIX[k] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? RE_RAM_B_INMIX[k] : RE_RAM_A_INMIX[k]);
+			assign IM_INMIX[k] = SOURCE_CONT ? 17'd0 : (SOURCE_DATA ? IM_RAM_B_INMIX[k] : IM_RAM_A_INMIX[k]);
+		end
+endgenerate
 	
 // =================   control   ===================
 
