@@ -8,9 +8,9 @@ Fd = 44100;
 mode = 'home';
 %mode = 'work';
 
-test = 'sin';
+%test = 'sin';
 %test = 'const';
-%test = 'num';
+test = 'num';
 
 %% ===============================   coef:   ===============================
 
@@ -115,7 +115,7 @@ for i = 1:4
             ram_re(j, i) = 100;
         elseif(strcmp(test, 'num'))
             ram_re(j, i) = k - 1; % 0..63
-            ram_im(j, i) = k - 1;
+            %ram_im(j, i) = k - 1;
         end
     end
 end

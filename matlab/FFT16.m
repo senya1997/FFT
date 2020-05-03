@@ -7,9 +7,9 @@ Fd = 44100;
 mode = 'home';
 %mode = 'work';
 
-test = 'sin';
+%test = 'sin';
 %test = 'const';
-%test = 'num';
+test = 'num';
 
 %% coef:
 if(strcmp(mode, 'work'))
@@ -29,29 +29,6 @@ w_re = w_re';
 w_im = w_im';
 
 clear temp_re; clear temp_im;
-
-w_re_2st(1:4) = w_re(1:4:16);
-w_im_2st(1:4) = w_im(1:4:16);
-
-    w_re2_2st(1:4) = [w_re_2st(1), w_re_2st(2), w_re_2st(1), w_re_2st(2)];
-    w_im2_2st(1:4) = [w_im_2st(1), w_im_2st(2), w_im_2st(1), w_im_2st(2)];
-
-    w_re2_2st = w_re2_2st';
-    w_im2_2st = w_im2_2st';
-
-    w_re3_2st(1:4) = [w_re_2st(1), w_re_2st(3), w_re_2st(1), w_re_2st(3)];
-    w_im3_2st(1:4) = [w_im_2st(1), w_im_2st(3), w_im_2st(1), w_im_2st(3)];
-
-    w_re3_2st = w_re3_2st';
-    w_im3_2st = w_im3_2st';
-
-    w_re4_2st(1:4) = [w_re_2st(1), w_re_2st(4), w_re_2st(1), w_re_2st(4)];
-    w_im4_2st(1:4) = [w_im_2st(1), w_im_2st(4), w_im_2st(1), w_im_2st(4)];
-
-    w_re4_2st = w_re4_2st';
-    w_im4_2st = w_im4_2st';
-
-clear w_re_2st; clear w_im_2st;
     
 %% signal:
 amp_1 = 10000; % 16 bit ADC
@@ -181,38 +158,6 @@ clear ram_a_re_buf; clear ram_a_im_buf;
     but_im(1:4, 2) = (ram_im(1:4, 1) - ram_re(1:4, 2) - ram_im(1:4, 3) + ram_re(1:4, 4))/4;
     but_im(1:4, 3) = (ram_im(1:4, 1) - ram_im(1:4, 2) + ram_im(1:4, 3) - ram_im(1:4, 4))/4;
     but_im(1:4, 4) = (ram_im(1:4, 1) + ram_re(1:4, 2) - ram_im(1:4, 3) - ram_re(1:4, 4))/4;
-
-%{
-% butterfly:
-    but_re(1:4, 1) = (mult_re(1:4, 1) + mult_re(1:4, 2) + mult_re(1:4, 3) + mult_re(1:4, 4))/4;
-    but_re(1:4, 2) = (mult_re(1:4, 1) + mult_im(1:4, 2) - mult_re(1:4, 3) - mult_im(1:4, 4))/4;
-    but_re(1:4, 3) = (mult_re(1:4, 1) - mult_re(1:4, 2) + mult_re(1:4, 3) - mult_re(1:4, 4))/4;
-    but_re(1:4, 4) = (mult_re(1:4, 1) - mult_im(1:4, 2) - mult_re(1:4, 3) + mult_im(1:4, 4))/4;
-
-    but_im(1:4, 1) = (mult_im(1:4, 1) + mult_im(1:4, 2) + mult_im(1:4, 3) + mult_im(1:4, 4))/4;
-    but_im(1:4, 2) = (mult_im(1:4, 1) - mult_re(1:4, 2) - mult_im(1:4, 3) + mult_re(1:4, 4))/4;
-    but_im(1:4, 3) = (mult_im(1:4, 1) - mult_im(1:4, 2) + mult_im(1:4, 3) - mult_im(1:4, 4))/4;
-    but_im(1:4, 4) = (mult_im(1:4, 1) + mult_re(1:4, 2) - mult_im(1:4, 3) - mult_re(1:4, 4))/4;
-%}
- 
-%{
-% multipiler:
-    mult_re(1:4, 1) = but_re(1:4, 1); % 0
-    mult_im(1:4, 1) = but_im(1:4, 1);
-
-    mult_re(1:4, 2) = (but_re(1:4, 2).*w_re2_2st(1:4) - but_im(1:4, 2).*w_im2_2st(1:4))/2047; % coef reading step = 1
-    mult_im(1:4, 2) = (but_re(1:4, 2).*w_im2_2st(1:4) + but_im(1:4, 2).*w_re2_2st(1:4))/2047;
-
-    mult_re(1:4, 3) = (but_re(1:4, 3).*w_re3_2st(1:4) - but_im(1:4, 3).*w_im3_2st(1:4))/2047; % 2
-    mult_im(1:4, 3) = (but_re(1:4, 3).*w_im3_2st(1:4) + but_im(1:4, 3).*w_re3_2st(1:4))/2047;
-
-    mult_re(1:4, 4) = (but_re(1:4, 4).*w_re4_2st(1:4) - but_im(1:4, 4).*w_im4_2st(1:4))/2047; % 3
-    mult_im(1:4, 4) = (but_re(1:4, 4).*w_im4_2st(1:4) + but_im(1:4, 4).*w_re4_2st(1:4))/2047;
-%}
-
-% output mixer:
-    %ram_re(1:4, 1:4) = [mult_re(1:4, 1), mult_re(1:4, 4), mult_re(1:4, 3), mult_re(1:4, 2)];
-    %ram_im(1:4, 1:4) = [mult_im(1:4, 1), mult_im(1:4, 4), mult_im(1:4, 3), mult_im(1:4, 2)];
     
 %% analys:
 ram_a_re(1:4)	= but_re(1:4, 1); ram_a_im(1:4)    = but_im(1:4, 1);

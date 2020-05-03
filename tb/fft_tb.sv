@@ -25,6 +25,7 @@
 		`define AMP_2 5000
 		`define AMP_NOISE 15000
 		
+		`define FREQ_D 44100
 		`define FREQ_1 9000 // integer Hz
 		`define FREQ_2 4500
 		
@@ -32,7 +33,6 @@
 		`define PHASE_2 0.645
 		
 		`define BIAS 0 // integer ~ MAX_AMP/2 if use unsigned (by default - decimal format)
-		`define TIME_STEP 2.267e-5 // = 1/Freq_desc
 `elsif AUDIO
 	`undef BIAS
 	`undef NUM
@@ -117,7 +117,7 @@ initial begin
 					temp = `BIAS + `AMP_1*(signal(`FREQ_1, time_s, `PHASE_1)) + 
 								   `AMP_2*(signal(`FREQ_2, time_s, `PHASE_2)) + noise;
 								   
-					time_s = time_s + `TIME_STEP;
+					time_s = time_s + 1.0/`FREQ_D;
 				`elsif AUDIO
 				
 				`elsif BIAS
