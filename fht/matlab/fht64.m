@@ -64,7 +64,7 @@ for i = 1:N_bank
                     ram(j, 4) = test_signal(k);
             end
         else
-            error("number ofbank must be equal 4 because of stage writing points bank number must be 1,3,2,4");
+            error('number ofbank must be equal 4 because of stage writing points bank number must be 1,3,2,4');
         end
     end
 end
@@ -177,16 +177,122 @@ ram_buf(1:row, 1:N_bank) = zeros;  % 2 stage
 div = N/16;
 for j = 1:2
     for i = (1 + (j-1)*2*div):(div + (j-1)*2*div)
-        temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i, 2)],...
-                              [ram(i, 3), ram(i, 4), ram(i, 4)], 0, 2, 8);
+        if(j == 1)
+            temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i, 2)],...
+                                  [ram(i, 3), ram(i, 4), ram(i, 4)], 0, 2, 8);
+        else
+            temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i, 3)],...
+                                  [ram(i, 4), ram(i, 3), ram(i, 1)], 1, 3, 8);
+        end
+        
         ram_buf(i, 1) = temp(1);
         ram_buf(i, 3) = temp(2);
         ram_buf(i + div, 2) = temp(3);
         ram_buf(i + div, 4) = temp(4);
     end
     for i = (div + 1 + (j-1)*2*div):(2*div + (j-1)*2*div)
-        temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i, 3)],...
-                              [ram(i, 4), ram(i, 3), ram(i, 1)], 1, 3, 8); 
+        if(j == 1)
+            temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i, 2)],...
+                                  [ram(i, 3), ram(i, 4), ram(i, 4)], 0, 2, 8);
+        else
+            temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i, 3)],...
+                                  [ram(i, 4), ram(i, 3), ram(i, 1)], 1, 3, 8);
+        end
+        
+        ram_buf(i - div, 2) = temp(1);
+        ram_buf(i - div, 4) = temp(2);
+        ram_buf(i, 1) = temp(3);
+        ram_buf(i, 3) = temp(4); 
+    end  
+end
+
+ram(1:row, 1:N_bank) = zeros;  % 3 stage
+div = N/32;
+for j = 1:4
+    for i = (1 + (j-1)*2*div):(div + (j-1)*2*div)
+        switch(j)
+            case 1
+                temp = fht_double_but([ram_buf(i, 1), ram_buf(i, 2), ram_buf(i, 2)],...
+                                      [ram_buf(i, 3), ram_buf(i, 4), ram_buf(i, 4)], 0, 4, 16);
+            case 2
+                temp = fht_double_but([ram_buf(i, 2), ram_buf(i, 1), ram_buf(i, 3)],...
+                                      [ram_buf(i, 4), ram_buf(i, 3), ram_buf(i, 1)], 2, 6, 16);
+            case 3
+                temp = fht_double_but([ram_buf(i, 1), ram_buf(i, 2), ram_buf(i + 2*div, 3)],...
+                                      [ram_buf(i, 3), ram_buf(i, 4), ram_buf(i + 2*div, 1)], 1, 5, 16);
+            case 4
+                temp = fht_double_but([ram_buf(i, 2), ram_buf(i, 1), ram_buf(i - 2*div, 4)],...
+                                      [ram_buf(i, 4), ram_buf(i, 3), ram_buf(i - 2*div, 2)], 3, 7, 16);
+        end
+        
+        ram(i, 1) = temp(1);
+        ram(i, 3) = temp(2);
+        ram(i + div, 2) = temp(3);
+        ram(i + div, 4) = temp(4);
+    end
+    for i = (div + 1 + (j-1)*2*div):(2*div + (j-1)*2*div)
+        switch(j)
+            case 1
+                temp = fht_double_but([ram_buf(i, 1), ram_buf(i, 2), ram_buf(i, 2)],...
+                                      [ram_buf(i, 3), ram_buf(i, 4), ram_buf(i, 4)], 0, 4, 16);
+            case 2
+                temp = fht_double_but([ram_buf(i, 2), ram_buf(i, 1), ram_buf(i, 3)],...
+                                      [ram_buf(i, 4), ram_buf(i, 3), ram_buf(i, 1)], 2, 6, 16);
+            case 3
+                temp = fht_double_but([ram_buf(i, 1), ram_buf(i, 2), ram_buf(i + 2*div, 3)],...
+                                      [ram_buf(i, 3), ram_buf(i, 4), ram_buf(i + 2*div, 1)], 1, 5, 16);
+            case 4
+                temp = fht_double_but([ram_buf(i, 2), ram_buf(i, 1), ram_buf(i - 2*div, 4)],...
+                                      [ram_buf(i, 4), ram_buf(i, 3), ram_buf(i - 2*div, 2)], 3, 7, 16);
+        end
+        
+        ram(i - div, 2) = temp(1);
+        ram(i - div, 4) = temp(2);
+        ram(i, 1) = temp(3);
+        ram(i, 3) = temp(4); 
+    end  
+end
+
+ram_buf(1:row, 1:N_bank) = zeros;  % 4 stage
+div = N/64;
+for j = 1:8
+    for i = (1 + (j-1)*2*div):(div + (j-1)*2*div)
+        switch(j)
+            case 1
+                temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i, 2)],...
+                                      [ram(i, 3), ram(i, 4), ram(i, 4)], 0, 4, 32);
+            case 2
+                temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i, 3)],...
+                                      [ram(i, 4), ram(i, 3), ram(i, 1)], 2, 6, 32);
+            case 3
+                temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i + 2*div, 3)],...
+                                      [ram(i, 3), ram(i, 4), ram(i + 2*div, 1)], 1, 5, 32);
+            case 4
+                temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i - 2*div, 4)],...
+                                      [ram(i, 4), ram(i, 3), ram(i - 2*div, 2)], 3, 7, 32);
+        end
+        
+        ram_buf(i, 1) = temp(1);
+        ram_buf(i, 3) = temp(2);
+        ram_buf(i + div, 2) = temp(3);
+        ram_buf(i + div, 4) = temp(4);
+    end
+    for i = (div + 1 + (j-1)*2*div):(2*div + (j-1)*2*div)
+        switch(j)
+            case 1
+                temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i, 2)],...
+                                      [ram(i, 3), ram(i, 4), ram(i, 4)], 0, 4, 32);
+            case 2
+                temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i, 3)],...
+                                      [ram(i, 4), ram(i, 3), ram(i, 1)], 2, 6, 32);
+            case 3
+                temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i + 2*div, 3)],...
+                                      [ram(i, 3), ram(i, 4), ram(i + 2*div, 1)], 1, 5, 32);
+            case 4
+                temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i - 2*div, 4)],...
+                                      [ram(i, 4), ram(i, 3), ram(i - 2*div, 2)], 3, 7, 32);
+        end
+        
         ram_buf(i - div, 2) = temp(1);
         ram_buf(i - div, 4) = temp(2);
         ram_buf(i, 1) = temp(3);
