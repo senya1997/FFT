@@ -5,8 +5,8 @@ N = 64;
 N_bank = 4;
 
 %test = 'sin';
-%test = 'const';
-test = 'num';
+test = 'const';
+%test = 'num';
 
 Fd = 44100;
 
@@ -75,7 +75,15 @@ grid on;
 
 % fft:
 temp_fft = fft(test_signal, N)/N;
-ram_fft = (real(temp_fft) - imag(temp_fft));
+cnt = 1;
+
+ram_fft(1:row, 1:N_bank) = zeros;
+for i = 1:row
+    ram_fft(i, 1:4) = real(temp_fft((1 + (i-1)*4) : (4*i))) -...
+                      imag(temp_fft((1 + (i-1)*4) : (4*i)));
+    cnt = cnt + 1;
+end
+clear cnt;
 
 %{
 % fft:
@@ -255,47 +263,106 @@ end
 
 ram_buf(1:row, 1:N_bank) = zeros;  % 4 stage
 div = N/64;
+
+sector_size = 1;
+sector_cnt = 2;
+
+cos_cnt = 0;
+bit_depth = 4; % = number of stage (0..n)
+
 for j = 1:8
-    for i = (1 + (j-1)*2*div):(div + (j-1)*2*div)
-        switch(j)
-            case 1
-                temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i, 2)],...
-                                      [ram(i, 3), ram(i, 4), ram(i, 4)], 0, 4, 32);
-            case 2
-                temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i, 3)],...
-                                      [ram(i, 4), ram(i, 3), ram(i, 1)], 2, 6, 32);
-            case 3
-                temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i + 2*div, 3)],...
-                                      [ram(i, 3), ram(i, 4), ram(i + 2*div, 1)], 1, 5, 32);
-            case 4
-                temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i - 2*div, 4)],...
-                                      [ram(i, 4), ram(i, 3), ram(i - 2*div, 2)], 3, 7, 32);
+    cur_cos_0 = bin2dec(fliplr(dec2bin(cos_cnt, bit_depth)));
+    cur_cos_1 = bin2dec(fliplr(dec2bin(cos_cnt + 1, bit_depth)));
+    
+    for i = (1 + (j-1)*2*div):(2*div + (j-1)*2*div) %(div + (j-1)*2*div)
+        if(j == 1)
+            temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i, 2)],...
+                                  [ram(i, 3), ram(i, 4), ram(i, 4)], cur_cos_0, cur_cos_1, 32);   
+        elseif(j == 2)
+            temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i, 3)],...
+                                  [ram(i, 4), ram(i, 3), ram(i, 1)], cur_cos_0, cur_cos_1, 32);
+        elseif(mod(j, 2) == 1)
+            temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i + sector_cnt*2*div, 3)],...
+                                  [ram(i, 3), ram(i, 4), ram(i + sector_cnt*2*div, 1)],...
+                                   cur_cos_0, cur_cos_1, 32);
+        else
+            temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i + sector_cnt*2*div, 4)],...
+                                  [ram(i, 4), ram(i, 3), ram(i + sector_cnt*2*div, 2)],...
+                                   cur_cos_0, cur_cos_1, 32);
         end
         
-        ram_buf(i, 1) = temp(1);
-        ram_buf(i, 3) = temp(2);
-        ram_buf(i + div, 2) = temp(3);
-        ram_buf(i + div, 4) = temp(4);
+        if(i > (div + (j-1)*2*div))
+            ram_buf(i - div, 2) = temp(1);
+            ram_buf(i - div, 4) = temp(2);
+            ram_buf(i, 1) = temp(3);
+            ram_buf(i, 3) = temp(4); 
+        else
+            ram_buf(i, 1) = temp(1);
+            ram_buf(i, 3) = temp(2);
+            ram_buf(i + div, 2) = temp(3);
+            ram_buf(i + div, 4) = temp(4);
+        end
+        
+        cos_cnt = cos_cnt + 1; % step ?
     end
-    for i = (div + 1 + (j-1)*2*div):(2*div + (j-1)*2*div)
-        switch(j)
-            case 1
-                temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i, 2)],...
-                                      [ram(i, 3), ram(i, 4), ram(i, 4)], 0, 4, 32);
-            case 2
-                temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i, 3)],...
-                                      [ram(i, 4), ram(i, 3), ram(i, 1)], 2, 6, 32);
-            case 3
-                temp = fht_double_but([ram(i, 1), ram(i, 2), ram(i + 2*div, 3)],...
-                                      [ram(i, 3), ram(i, 4), ram(i + 2*div, 1)], 1, 5, 32);
-            case 4
-                temp = fht_double_but([ram(i, 2), ram(i, 1), ram(i - 2*div, 4)],...
-                                      [ram(i, 4), ram(i, 3), ram(i - 2*div, 2)], 3, 7, 32);
+    
+    if((sector_cnt == -(sector_size - 1)) && (j >= 2))
+        sector_size = 2*sector_size;
+        sector_cnt = sector_size - 1;
+    else
+        sector_cnt = sector_cnt - 2;
+    end
+end
+
+ram(1:row, 1:N_bank) = zeros;  % 5 stage
+div = N/128;
+
+sector_size = 1;
+sector_cnt = 2;
+
+cos_cnt = 0;
+bit_depth = 5; % = number of stage (0..n)
+
+for j = 1:16
+    cur_cos_0 = bin2dec(fliplr(dec2bin(cos_cnt, bit_depth)));
+    cur_cos_1 = bin2dec(fliplr(dec2bin(cos_cnt + 1, bit_depth)));
+    
+    for i = (1 + (j-1)*2*div):(2*div + (j-1)*2*div) %(div + (j-1)*2*div)
+        if(j == 1)
+            temp = fht_double_but([ram_buf(i, 1), ram_buf(i, 2), ram_buf(i, 2)],...
+                                  [ram_buf(i, 3), ram_buf(i, 4), ram_buf(i, 4)], cur_cos_0, cur_cos_1, 64);   
+        elseif(j == 2)
+            temp = fht_double_but([ram_buf(i, 2), ram_buf(i, 1), ram_buf(i, 3)],...
+                                  [ram_buf(i, 4), ram_buf(i, 3), ram_buf(i, 1)], cur_cos_0, cur_cos_1, 64);
+        elseif(mod(j, 2) == 1)
+            temp = fht_double_but([ram_buf(i, 1), ram_buf(i, 2), ram_buf(i + sector_cnt*2*div, 3)],...
+                                  [ram_buf(i, 3), ram_buf(i, 4), ram_buf(i + sector_cnt*2*div, 1)],...
+                                   cur_cos_0, cur_cos_1, 64);
+        else
+            temp = fht_double_but([ram_buf(i, 2), ram_buf(i, 1), ram_buf(i + sector_cnt*2*div, 4)],...
+                                  [ram_buf(i, 4), ram_buf(i, 3), ram_buf(i + sector_cnt*2*div, 2)],...
+                                   cur_cos_0, cur_cos_1, 64);
         end
         
-        ram_buf(i - div, 2) = temp(1);
-        ram_buf(i - div, 4) = temp(2);
-        ram_buf(i, 1) = temp(3);
-        ram_buf(i, 3) = temp(4); 
-    end  
+%         if(i > (div + (j-1)*2*div))
+%             ram(i - 0, 2) = temp(1);
+%             ram(i - 0, 4) = temp(2);
+%             ram(i, 1) = temp(3);
+%             ram(i, 3) = temp(4); 
+%         else
+            ram(i, 1) = temp(1);
+            ram(i, 2) = temp(2);
+            ram(i, 3) = temp(3);
+            ram(i, 4) = temp(4);
+%         end
+        
+        cos_cnt = cos_cnt + 2;
+    end
+    
+    if((sector_cnt == -(sector_size - 1)) && (j >= 2))
+        sector_size = 2*sector_size;
+        sector_cnt = sector_size - 1;
+    else
+        sector_cnt = sector_cnt - 2;
+    end
 end
