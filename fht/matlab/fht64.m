@@ -2,12 +2,12 @@ clear;
 clc;
 
 % choose test signal:
-    %test = 'sin';
+    test = 'sin';
     %test = 'const';
-    test = 'num';
+    %test = 'num';
 
 % variable constants:
-    N = 64;
+    N = 1024;
 
     Fd = 44100;
     bias = 0;
@@ -71,10 +71,12 @@ for i = 1:N_bank
 end
 
 clear k;
+clear signal;
 
 figure;
 plot(time, test_signal);
 grid on;
+clear time;
 
 % fft (for check):
 temp_fft = fft(test_signal, N)/N;
@@ -86,7 +88,6 @@ for i = 1:row
                       imag(temp_fft((1 + (i-1)*4) : (4*i)));
     cnt = cnt + 1;
 end
-clear cnt;
 
 %{
 % fft:
@@ -236,6 +237,8 @@ for stage = 1:last_stage % without 0 stage
 	ram = ram_buf;
 end
 
+clear temp;
+
 % from matrix to row:
 cnt = 1;
 clear ram_buf;
@@ -260,4 +263,4 @@ end
 
 clear cnt;
 
-sub = ram_fft - ram_fht;
+ram_sub = ram_fft - ram_fht;
